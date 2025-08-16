@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.commands.swerveUtils;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
 
@@ -15,12 +15,11 @@ public class TurnRobot extends Command{
 
     PIDController controller;
 
-    public TurnRobot(SwerveSubsystem swerve, Pigeon2 pigeon2, double angulo){
-        this.swerve = swerve;
+    public TurnRobot(Pigeon2 pigeon2, double angulo){
+        this.swerve = SwerveSubsystem.getInstance();
         this.pigeon2 = pigeon2;
         this.angulo = angulo;
         this.controller = new PIDController(0.01, 0, 0);
-        addRequirements(swerve);
     }
 
     @Override

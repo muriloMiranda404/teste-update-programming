@@ -17,6 +17,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -35,8 +36,10 @@ public class SwerveSubsystem extends SubsystemBase {
     // Objeto global da SwerveDrive (Classe YAGSL)
     public SwerveDrive swerveDrive;
 
+    public static SwerveSubsystem mInstance = null;
+
     // Método construtor da classe
-    public SwerveSubsystem(File directory) {
+    private SwerveSubsystem(File directory) {
         // Seta a telemetria como nível mais alto
         SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
 
@@ -48,6 +51,13 @@ public class SwerveSubsystem extends SubsystemBase {
         }
         swerveDrive.setHeadingCorrection(true);
         setupPathPlanner();
+    }
+
+    public static SwerveSubsystem getInstance(){
+      if(mInstance == null){
+        return new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
+      }
+      return mInstance;
     }
     
     @Override

@@ -62,12 +62,9 @@ public class AlingToTarget extends Command {
         return ajustado * ajuste;
     }
 
-    public AlingToTarget(LimelightConfig limelight, SwerveSubsystem subsystem, double setpointX, double setpointY) {
-        if (limelight == null || subsystem == null) {
-            throw new IllegalArgumentException("Parâmetros não podem ser nulos");
-        }
-        this.limelight = limelight;
-        this.subsystem = subsystem;
+    public AlingToTarget(double setpointX, double setpointY) {
+        this.limelight = LimelightConfig.getInstance();
+        this.subsystem = SwerveSubsystem.getInstance();
         this.setpointX = setpointX;
         this.setpointY = setpointY;
         this.xController = new PIDController(kP_X, kI_X, kD_X);

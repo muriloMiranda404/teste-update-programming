@@ -66,7 +66,9 @@ public class Constants{
     public static final double L2_POSITION = 2;
     public static final double L3_POSITION = 3;
     public static final double L4_POSITION = 4;
-  
+    public static final double PROCESSADOR = 5;
+    public static final double ALGAE_L2 = 6;
+    public static final double ALGAE_L3 = 7;
   }
 
   public static final class Outros{

@@ -55,7 +55,28 @@ public class SetReefLevel extends Command{
                         new IntakePosition(IntakePositions.OPEN_L4)
                     );
 
+            case (int) Positions.PROCESSADOR:
+
+                    sequentialCommandGroup = new SequentialCommandGroup(
+                        new IntakePosition(IntakePositions.CONTROL_BALL),
+                        new ElevatorPosition(ElevatorPositions.HOME)
+                    );
+
+            case (int) Positions.ALGAE_L2:
+
+                    sequentialCommandGroup = new SequentialCommandGroup(
+                        new IntakePosition(IntakePositions.CONTROL_BALL),
+                        new ElevatorPosition(ElevatorPositions.ALGAE_L2)
+                    );
+
+            case (int) Positions.ALGAE_L3:
+
+                    sequentialCommandGroup = new SequentialCommandGroup(
+                        new IntakePosition(IntakePositions.CONTROL_BALL),
+                        new ElevatorPosition(ElevatorPositions.ALGAE_L3)
+                    );
         }
+        
         return sequentialCommandGroup;
     }
 

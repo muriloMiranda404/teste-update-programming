@@ -1,24 +1,14 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot;
 
-import java.io.File;
-
 import com.ctre.phoenix6.hardware.Pigeon2;
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.Constants.Controllers;
 import frc.robot.Constants.Outros;
 import frc.robot.Constants.Positions;
 import frc.robot.commands.ResetPigeon;
-import frc.robot.commands.TurnRobot;
 import frc.robot.commands.level.SetReefLevel;
 import frc.robot.commands.swerveUtils.AlingToTarget;
+import frc.robot.commands.swerveUtils.TurnRobot;
 import frc.robot.subsystems.LimelightConfig;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.controllers.DriverController;
@@ -28,7 +18,7 @@ import frc.robot.subsystems.intake.IntakeSubsystem;
 
 public class RobotContainer {
 
-  DriverController DriveJoystick;
+  DriverController driverJoystick;
   IntakeController IntakeJoystick;
 
   Pigeon2 pigeon2;
@@ -41,23 +31,19 @@ public class RobotContainer {
 
   public RobotContainer() {
 
-    this.DriveJoystick = DriverController.getInstance();
-    this.IntakeJoystick = new IntakeController(Controllers.INTAKE_CONTROLLER);
+    this.driverJoystick = DriverController.getInstance();
+    this.IntakeJoystick = IntakeController.getInstance();
 
     this.pigeon2 = new Pigeon2(Outros.PIGEON);
 
-    this.swerve = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
+    this.swerve = SwerveSubsystem.getInstance();
 
     this.limelightConfig = LimelightConfig.getInstance();
 
     this.intake = IntakeSubsystem.getInstance();
     this.elevator = ElevatorSubsystem.getInstance();
 
-    swerve.setDefaultCommand(swerve.driveCommand(
-      () -> MathUtil.applyDeadband(DriveJoystick.ConfigureInputs(true, 1), Controllers.DEADBAND), 
-      () -> MathUtil.applyDeadband(DriveJoystick.ConfigureInputs(true, 2), Controllers.DEADBAND), 
-      () -> MathUtil.applyDeadband(DriveJoystick.ConfigureInputs(true, 3), Controllers.DEADBAND)));
-
+    swerve.setDefaultCommand(driverJoystick.driverRobot());
 
     configureDriveBindings();
     configureIntakeBindings();
@@ -66,20 +52,19 @@ public class RobotContainer {
 
   private void configureDriveBindings() {
     
-    IntakeJoystick.AlingRobotOnReef().onTrue(new InstantCommand(() -> {
-      new AlingToTarget(limelightConfig, swerve, 0, 0);
+    driverJoystick.alingRobotOnReef().onTrue(new InstantCommand(() -> {
+      new AlingToTarget( 0, 0);
     }));
 
-    IntakeJoystick.a().onTrue(new InstantCommand(() ->{
-      new ResetPigeon(swerve, pigeon2);
+    driverJoystick.a().onTrue(new InstantCommand(() ->{
+      new ResetPigeon(pigeon2);
     }));
 
-    IntakeJoystick.rightBumper().onTrue(new InstantCommand(() -> {
-      new TurnRobot(swerve, pigeon2, 45);
+    driverJoystick.rightBumper().onTrue(new InstantCommand(() -> {
+      new TurnRobot(pigeon2, 45);
     }));
     
   }
-  
   
   private void configureIntakeBindings(){ 
 
@@ -99,6 +84,17 @@ public class RobotContainer {
       Positions.L4_POSITION
     ));
 
+    IntakeJoystick.ProcessorButton().onTrue(new SetReefLevel(
+      Positions.PROCESSADOR
+    ));
+
+    IntakeJoystick.L2Algae().onTrue(new SetReefLevel(
+      Positions.ALGAE_L2
+    ));
+
+    IntakeJoystick.L3Algae().onTrue(new SetReefLevel(
+      Positions.ALGAE_L3
+    ));
 }
 
   public Command getAutonomousCommand() {

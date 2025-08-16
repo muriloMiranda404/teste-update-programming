@@ -11,15 +11,15 @@ import frc.robot.Constants.Elevator;
 
 public class ElevatorSubsystem extends SubsystemBase{
     
-    SparkMax rightMotor;
-    SparkMax leftMotor;
+    private SparkMax rightMotor;
+    private SparkMax leftMotor;
 
-    DigitalInput downSwitch;
-    DigitalInput upSwitch;
+    private DigitalInput downSwitch;
+    private DigitalInput upSwitch;
 
-    PIDController controller;
+    private PIDController controller;
 
-    Encoder encoder;
+    private Encoder encoder;
 
     public static ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
 
@@ -110,6 +110,15 @@ public class ElevatorSubsystem extends SubsystemBase{
    
     public void resetEncoder(){
         encoder.reset();
+    }
+
+    public double[] getOutputInElevatorMotors(){
+        double[] output = {
+            rightMotor.getAppliedOutput(),
+            leftMotor.getAppliedOutput()
+        };
+
+        return output;
     }
 
     @Override
