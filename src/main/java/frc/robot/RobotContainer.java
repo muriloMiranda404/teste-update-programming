@@ -7,23 +7,18 @@ package frc.robot;
 import java.io.File;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
-import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.Controllers;
 import frc.robot.Constants.Outros;
-import frc.robot.Constants.Elevator.ElevatorPositions;
-import frc.robot.Constants.Intake.IntakePositions;
-import frc.robot.commands.AlingToTarget;
-import frc.robot.commands.ElevatorPosition;
-import frc.robot.commands.IntakePosition;
-import frc.robot.commands.IntakeSpeedCommand;
+import frc.robot.Constants.Positions;
 import frc.robot.commands.ResetPigeon;
 import frc.robot.commands.TurnRobot;
+import frc.robot.commands.level.SetReefLevel;
+import frc.robot.commands.swerveUtils.AlingToTarget;
 import frc.robot.subsystems.LimelightConfig;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.controllers.DriverController;
@@ -88,9 +83,22 @@ public class RobotContainer {
   
   private void configureIntakeBindings(){ 
 
-    IntakeJoystick.L1Button().onTrue(new SequentialCommandGroup(
-
+    IntakeJoystick.L1Button().onTrue( new SetReefLevel(
+      Positions.L1_POSITION
     ));
+
+    IntakeJoystick.L2Button().onTrue(new SetReefLevel(
+      Positions.L2_POSITION
+    ));
+
+    IntakeJoystick.L3Button().onTrue(new SetReefLevel(
+      Positions.L3_POSITION
+    ));
+
+    IntakeJoystick.L4Button().onTrue(new SetReefLevel(
+      Positions.L4_POSITION
+    ));
+
 }
 
   public Command getAutonomousCommand() {

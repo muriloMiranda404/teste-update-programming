@@ -1,23 +1,23 @@
-package frc.robot.commands;
+package frc.robot.commands.level.intake;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 
-public class IntakeSpeedCommand extends Command{
+public class SetIntakeSpeed extends Command{
     
     IntakeSubsystem intake;
     double speed;
     boolean getCoralBoolean;
 
-    public IntakeSpeedCommand(double speed){
+    public SetIntakeSpeed(double speed){
         this(speed, false);
     }
 
-    public IntakeSpeedCommand(boolean getCoralBoolean){
+    public SetIntakeSpeed(boolean getCoralBoolean){
         this(0.2, true);
     }
 
-    private IntakeSpeedCommand(double speed, boolean getCoralBoolean){
+    private SetIntakeSpeed(double speed, boolean getCoralBoolean){
         this.intake = IntakeSubsystem.getInstance();
         this.speed = speed;
         this.getCoralBoolean = getCoralBoolean;
