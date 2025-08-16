@@ -24,4 +24,20 @@ public class IntakeController extends CommandXboxController{
         return controller.pov(270);
     }
 
+    public Trigger L1Button(){
+        return controller.a();
+    }
+
+    public Trigger L2Button(){
+        return controller.b();
+    }
+
+    public Trigger L3Button(){
+        return controller.y();
+    }
+
+    public Trigger L4Button(){
+        return controller.x();
+    }
+    
 }

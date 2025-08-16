@@ -1,26 +1,26 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.intake.IntakeSubsystem;
 
 public class IntakeSpeedCommand extends Command{
     
     IntakeSubsystem intake;
     double speed;
-    boolean stop;
+    boolean getCoralBoolean;
 
-    public IntakeSpeedCommand(IntakeSubsystem intake, double speed){
-        this(intake, speed, false);
+    public IntakeSpeedCommand(double speed){
+        this(speed, false);
     }
 
-    public IntakeSpeedCommand(IntakeSubsystem intake, boolean stop){
-        this(intake, 0.2, true);
+    public IntakeSpeedCommand(boolean getCoralBoolean){
+        this(0.2, true);
     }
 
-    private IntakeSpeedCommand(IntakeSubsystem intake, double speed, boolean stop){
-        this.intake = intake;
+    private IntakeSpeedCommand(double speed, boolean getCoralBoolean){
+        this.intake = IntakeSubsystem.getInstance();
         this.speed = speed;
-        this.stop =  stop;
+        this.getCoralBoolean = getCoralBoolean;
         addRequirements(intake);
     }
 
@@ -40,7 +40,7 @@ public class IntakeSpeedCommand extends Command{
 }
     @Override
     public boolean isFinished() {
-        return false || (stop == true && intake.IsTouched() == true);
+        return false || (getCoralBoolean == true && intake.IsTouched() == true);
     }
 
     @Override

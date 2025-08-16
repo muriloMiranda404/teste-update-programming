@@ -61,6 +61,14 @@ public class Constants{
     }
   }
 
+  public static final class Positions{
+    public static final double L1_POSITION = 1;
+    public static final double L2_POSITION = 2;
+    public static final double L3_POSITION = 3;
+    public static final double L4_POSITION = 4;
+  
+  }
+
   public static final class Outros{
     public static final String AUTO = "New Auto";
     public static final String LIMELIGHT = "limelight";

@@ -1,17 +1,17 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.Constants.Elevator;
+import frc.robot.subsystems.elevator.ElevatorSubsystem;
 
-public class ElevatorPositionCommand extends Command{
+public class ElevatorPosition extends Command{
 
     ElevatorSubsystem elevator;
     double setpoint;
 
-    public ElevatorPositionCommand(ElevatorSubsystem elevator, double setpoint){
-        this.elevator = elevator;
+    public ElevatorPosition(double setpoint){
+        this.elevator = ElevatorSubsystem.getInstance();
         this.setpoint = setpoint;
-        addRequirements(elevator);
     }
 
     @Override

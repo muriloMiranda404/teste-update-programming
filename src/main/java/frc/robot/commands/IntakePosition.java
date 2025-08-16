@@ -1,17 +1,17 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.Constants.Intake.IntakePositions;
+import frc.robot.subsystems.intake.IntakeSubsystem;
 
-public class IntakePositionCommand extends Command{
+public class IntakePosition extends Command{
     
     IntakeSubsystem intake;
     double setpoint;
 
-    public IntakePositionCommand(IntakeSubsystem intake, double setpoint){
-        this.intake = intake;
+    public IntakePosition(double setpoint){
+        this.intake = IntakeSubsystem.getInstance();
         this.setpoint = setpoint;
-        addRequirements(intake);
     }
 
     @Override
