@@ -1,7 +1,6 @@
 package frc.robot.subsystems.elevator;
 
 import com.revrobotics.spark.SparkMax;
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
@@ -21,13 +20,13 @@ public class ElevatorSubsystem extends SubsystemBase{
 
     private Encoder encoder;
 
-    public static ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
+    public static ElevatorSubsystem mInstance = new ElevatorSubsystem();
 
     public static ElevatorSubsystem getInstance(){
-        if(elevatorSubsystem == null){
+        if(mInstance == null){
             return new ElevatorSubsystem();
         }
-        return elevatorSubsystem;
+        return mInstance;
     }
 
     private ElevatorSubsystem(){
@@ -130,5 +129,7 @@ public class ElevatorSubsystem extends SubsystemBase{
         SmartDashboard.putNumber("elevador", getDistance());
         SmartDashboard.putBoolean("fim de curso de cima", upSwitch.get());
         SmartDashboard.putBoolean("fim de curso de baixo", downSwitch.get());
+        SmartDashboard.putNumber("erro do elevador", getErroOnElevatorOutput());
+        SmartDashboard.putNumberArray("output inserida ao elevador", getOutputInElevatorMotors());
     }
 }

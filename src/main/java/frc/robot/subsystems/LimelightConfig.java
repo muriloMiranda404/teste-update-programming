@@ -8,17 +8,17 @@ public class LimelightConfig {
     
     NetworkTable limelight;
 
-    public static LimelightConfig limelightConfig = new LimelightConfig(Components.LIMELIGHT);
+    public static LimelightConfig mInstance = new LimelightConfig(Components.LIMELIGHT);
 
     public LimelightConfig(String table){
         limelight = NetworkTableInstance.getDefault().getTable(table);
     }
 
     public static LimelightConfig getInstance(){
-        if(limelightConfig ==  null){
+        if(mInstance ==  null){
             return new LimelightConfig(Components.LIMELIGHT);
         }
-        return limelightConfig;
+        return mInstance;
     }
 
     public boolean getHasTarget(){
@@ -43,5 +43,13 @@ public class LimelightConfig {
 
     public boolean setLedMode(int mode){
         return limelight.getEntry("ledMode").setNumber(mode);
+    }
+
+    public double[] getRobotPose(){
+        return limelight.getEntry("botPose").getDoubleArray(new double[6]);
+    }
+
+    public double[] getAprilTagCordenates(){
+        return limelight.getEntry("targetpose_robotspace").getDoubleArray(new double[6]);
     }
 }

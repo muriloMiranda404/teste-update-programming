@@ -62,18 +62,36 @@ public class AlingToTarget extends Command {
         return ajustado * ajuste;
     }
 
-    public AlingToTarget(double setpointX, double setpointY) {
+    public AlingToTarget(double setpointX, double setpointY){
+        this(setpointX, setpointY, false);
+    }
+
+    public AlingToTarget(boolean automaticSetpoint){
+        this(0, 0, true);
+    }
+
+    private AlingToTarget(double setpointX, double setpointY, boolean automaticSetpoint) {
         this.limelight = LimelightConfig.getInstance();
         this.subsystem = SwerveSubsystem.getInstance();
         this.setpointX = setpointX;
         this.setpointY = setpointY;
         this.xController = new PIDController(kP_X, kI_X, kD_X);
         this.rotationController = new PIDController(kP_ROTATION, kI_ROTATION, kD_ROTATION);
-        addRequirements(subsystem);
+        this.automaticSetpoint = automaticSetpoint;
     }
 
     @Override
     public void initialize() {
+
+        if(automaticSetpoint == true){
+            double[] cordenadas = limelight.getAprilTagCordenates();
+
+            double tx = cordenadas[0];
+            double ty = cordenadas[1];
+
+            setpointX = tx - 0.6;
+            setpointY = ty;
+        }
         try {
             rotationController.reset();
             xController.reset();
@@ -112,11 +130,11 @@ public class AlingToTarget extends Command {
             
             if (temTarget) {
                 double tx = limelight.getTx();
-                double distanciaX = limelight.getTy();
+                double ty = limelight.getTy();
                 double ta = limelight.getTa();
 
                 // Proteção contra valores inválidos
-                if (Double.isNaN(tx) || Double.isNaN(distanciaX) || Double.isNaN(ta)) {
+                if (Double.isNaN(tx) || Double.isNaN(ty) || Double.isNaN(ta)) {
                     System.err.println("Valores inválidos recebidos da Limelight");
                     return;
                 }
@@ -131,7 +149,7 @@ public class AlingToTarget extends Command {
                 if (timer.get() - ultimoTempoMudanca > TEMPO_MINIMO_ESTAVEL) {
                     // Calcula correções
                     double correcaoRotacao = rotationController.calculate(tx, setpointX);
-                    double correcaoX = xController.calculate(distanciaX, setpointY);
+                    double correcaoX = xController.calculate(ty, setpointY);
                     
                     // Aplica zona morta
                     if (Math.abs(correcaoRotacao) < ZONA_MORTA) correcaoRotacao = 0;
@@ -167,7 +185,7 @@ public class AlingToTarget extends Command {
                     limelight.setLedMode(4);
                     
                     System.out.printf("Alinhando - TX: %.2f° | Dist X: %.2f | Rot: %.2f | X: %.2f%n", 
-                        tx, distanciaX, correcaoRotacao, correcaoX);
+                        tx, ty, correcaoRotacao, correcaoX);
                     SmartDashboard.putNumber("tx", tx);      
                     SmartDashboard.putBoolean("tag achada", limelight.getHasTarget());
                     SmartDashboard.putNumber("ty", limelight.getTy());

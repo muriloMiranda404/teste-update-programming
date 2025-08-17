@@ -21,7 +21,7 @@ public class IntakeSubsystem extends SubsystemBase{
 
     DigitalInput coralswitch;
 
-    public static IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
+    public static IntakeSubsystem mInstance = new IntakeSubsystem();
 
     private IntakeSubsystem(){
 
@@ -39,10 +39,10 @@ public class IntakeSubsystem extends SubsystemBase{
     }
 
     public static IntakeSubsystem getInstance(){
-        if(intakeSubsystem == null){
+        if(mInstance == null){
             return new IntakeSubsystem();
         }
-        return intakeSubsystem;
+        return mInstance;
     }
 
     public void setSpeed(double speed){

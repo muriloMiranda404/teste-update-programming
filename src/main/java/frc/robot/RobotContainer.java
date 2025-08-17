@@ -52,8 +52,8 @@ public class RobotContainer {
 
   private void configureDriveBindings() {
     
-    driverJoystick.alingRobotOnReef().onTrue(new InstantCommand(() -> {
-      new AlingToTarget( 0, 0);
+    driverJoystick.alingRobotOnReef().whileTrue(new InstantCommand(() -> {
+      new AlingToTarget(true);
     }));
 
     driverJoystick.a().onTrue(new InstantCommand(() ->{
