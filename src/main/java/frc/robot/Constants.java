@@ -71,7 +71,7 @@ public class Constants{
     public static final double ALGAE_L3 = 7;
   }
 
-  public static final class Outros{
+  public static final class Components{
     public static final String AUTO = "New Auto";
     public static final String LIMELIGHT = "limelight";
     public static final int PIGEON = 9;

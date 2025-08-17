@@ -3,7 +3,7 @@ package frc.robot;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.robot.Constants.Outros;
+import frc.robot.Constants.Components;
 import frc.robot.Constants.Positions;
 import frc.robot.commands.ResetPigeon;
 import frc.robot.commands.level.SetReefLevel;
@@ -34,7 +34,7 @@ public class RobotContainer {
     this.driverJoystick = DriverController.getInstance();
     this.IntakeJoystick = IntakeController.getInstance();
 
-    this.pigeon2 = new Pigeon2(Outros.PIGEON);
+    this.pigeon2 = new Pigeon2(Components.PIGEON);
 
     this.swerve = SwerveSubsystem.getInstance();
 
@@ -98,7 +98,7 @@ public class RobotContainer {
 }
 
   public Command getAutonomousCommand() {
-    return swerve.getAutonomousCommand(Outros.AUTO, true);
+    return swerve.getAutonomousCommand(Components.AUTO, true);
   }
 
   public void setMotorBrake(boolean brake) {

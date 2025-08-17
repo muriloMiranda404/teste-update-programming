@@ -79,22 +79,6 @@ public class IntakeSubsystem extends SubsystemBase{
 
         double output = controller.calculate(ang, setpoint);
         
-        // if(ang < 55.0){
-        //     if(output < 0.0) output = 0.0;
-            
-        //     if(setpoint < 55.0) setpoint = 55.0;
-        // }
-
-        // if(ang > 230.0){
-        //     if(output > 0.0) {
-        //         output = 0.0;
-        //     }
-            
-        //     if(setpoint > 230.0) {
-        //         setpoint = 230.0;
-        //     }
-        // }
-        
         turnIntake.set(output);
         System.out.println("setpoint: " + setpoint);
     }

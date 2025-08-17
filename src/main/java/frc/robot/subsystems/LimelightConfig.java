@@ -2,13 +2,13 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import frc.robot.Constants.Outros;
+import frc.robot.Constants.Components;
 
 public class LimelightConfig {
     
     NetworkTable limelight;
 
-    public static LimelightConfig limelightConfig = new LimelightConfig(Outros.LIMELIGHT);
+    public static LimelightConfig limelightConfig = new LimelightConfig(Components.LIMELIGHT);
 
     public LimelightConfig(String table){
         limelight = NetworkTableInstance.getDefault().getTable(table);
@@ -16,7 +16,7 @@ public class LimelightConfig {
 
     public static LimelightConfig getInstance(){
         if(limelightConfig ==  null){
-            return new LimelightConfig(Outros.LIMELIGHT);
+            return new LimelightConfig(Components.LIMELIGHT);
         }
         return limelightConfig;
     }

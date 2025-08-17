@@ -121,6 +121,10 @@ public class ElevatorSubsystem extends SubsystemBase{
         return output;
     }
 
+    public double getErroOnElevatorOutput(){
+        return this.controller.getError();
+    }
+
     @Override
     public void periodic() {
         SmartDashboard.putNumber("elevador", getDistance());

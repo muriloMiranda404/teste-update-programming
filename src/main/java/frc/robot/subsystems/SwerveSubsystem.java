@@ -183,13 +183,11 @@ public class SwerveSubsystem extends SubsystemBase {
     return swerveDrive.swerveController.getTargetSpeeds(xInput, yInput, 0, 0, 0, swerve.MAX_SPEED);
   }
 
-  // Função que retorna a posição do robô (translação e ângulo), (Usado no autônomo)
   public Pose2d getPose()
   {
     return swerveDrive.getPose();
   }
   
-  // Retorna a velocidade relativa ao campo
   public ChassisSpeeds getFieldVelocity()
   {
     return swerveDrive.getFieldVelocity();
