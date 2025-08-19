@@ -113,13 +113,13 @@ public class DriverController implements IDDriverController{
             marcha = 1;
         }
         
-        double invert = 1;
+        double invert = automaticInverted() == true ? -1.0 : 1.0;
         
-        if(automaticInverted()){
-            invert = -1;
-        } else{
-            invert = 1;
-        }
+        // if(automaticInverted()){
+        //     invert = -1;
+        // } else{
+        //     invert = 1;
+        // }
         
         double leftY = controller.getLeftY() * marcha * invert;
         double leftX= controller.getLeftX() * marcha * invert;
