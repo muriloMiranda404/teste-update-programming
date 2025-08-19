@@ -21,4 +21,6 @@ public interface IDIntakeController {
     Trigger L2Algae();
 
     Trigger L3Algae();
+
+    double UpElevator();
 }

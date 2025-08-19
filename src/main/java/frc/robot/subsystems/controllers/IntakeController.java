@@ -69,4 +69,9 @@ public class IntakeController implements IDIntakeController{
         
     }
 
+    @Override
+    public double UpElevator() {
+       return controller.getRightY();
+    }
+
 }
