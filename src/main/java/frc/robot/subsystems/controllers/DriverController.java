@@ -138,4 +138,23 @@ public class DriverController implements IDDriverController{
         return controller.pov(270);
     }
 
+    @Override
+    public double getLeftX(){
+        return controller.getLeftX();
+    }
+
+    @Override
+    public double getLeftY(){
+        return controller.getLeftY();
+    }
+
+    @Override
+    public double getRightX(){
+        return controller.getRightX();
+    }
+
+    @Override
+    public double getRightY(){
+        return controller.getRightY();
+    }
 }

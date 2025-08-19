@@ -95,4 +95,9 @@ public class IntakeSubsystem extends SubsystemBase{
         SmartDashboard.putNumber("angulo", getDistance());
         SmartDashboard.putBoolean("fim de curos do coral", IsTouched());
     }
+
+    public void set(double speed) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'set'");
+    }
 }

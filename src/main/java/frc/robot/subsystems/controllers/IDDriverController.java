@@ -24,4 +24,12 @@ public interface IDDriverController {
     Command driverRobot();
 
     Trigger alingRobotOnReef();
+
+    double getLeftY();
+
+    double getLeftX();
+
+    double getRightY();
+
+    double getRightX();
 }
