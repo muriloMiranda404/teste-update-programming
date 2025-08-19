@@ -32,7 +32,7 @@ public class SetIntakeSpeed extends Command{
     @Override
     public void execute() {
         try{
-        intake.setSpeed(speed);
+        intake.set(speed);
 
     } catch(Exception e){
         System.out.println("erro ao colocar velocidade");

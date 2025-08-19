@@ -1,18 +1,18 @@
 package frc.robot.subsystems.intake;
 
 import com.revrobotics.spark.SparkMax;
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Intake;
+import frc.robot.subsystems.motors.SparkMaxMotors;
 
 public class IntakeSubsystem extends SubsystemBase{
     
-    SparkMax turnIntake;
-    SparkMax getCoral;
+    SparkMaxMotors turnIntake;
+    SparkMaxMotors getCoral;
 
     DutyCycleEncoder encoder;
 
@@ -24,8 +24,8 @@ public class IntakeSubsystem extends SubsystemBase{
 
     private IntakeSubsystem(){
 
-        this.turnIntake = new SparkMax(Intake.INTAKE_MOTOR, SparkMax.MotorType.kBrushless);
-        this.getCoral = new SparkMax(Intake.CORAL_MOTOR, SparkMax.MotorType.kBrushless);
+        this.turnIntake = new SparkMaxMotors(Intake.INTAKE_MOTOR, false, "Turn intake motor");
+        this.getCoral = new SparkMaxMotors(Intake.CORAL_MOTOR, true, "get game piece motor");
 
         this.encoder = new DutyCycleEncoder(Intake.INTAKE_ENCODER);
         this.encoder.setDutyCycleRange(0, 360);
@@ -42,10 +42,6 @@ public class IntakeSubsystem extends SubsystemBase{
             return new IntakeSubsystem();
         }
         return mInstance;
-    }
-
-    public void setSpeed(double speed){
-        getCoral.set(speed);
     }
 
     public boolean IsTouched(){
@@ -78,7 +74,7 @@ public class IntakeSubsystem extends SubsystemBase{
 
         double output = controller.calculate(ang, setpoint);
         
-        turnIntake.set(output);
+        turnIntake.setSpeed(output);
         System.out.println("setpoint: " + setpoint);
     }
 
@@ -87,15 +83,11 @@ public class IntakeSubsystem extends SubsystemBase{
     }
 
     public double getCoralMotorVoltage(){
-        return getCoral.getBusVoltage();
+        return getCoral.getVoltage();
     }
 
     public double getCoralMotorTemperature(){
         return getCoral.getMotorTemperature();
-    }
-
-    public double getOutputInCoralMotor(){
-        return getCoral.getAppliedOutput();
     }
 
     @Override
