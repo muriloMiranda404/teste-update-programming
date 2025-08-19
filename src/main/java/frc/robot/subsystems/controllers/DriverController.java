@@ -104,9 +104,11 @@ public class DriverController implements IDDriverController{
     @Override
     public Command driverRobot(){
 
-        double marcha;
+        double marcha = 1.0;
         if(activateMarcha()){
-            marcha = controller.getRightTriggerAxis() - controller.getLeftTriggerAxis() + 0.7;
+            marcha = controller.getRightTriggerAxis() - controller.getLeftTriggerAxis() + 0.8;
+        } else if(marcha < 0){
+            marcha *= -1.0;
         } else {
             marcha = 1;
         }

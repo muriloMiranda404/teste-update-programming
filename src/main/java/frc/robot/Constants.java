@@ -5,9 +5,11 @@ import edu.wpi.first.math.controller.PIDController;
 public class Constants{
 
   public static final class Controllers{
+    //IDs de controles
     public static final int DRIVE_CONTROLLER = 0;
     public static final int INTAKE_CONTROLLER = 1;
 
+    //deadband dos joystick
     public static final double DEADBAND = 0.1;
   }
 

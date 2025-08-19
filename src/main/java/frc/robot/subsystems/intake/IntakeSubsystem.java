@@ -25,16 +25,16 @@ public class IntakeSubsystem extends SubsystemBase{
 
     private IntakeSubsystem(){
 
-        turnIntake = new SparkMax(Intake.INTAKE_MOTOR, SparkMax.MotorType.kBrushless);
-        getCoral = new SparkMax(Intake.CORAL_MOTOR, SparkMax.MotorType.kBrushless);
+        this.turnIntake = new SparkMax(Intake.INTAKE_MOTOR, SparkMax.MotorType.kBrushless);
+        this.getCoral = new SparkMax(Intake.CORAL_MOTOR, SparkMax.MotorType.kBrushless);
 
-        encoder = new DutyCycleEncoder(Intake.INTAKE_ENCODER);
-        encoder.setDutyCycleRange(0, 360);
+        this.encoder = new DutyCycleEncoder(Intake.INTAKE_ENCODER);
+        this.encoder.setDutyCycleRange(0, 360);
 
-        controller = Intake.INTAKE_PID;
-        controller.setTolerance(Intake.INTAKE_TOLERANCE);
+        this.controller = Intake.INTAKE_PID;
+        this.controller.setTolerance(Intake.INTAKE_TOLERANCE);
 
-        coralswitch = new DigitalInput(Intake.CORAL_SWITCH);
+        this.coralswitch = new DigitalInput(Intake.CORAL_SWITCH);
 
     }
 

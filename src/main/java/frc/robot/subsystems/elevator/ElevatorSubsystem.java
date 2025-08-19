@@ -31,21 +31,30 @@ public class ElevatorSubsystem extends SubsystemBase{
 
     private ElevatorSubsystem(){
 
-        rightMotor = new SparkMax(Elevator.RIGHT_ELEVATOR_MOTOR, SparkMax.MotorType.kBrushless);
-        leftMotor = new SparkMax(Elevator.LEFT_ELEVATOR_MOTOR, SparkMax.MotorType.kBrushless);
+        this.rightMotor = new SparkMax(Elevator.RIGHT_ELEVATOR_MOTOR, SparkMax.MotorType.kBrushless);
+        this.leftMotor = new SparkMax(Elevator.LEFT_ELEVATOR_MOTOR, SparkMax.MotorType.kBrushless);
 
-        downSwitch = new DigitalInput(Elevator.DOWN_SWITCH);
-        upSwitch = new DigitalInput(Elevator.UP_SWITCH);
+        this.downSwitch = new DigitalInput(Elevator.DOWN_SWITCH);
+        this.upSwitch = new DigitalInput(Elevator.UP_SWITCH);
 
-        encoder = new Encoder(Elevator.ENCODER_ELEV_A, Elevator.ENCODER_ELEV_B);
-        encoder.setDistancePerPulse(360.0/2048.0);
+        this.encoder = new Encoder(Elevator.ENCODER_ELEV_A, Elevator.ENCODER_ELEV_B);
+        this.encoder.setDistancePerPulse(360.0/2048.0);
 
-        controller = Elevator.ELEVATOR_PID;
-        controller.setTolerance(Elevator.ELEVATOR_TOLERANCE);
+        this.controller = Elevator.ELEVATOR_PID;
+        this.controller.setTolerance(Elevator.ELEVATOR_TOLERANCE);
     }
 
     public double getDistance(){
         return encoder.getDistance();
+    }
+
+    public double[] getRateOnMotor(){
+        double[] speed = {
+            rightMotor.get(),
+            leftMotor.get()
+        };
+
+        return speed;
     }
 
     public void setElevatorPosition(double setpoint){
@@ -127,6 +136,7 @@ public class ElevatorSubsystem extends SubsystemBase{
     @Override
     public void periodic() {
         SmartDashboard.putNumber("elevador", getDistance());
+        SmartDashboard.putNumberArray("velocidade nos motores", getRateOnMotor());
         SmartDashboard.putBoolean("fim de curso de cima", upSwitch.get());
         SmartDashboard.putBoolean("fim de curso de baixo", downSwitch.get());
         SmartDashboard.putNumber("erro do elevador", getErroOnElevatorOutput());
