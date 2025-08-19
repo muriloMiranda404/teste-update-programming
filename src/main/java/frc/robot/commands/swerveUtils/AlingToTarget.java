@@ -78,6 +78,7 @@ public class AlingToTarget extends Command {
         this.xController = new PIDController(kP_X, kI_X, kD_X);
         this.rotationController = new PIDController(kP_ROTATION, kI_ROTATION, kD_ROTATION);
         this.automaticSetpoint = automaticSetpoint;
+        addRequirements(subsystem);
     }
 
     @Override

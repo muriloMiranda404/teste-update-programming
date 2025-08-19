@@ -20,6 +20,7 @@ public class TurnRobot extends Command{
         this.pigeon2 = pigeon2;
         this.angulo = angulo;
         this.controller = new PIDController(0.01, 0, 0);
+        addRequirements(swerve);
     }
 
     @Override

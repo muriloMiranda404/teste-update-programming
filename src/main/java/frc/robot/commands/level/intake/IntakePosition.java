@@ -11,6 +11,7 @@ public class IntakePosition extends Command{
     public IntakePosition(double setpoint){
         this.intake = IntakeSubsystem.getInstance();
         this.setpoint = setpoint;
+        addRequirements(intake);
     }
 
     @Override

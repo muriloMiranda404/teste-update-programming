@@ -84,6 +84,8 @@ public class SetReefLevel extends Command{
         this.setpoint = setpoint;
         this.intakeSubsystem = IntakeSubsystem.getInstance();
         this.elevatorSubsystem = ElevatorSubsystem.getInstance();
+        addRequirements(intakeSubsystem);
+        addRequirements(elevatorSubsystem);
     }
 
     @Override

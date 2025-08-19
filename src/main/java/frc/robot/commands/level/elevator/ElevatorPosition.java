@@ -11,6 +11,7 @@ public class ElevatorPosition extends Command{
     public ElevatorPosition(double setpoint){
         this.elevator = ElevatorSubsystem.getInstance();
         this.setpoint = setpoint;
+        addRequirements(elevator);
     }
 
     @Override
