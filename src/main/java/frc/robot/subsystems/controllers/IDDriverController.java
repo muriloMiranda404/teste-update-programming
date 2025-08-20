@@ -17,9 +17,11 @@ public interface IDDriverController {
 
     Trigger leftBumper();
 
-    boolean automaticInverted();
+    double automaticInverted(double value);
 
-    boolean activateMarcha();
+    Trigger TurboMode();
+
+    Trigger slowMode();
 
     Command driverRobot();
 
@@ -32,4 +34,6 @@ public interface IDDriverController {
     double getRightY();
 
     double getRightX();
+
+    double getMarcha();
 }

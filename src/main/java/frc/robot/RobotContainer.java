@@ -1,9 +1,12 @@
 package frc.robot;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
+
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Constants.Components;
+import frc.robot.Constants.Controllers;
 import frc.robot.Constants.Positions;
 import frc.robot.commands.ResetPigeon;
 import frc.robot.commands.level.SetReefLevel;
@@ -43,7 +46,11 @@ public class RobotContainer {
     this.intake = IntakeSubsystem.getInstance();
     this.elevator = ElevatorSubsystem.getInstance();
 
-    swerve.setDefaultCommand(driverJoystick.driverRobot());
+    swerve.setDefaultCommand(swerve.driveCommand(
+      () -> MathUtil.applyDeadband(driverJoystick.getLeftY(), Controllers.DEADBAND),
+      () -> MathUtil.applyDeadband(driverJoystick.getLeftX(), Controllers.DEADBAND),
+      () -> MathUtil.applyDeadband(driverJoystick.getRightX(), Controllers.DEADBAND)
+    ));
 
     configureDriveBindings();
     configureIntakeBindings();
@@ -52,9 +59,7 @@ public class RobotContainer {
 
   private void configureDriveBindings() {
     
-    driverJoystick.alingRobotOnReef().whileTrue(new InstantCommand(() -> {
-      new AlingToTarget(true);
-    }));
+    driverJoystick.alingRobotOnReef().whileTrue(new AlingToTarget(true));
 
     driverJoystick.a().onTrue(new InstantCommand(() ->{
       new ResetPigeon(pigeon2);

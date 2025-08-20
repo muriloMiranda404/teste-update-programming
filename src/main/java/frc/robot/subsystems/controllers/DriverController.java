@@ -92,20 +92,31 @@ public class DriverController implements IDDriverController{
     }
 
     @Override
-    public boolean automaticInverted(){
-        return DriverStation.getAlliance().get() == Alliance.Red;
+    public double automaticInverted(double value){
+        Alliance invert = DriverStation.getAlliance().isPresent() ? DriverStation.getAlliance().get() : Alliance.Red;
+
+        if(invert == Alliance.Red){
+            return -value;
+        }
+
+        return value;
     }
     
     @Override
-    public boolean activateMarcha(){
-        return controller.getRightTriggerAxis() - controller.getLeftTriggerAxis() != 0;
+    public Trigger TurboMode(){
+        return controller.rightTrigger(0.8);
+    }
+
+    @Override
+    public double getMarcha(){
+        return controller.getRightTriggerAxis() - controller.getLeftTriggerAxis();
     }
 
     @Override
     public Command driverRobot(){
 
         double marcha = 1.0;
-        if(activateMarcha()){
+        if(TurboMode().getAsBoolean()){
             marcha = controller.getRightTriggerAxis() - controller.getLeftTriggerAxis() + 0.8;
         } else if(marcha < 0){
             marcha *= -1.0;
@@ -113,7 +124,7 @@ public class DriverController implements IDDriverController{
             marcha = 1;
         }
         
-        double invert = automaticInverted() == true ? -1.0 : 1.0;
+        // double invert = automaticInverted() == true ? -1.0 : 1.0;
         
         // if(automaticInverted()){
         //     invert = -1;
@@ -121,16 +132,16 @@ public class DriverController implements IDDriverController{
         //     invert = 1;
         // }
         
-        double leftY = controller.getLeftY() * marcha * invert;
-        double leftX= controller.getLeftX() * marcha * invert;
-        double rightX = controller.getRightX() * marcha; 
+        // double leftY = controller.getLeftY() * marcha * invert;
+        // double leftX= controller.getLeftX() * marcha * invert;
+        // double rightX = controller.getRightX() * marcha; 
 
-        Command drive = swerveSubsystem.driveCommand(
-            () -> MathUtil.applyDeadband(leftY, Controllers.DEADBAND),
-            () -> MathUtil.applyDeadband(leftX, Controllers.DEADBAND),
-            () -> MathUtil.applyDeadband(rightX, Controllers.DEADBAND));
+        // Command drive = swerveSubsystem.driveCommand(
+        //     () -> MathUtil.applyDeadband(leftY, Controllers.DEADBAND),
+        //     () -> MathUtil.applyDeadband(leftX, Controllers.DEADBAND),
+        //     () -> MathUtil.applyDeadband(rightX, Controllers.DEADBAND));
 
-            return drive;
+            return null;
     }
 
     @Override
@@ -140,21 +151,50 @@ public class DriverController implements IDDriverController{
 
     @Override
     public double getLeftX(){
-        return controller.getLeftX();
+        if(TurboMode().getAsBoolean()){
+           return MathUtil.applyDeadband(automaticInverted(controller.getLeftX()), Controllers.DEADBAND);
+        } 
+        else if(slowMode().getAsBoolean()){
+            return MathUtil.applyDeadband(automaticInverted(controller.getLeftX()), Controllers.DEADBAND) * 0.2;
+        }
+        return MathUtil.applyDeadband(automaticInverted(controller.getLeftX()), Controllers.DEADBAND) * 0.6;
     }
 
     @Override
     public double getLeftY(){
-        return controller.getLeftY();
+        if(TurboMode().getAsBoolean()){
+            return MathUtil.applyDeadband(automaticInverted(controller.getLeftY()), Controllers.DEADBAND);
+        }
+        else if(slowMode().getAsBoolean()){
+            return MathUtil.applyDeadband(automaticInverted(controller.getLeftY()), Controllers.DEADBAND) * 0.2;
+        }
+        return MathUtil.applyDeadband(automaticInverted(controller.getLeftX()), Controllers.DEADBAND) * 0.6;
     }
 
     @Override
     public double getRightX(){
-        return controller.getRightX();
+        if(TurboMode().getAsBoolean()){
+            return MathUtil.applyDeadband(automaticInverted(controller.getRightX()), Controllers.DEADBAND);
+        }
+        else if(slowMode().getAsBoolean()){
+            return MathUtil.applyDeadband(automaticInverted(controller.getRightX()), Controllers.DEADBAND) * 0.2;
+        }
+        return MathUtil.applyDeadband(automaticInverted(controller.getRightX()), Controllers.DEADBAND) * 0.6;
     }
 
     @Override
     public double getRightY(){
-        return controller.getRightY();
+        if(TurboMode().getAsBoolean()){
+            return MathUtil.applyDeadband(automaticInverted(controller.getRightY()), Controllers.DEADBAND);
+        }
+        else if(slowMode().getAsBoolean()){
+            return MathUtil.applyDeadband(automaticInverted(controller.getRightY()), Controllers.DEADBAND) * 0.2;
+        }
+        return MathUtil.applyDeadband(automaticInverted(controller.getRightY()), Controllers.DEADBAND) * 0.6;
+    }
+
+    @Override
+    public Trigger slowMode() {
+        return controller.leftTrigger(0.8);
     }
 }
