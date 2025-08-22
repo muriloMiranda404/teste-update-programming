@@ -2,6 +2,7 @@ package frc.robot.subsystems.controllers;
 
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants.Controllers;
 
 public class IntakeController implements IDIntakeController{
     
@@ -17,7 +18,7 @@ public class IntakeController implements IDIntakeController{
     }
 
     private IntakeController(){
-        this.controller = new CommandXboxController(1);
+        this.controller = new CommandXboxController(Controllers.INTAKE_CONTROLLER);
     }
 
     @Override
@@ -63,10 +64,6 @@ public class IntakeController implements IDIntakeController{
     @Override
     public Trigger L3Algae(){
         return controller.leftBumper();
-    }
-
-    public void getefv(){
-        
     }
 
     @Override

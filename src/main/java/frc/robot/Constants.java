@@ -1,5 +1,7 @@
 package frc.robot;
 
+import com.ctre.phoenix6.signals.SensorDirectionValue;
+
 import edu.wpi.first.math.controller.PIDController;
 
 public class Constants{
@@ -12,9 +14,26 @@ public class Constants{
     //deadband dos joystick
     public static final double DEADBAND = 0.1;
   }
-
+  
   public static final class swerve{
     public static final double MAX_SPEED = 7.0;
+    public static final boolean IS_INVERTED_DRIVE = false;
+    public static final boolean IS_INVERTED_ANGLE = false;
+
+    public static final boolean CANCODER_INVERTED = false;
+
+    //pid drive
+    public static final double KP_DRIVE = 0.01;
+    public static final double KI_DRIVE = 0;
+    public static final double KD_DRIVE = 0;
+
+    //pid angle
+    public static final double KP_ANGLE = 0.01;
+    public static final double KI_ANGLE = 0;
+    public static final double KD_ANGLE = 0;
+
+    //medidas
+    public static final double ROTATION_PER_METER = 0.0472867872006997;
   }
 
   public static final class Intake{

@@ -1,6 +1,5 @@
 package frc.robot.subsystems.intake;
 
-import com.revrobotics.spark.SparkMax;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
@@ -97,7 +96,6 @@ public class IntakeSubsystem extends SubsystemBase{
     }
 
     public void set(double speed) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'set'");
+       getCoral.setSpeed(speed);
     }
 }

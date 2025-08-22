@@ -13,11 +13,11 @@ import frc.robot.commands.level.SetReefLevel;
 import frc.robot.commands.swerveUtils.AlingToTarget;
 import frc.robot.commands.swerveUtils.TurnRobot;
 import frc.robot.subsystems.LimelightConfig;
-import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.controllers.DriverController;
 import frc.robot.subsystems.controllers.IntakeController;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
+import frc.robot.subsystems.swerve.SwerveSubsystem;
 
 public class RobotContainer {
 
@@ -32,6 +32,8 @@ public class RobotContainer {
   IntakeSubsystem intake;
   ElevatorSubsystem elevator;
 
+  RegisterNamedCommands named;
+
   public RobotContainer() {
 
     this.driverJoystick = DriverController.getInstance();
@@ -45,6 +47,9 @@ public class RobotContainer {
 
     this.intake = IntakeSubsystem.getInstance();
     this.elevator = ElevatorSubsystem.getInstance();
+
+    this.named = new RegisterNamedCommands();
+    named.configureNamedCommands();
 
     swerve.setDefaultCommand(swerve.driveCommand(
       () -> MathUtil.applyDeadband(driverJoystick.getLeftY(), Controllers.DEADBAND),

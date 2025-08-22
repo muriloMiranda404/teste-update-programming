@@ -2,6 +2,7 @@ package frc.robot.subsystems.motors;
 
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.spark.SparkMax;
 
 public interface SparkMaxMotorsIO {
     
@@ -22,4 +23,6 @@ public interface SparkMaxMotorsIO {
     double getMotorTemperature();
 
     double getMotorOutput();
+
+    SparkMax getSpark();
 }

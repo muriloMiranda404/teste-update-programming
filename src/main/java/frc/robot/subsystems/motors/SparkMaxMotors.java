@@ -82,4 +82,9 @@ public class SparkMaxMotors implements SparkMaxMotorsIO{
     public double getMotorOutput(){
         return motor.getAppliedOutput();
     }
+
+    @Override
+    public SparkMax getSpark(){
+        return motor;
+    }
 }

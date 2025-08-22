@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.Controllers;
-import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.subsystems.swerve.SwerveSubsystem;
 
 public class DriverController implements IDDriverController{
 
@@ -25,7 +25,7 @@ public class DriverController implements IDDriverController{
     }
     
     private DriverController(){
-        this.controller = new CommandXboxController(0);
+        this.controller = new CommandXboxController(Controllers.DRIVE_CONTROLLER);
         this.swerveSubsystem = SwerveSubsystem.getInstance();
     }
 
