@@ -10,7 +10,7 @@ public class LimelightConfig {
 
     public static LimelightConfig mInstance = new LimelightConfig(Components.LIMELIGHT);
 
-    public LimelightConfig(String table){
+    private LimelightConfig(String table){
         this.limelight = NetworkTableInstance.getDefault().getTable(table);
     }
 

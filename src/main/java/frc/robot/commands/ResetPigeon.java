@@ -27,7 +27,7 @@ public class ResetPigeon extends Command{
         try{
 
             pigeon2.reset();
-            subsystem.swerveDrive.zeroGyro();
+            subsystem.zeroGyro();
             
         } catch(Exception e){
             System.out.println("erro ao resetar o pigeon");

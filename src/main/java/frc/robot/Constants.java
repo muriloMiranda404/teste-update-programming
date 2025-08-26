@@ -1,8 +1,10 @@
 package frc.robot;
 
-import com.ctre.phoenix6.signals.SensorDirectionValue;
-
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import frc.robot.subsystems.swerve.SwerveModulesConstants;
+import frc.robot.subsystems.swerve.SwerveModulesConstants.ModuleId;
 
 public class Constants{
 
@@ -16,11 +18,27 @@ public class Constants{
   }
   
   public static final class swerve{
+
     public static final double MAX_SPEED = 7.0;
     public static final boolean IS_INVERTED_DRIVE = false;
     public static final boolean IS_INVERTED_ANGLE = false;
 
     public static final boolean CANCODER_INVERTED = false;
+    
+    //configurações do swerve    
+    public static final double ROTATION_PER_METER = 0.0472867872006997;
+    public static final double TRACK_WIDTH = 0.551942;
+    public static final double WHEEL_BASE = 0.551942;
+
+    public static final SwerveDriveKinematics KINEMATICS = new SwerveDriveKinematics(
+      new Translation2d(WHEEL_BASE/2, -TRACK_WIDTH/2),
+      FrontLeft.CHASSI_OFFSET_MOD3,
+      BackLeft.CHASSI_OFFSET_MOD2,
+      BackRight.CHASSIS_OFFSET_MOD1
+    );
+
+    //orientado ao campo
+    public static final boolean FIELD_ORIENTED = true;
 
     //pid drive
     public static final double KP_DRIVE = 0.01;
@@ -31,9 +49,6 @@ public class Constants{
     public static final double KP_ANGLE = 0.01;
     public static final double KI_ANGLE = 0;
     public static final double KD_ANGLE = 0;
-
-    //medidas
-    public static final double ROTATION_PER_METER = 0.0472867872006997;
   }
 
   public static final class Intake{
@@ -96,5 +111,45 @@ public class Constants{
     public static final String AUTO = "New Auto";
     public static final String LIMELIGHT = "limelight";
     public static final int PIGEON = 9;
+  }
+
+  public static final class FrontRight{
+    public static final ModuleId MOD4_ID = ModuleId.module4;
+    public static final int DRIVE_MOD4 = 1;
+    public static final int ANGLE_MOD4 = 2;
+    public static final int ENCODER_MOD4 = 13;
+    public static final Translation2d CHASSI_OFFSET_MOD4 = new Translation2d(swerve.WHEEL_BASE / 2, -swerve.TRACK_WIDTH/2);
+    public static final SwerveModulesConstants MOD4 = new SwerveModulesConstants(MOD4_ID, DRIVE_MOD4, ANGLE_MOD4, 
+      ENCODER_MOD4, CHASSI_OFFSET_MOD4);
+  }
+
+  public static final class FrontLeft{
+    public static final ModuleId MOD3_ID = ModuleId.module3;
+    public static final int DRIVE_MOD3 = 8;
+    public static final int ANGLE_MOD3 = 7;
+    public static final int ENCODER_MOD3 = 12;
+    public static final Translation2d CHASSI_OFFSET_MOD3 = new Translation2d(swerve.WHEEL_BASE/2, swerve.TRACK_WIDTH);
+    public static final SwerveModulesConstants MOD3 = new SwerveModulesConstants(MOD3_ID, DRIVE_MOD3, ANGLE_MOD3, 
+      ENCODER_MOD3, CHASSI_OFFSET_MOD3);
+  }
+
+  public static final class BackLeft{
+    public static final ModuleId MOD2_ID = ModuleId.module2;
+    public static final int DRIVE_MOD2 = 6;
+    public static final int ANGLE_MOD2 = 5;
+    public static final int ENCODER_MOD2 = 11;
+    public static final Translation2d CHASSI_OFFSET_MOD2 = new Translation2d(-swerve.WHEEL_BASE/2, swerve.TRACK_WIDTH/2);
+    public static final SwerveModulesConstants MOD2 = new SwerveModulesConstants(MOD2_ID, DRIVE_MOD2, ANGLE_MOD2, 
+      ENCODER_MOD2, CHASSI_OFFSET_MOD2);
+  }
+
+  public static final class BackRight{
+    public static final ModuleId MOD1_ID = ModuleId.module1;
+    public static final int DRIVE_MOD1 = 3;
+    public static final int ANGLE_MOD1 = 4;
+    public static final int ENCODER_MOD1 = 10;
+    public static final Translation2d CHASSIS_OFFSET_MOD1 = new Translation2d(-swerve.WHEEL_BASE/2, -swerve.TRACK_WIDTH/2);
+    public static final SwerveModulesConstants MOD1 = new SwerveModulesConstants(MOD1_ID, DRIVE_MOD1, ANGLE_MOD1, 
+      ENCODER_MOD1, CHASSIS_OFFSET_MOD1);
   }
 }

@@ -1,0 +1,11 @@
+{
+    "driveKp": 0.01,
+    "driveKi": 0.0,
+    "driveKd": 0.0,
+    "driveKf": 0.0,
+
+    "angleKp": 0.01,
+    "angleKi": 0.0,
+    "angleKd": 0.0,
+    "angleKf": 0.0
+}

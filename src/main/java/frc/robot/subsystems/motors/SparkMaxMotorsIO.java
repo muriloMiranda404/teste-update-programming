@@ -25,4 +25,5 @@ public interface SparkMaxMotorsIO {
     double getMotorOutput();
 
     SparkMax getSpark();
+
 }

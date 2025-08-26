@@ -7,6 +7,7 @@ package frc.robot.subsystems.swerve;
 import java.io.File;
 import java.util.function.DoubleSupplier;
 
+import com.ctre.phoenix6.hardware.Pigeon2;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.config.PIDConstants;
@@ -21,6 +22,10 @@ import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.BackLeft;
+import frc.robot.Constants.BackRight;
+import frc.robot.Constants.FrontLeft;
+import frc.robot.Constants.FrontRight;
 import frc.robot.Constants.swerve;
 import swervelib.SwerveController;
 import swervelib.SwerveDrive;
@@ -35,11 +40,20 @@ import swervelib.parser.SwerveParser;
 public class SwerveSubsystem extends SubsystemBase {
     // Objeto global da SwerveDrive (Classe YAGSL)
     public SwerveDrive swerveDrive;
+    Pigeon2 pigeon = new Pigeon2(9);
 
     public static SwerveSubsystem mInstance = null;
+    SwerveModulesConfig[] swerveModules;
 
     // Método construtor da classe
     private SwerveSubsystem(File directory) {
+
+      swerveModules = new SwerveModulesConfig[]{
+        new SwerveModulesConfig(FrontRight.MOD4),
+        new SwerveModulesConfig(FrontLeft.MOD3),
+        new SwerveModulesConfig(BackLeft.MOD2),
+        new SwerveModulesConfig(BackRight.MOD1)
+        };
         // Seta a telemetria como nível mais alto
         SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
 
@@ -64,6 +78,10 @@ public class SwerveSubsystem extends SubsystemBase {
     public void periodic() {
       // Dentro da função periódica atualizamos nossa odometria
       swerveDrive.updateOdometry();
+    }
+
+    public void zeroGyro(){
+      swerveDrive.zeroGyro();
     }
 
       public void setupPathPlanner() {
@@ -160,6 +178,27 @@ public class SwerveSubsystem extends SubsystemBase {
     });
   }
 
+  public Command driveCommand(DoubleSupplier X, DoubleSupplier Y, DoubleSupplier rotation, boolean fieldOriented){
+
+    double xController = Math.pow(X.getAsDouble(), 3);
+    double yController = Math.pow(Y.getAsDouble(), 3);
+
+    return run(() ->{
+
+      if(fieldOriented){
+        driveFieldOriented(swerveDrive.swerveController.getTargetSpeeds(xController, yController,
+                                                                        X.getAsDouble(), Y.getAsDouble(),
+                                                                        getHeading().getRadians(),
+                                                                        swerveDrive.getMaximumChassisVelocity()));
+      } else {
+        swerveDrive.drive(new Translation2d(
+                          xController * swerveDrive.getMaximumChassisVelocity(),
+                          yController * swerveDrive.getMaximumChassisVelocity()
+                        ), rotation.getAsDouble() * swerveDrive.getMaximumChassisAngularVelocity(), fieldOriented, true);
+      }
+    });
+  }
+
     public void driveFieldOriented(ChassisSpeeds velocity)
   {
     swerveDrive.driveFieldOriented(velocity);
@@ -206,7 +245,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
   // Ângulo atual do robô
   public Rotation2d getHeading() {
-    return swerveDrive.getYaw();
+    return Rotation2d.fromDegrees(scope0To360(pigeon.getYaw().getValueAsDouble()));
   }
 
   // Reseta a odometria para uma posição indicada (Usado no autônomo)
@@ -235,4 +274,17 @@ public class SwerveSubsystem extends SubsystemBase {
     // Create a path following command using AutoBuilder. This will also trigger event markers.
     return new PathPlannerAuto(pathName);
   }
+
+  public Rotation2d getYawRotation(){
+    return Rotation2d.fromDegrees(scope0To360(this.pigeon.getYaw().getValueAsDouble()));
+  }
+
+  public static double scope0To360(double angle) {
+    if (angle < 0) {
+        angle = 360 - (Math.abs(angle) % 360);
+    } else {
+        angle %= 360;
+    }
+    return angle;
+}
 }

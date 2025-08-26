@@ -7,7 +7,6 @@ import com.revrobotics.sim.SparkMaxSim;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
-
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -18,7 +17,7 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import frc.robot.Constants.swerve;
 import frc.robot.subsystems.motors.SparkMaxMotors;
 
-public class SwerveModules {
+public class SwerveModulesConfig {
     
     SparkMaxMotors driveMotor;
     SparkMaxSim driveSimulation;
@@ -41,7 +40,7 @@ public class SwerveModules {
 
     int moduleNumber;
 
-    public SwerveModules(final SwerveModulesConstants modules){
+    public SwerveModulesConfig(SwerveModulesConstants modules){
 
         this.moduleNumber = constants.module.id;
 

@@ -16,7 +16,7 @@ public class ElevatorPosition extends Command{
 
     @Override
     public void initialize() {
-        
+        System.out.println("incializando o elevador");
     }
 
     @Override

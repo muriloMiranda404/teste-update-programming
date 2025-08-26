@@ -10,13 +10,13 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 public class SparkMaxMotors implements SparkMaxMotorsIO{
     
 
-    int id;
-    boolean usingInternalEncoder;
-    String name;
+    private int id;
+    private boolean usingInternalEncoder;
+    private String name;
 
-    SparkMaxConfig config;
+    private SparkMaxConfig config;
 
-    SparkMax motor;
+    private SparkMax motor;
 
     public SparkMaxMotors(int id, boolean usingInternalEncoder, String name){
         this.name = name;
@@ -59,7 +59,6 @@ public class SparkMaxMotors implements SparkMaxMotorsIO{
         motor.set(speed);
     }
 
-
     @Override
     public void setVoltage(double voltage) {
        motor.setVoltage(voltage);
@@ -71,7 +70,6 @@ public class SparkMaxMotors implements SparkMaxMotorsIO{
     config.inverted(inverted);
     motor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
     }
-
 
     @Override
     public double getMotorTemperature() {
@@ -87,4 +85,5 @@ public class SparkMaxMotors implements SparkMaxMotorsIO{
     public SparkMax getSpark(){
         return motor;
     }
+
 }

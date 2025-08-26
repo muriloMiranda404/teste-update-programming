@@ -1,17 +1,17 @@
 package frc.robot.subsystems.elevator;
 
-import com.revrobotics.spark.SparkMax;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Elevator;
+import frc.robot.subsystems.motors.SparkMaxMotors;
 
 public class ElevatorSubsystem extends SubsystemBase{
     
-    private SparkMax rightMotor;
-    private SparkMax leftMotor;
+    private SparkMaxMotors rightMotor;
+    private SparkMaxMotors leftMotor;
 
     private DigitalInput downSwitch;
     private DigitalInput upSwitch;
@@ -31,8 +31,8 @@ public class ElevatorSubsystem extends SubsystemBase{
 
     private ElevatorSubsystem(){
 
-        this.rightMotor = new SparkMax(Elevator.RIGHT_ELEVATOR_MOTOR, SparkMax.MotorType.kBrushless);
-        this.leftMotor = new SparkMax(Elevator.LEFT_ELEVATOR_MOTOR, SparkMax.MotorType.kBrushless);
+        this.rightMotor = new SparkMaxMotors(Elevator.RIGHT_ELEVATOR_MOTOR, true, "right elevator motor");
+        this.leftMotor = new SparkMaxMotors(Elevator.LEFT_ELEVATOR_MOTOR, false, "left elevator motor");
 
         this.downSwitch = new DigitalInput(Elevator.DOWN_SWITCH);
         this.upSwitch = new DigitalInput(Elevator.UP_SWITCH);
@@ -50,8 +50,8 @@ public class ElevatorSubsystem extends SubsystemBase{
 
     public double[] getRateOnMotor(){
         double[] speed = {
-            rightMotor.get(),
-            leftMotor.get()
+            rightMotor.getSpeed(),
+            leftMotor.getSpeed()
         };
 
         return speed;
@@ -91,8 +91,8 @@ public class ElevatorSubsystem extends SubsystemBase{
         }
 
         System.out.println("output: " + output);
-        rightMotor.set(output);
-        leftMotor.set(-output);
+        rightMotor.setSpeed(output);
+        leftMotor.setSpeed(-output);
     }
 
     public boolean atSetpoint(){
@@ -115,15 +115,11 @@ public class ElevatorSubsystem extends SubsystemBase{
 
     return trava;
    }
-   
-    public void resetEncoder(){
-        encoder.reset();
-    }
 
     public double[] getOutputInElevatorMotors(){
         double[] output = {
-            rightMotor.getAppliedOutput(),
-            leftMotor.getAppliedOutput()
+            rightMotor.getMotorOutput(),
+            leftMotor.getMotorOutput()
         };
 
         return output;
@@ -131,6 +127,10 @@ public class ElevatorSubsystem extends SubsystemBase{
 
     public double getErroOnElevatorOutput(){
         return this.controller.getError();
+    }
+
+    public void resetElevator(){
+        encoder.reset();
     }
 
     @Override

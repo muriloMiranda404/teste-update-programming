@@ -43,7 +43,7 @@ public class AlingToTarget extends Command {
     private double ultimaTx = 0.0;
     private double ultimoTempoMudanca = 0.0;
     private final Timer timer = new Timer();
-    boolean automaticSetpoint;
+    private boolean automaticSetpoint;
 
     
     private double ajust(double ajustado){
