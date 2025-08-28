@@ -23,4 +23,6 @@ public interface IDIntakeController {
     Trigger L3Algae();
 
     double UpElevator();
+
+    double getSetpoint();
 }

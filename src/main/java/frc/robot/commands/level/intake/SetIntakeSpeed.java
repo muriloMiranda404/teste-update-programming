@@ -27,11 +27,13 @@ public class SetIntakeSpeed extends Command{
     @Override
     public void initialize() {
         System.out.println("velocidade do motor: " + speed);
+        System.out.println("incializando mudança de velocidade");
     }
 
     @Override
     public void execute() {
         try{
+            
         intake.set(speed);
 
     } catch(Exception e){

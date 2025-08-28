@@ -36,4 +36,8 @@ public interface IDDriverController {
     double getRightX();
 
     double getMarcha();
+
+    double Invert();
+
+    Trigger emergencyInvert();
 }

@@ -1,5 +1,6 @@
 package frc.robot;
 
+import com.ctre.phoenix6.hardware.Pigeon2;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -8,11 +9,17 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
+  public Pigeon2 pigeon2;
+
+  public Robot(){
+    pigeon2 = new Pigeon2(9);
+  }
 
   @Override
   public void robotInit() {
-     m_robotContainer = new RobotContainer();
-  }
+    m_robotContainer = new RobotContainer();
+    pigeon2.reset();
+    }
 
   @Override
   public void robotPeriodic() {
@@ -34,6 +41,7 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
+
   }
 
   @Override
@@ -49,6 +57,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
+
   }
 
   @Override

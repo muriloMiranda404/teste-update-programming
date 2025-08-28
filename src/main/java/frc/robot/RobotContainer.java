@@ -1,13 +1,11 @@
 package frc.robot;
 
-import com.ctre.phoenix6.hardware.Pigeon2;
+import org.dyn4j.dynamics.Settings;
 
-import edu.wpi.first.math.MathUtil;
+import com.ctre.phoenix6.hardware.Pigeon2;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Constants.Components;
-import frc.robot.Constants.Controllers;
-import frc.robot.Constants.Positions;
 import frc.robot.commands.ResetPigeon;
 import frc.robot.commands.level.SetReefLevel;
 import frc.robot.commands.swerveUtils.AlingToTarget;
@@ -18,24 +16,24 @@ import frc.robot.subsystems.controllers.IntakeController;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
+import swervelib.imu.NavXSwerve;
 
 public class RobotContainer {
 
-  DriverController driverJoystick;
-  IntakeController IntakeJoystick;
+  private DriverController driverJoystick;
+  private IntakeController IntakeJoystick;
 
-  Pigeon2 pigeon2;
+  private Pigeon2 pigeon2;
 
-  SwerveSubsystem swerve;
-  LimelightConfig limelightConfig;
+  private SwerveSubsystem swerve;
+  private LimelightConfig limelightConfig;
   
-  IntakeSubsystem intake;
-  ElevatorSubsystem elevator;
+  private IntakeSubsystem intake;
+  private ElevatorSubsystem elevator;
 
-  RegisterNamedCommands named;
+  private RegisterNamedCommands named;
 
   public RobotContainer() {
-
     this.driverJoystick = DriverController.getInstance();
     this.IntakeJoystick = IntakeController.getInstance();
 
@@ -52,14 +50,14 @@ public class RobotContainer {
     named.configureNamedCommands();
 
     swerve.setDefaultCommand(swerve.driveCommand(
-      () -> MathUtil.applyDeadband(driverJoystick.getLeftY(), Controllers.DEADBAND),
-      () -> MathUtil.applyDeadband(driverJoystick.getLeftX(), Controllers.DEADBAND),
-      () -> MathUtil.applyDeadband(driverJoystick.getRightX(), Controllers.DEADBAND)
+      () -> driverJoystick.getLeftY(),
+      () -> driverJoystick.getLeftX(),
+      () -> driverJoystick.getRightX(),
+      frc.robot.Constants.swerve.FIELD_ORIENTED
     ));
 
     configureDriveBindings();
     configureIntakeBindings();
-
   }
 
   private void configureDriveBindings() {
@@ -67,44 +65,37 @@ public class RobotContainer {
     driverJoystick.alingRobotOnReef().whileTrue(new AlingToTarget(true));
 
     driverJoystick.a().onTrue(new InstantCommand(() ->{
-      new ResetPigeon(pigeon2);
-    }));
+       new ResetPigeon(pigeon2); 
+      }));
 
-    driverJoystick.rightBumper().onTrue(new InstantCommand(() -> {
-      new TurnRobot(pigeon2, 45);
-    }));
-    
+    driverJoystick.rightBumper().onTrue(new InstantCommand(() ->{
+       new TurnRobot(pigeon2, 45); 
+      }));
+
+    driverJoystick.leftBumper().onTrue(new InstantCommand(() ->{
+        new TurnRobot(pigeon2, -45);
+      }));
+
+    driverJoystick.emergencyInvert().onTrue(new InstantCommand(() ->{
+        driverJoystick.Invert();
+      }));
   }
   
   private void configureIntakeBindings(){ 
 
-    IntakeJoystick.L1Button().onTrue( new SetReefLevel(
-      Positions.L1_POSITION
-    ));
+    IntakeJoystick.L1Button().onTrue( new SetReefLevel());
 
-    IntakeJoystick.L2Button().onTrue(new SetReefLevel(
-      Positions.L2_POSITION
-    ));
+    IntakeJoystick.L2Button().onTrue(new SetReefLevel());
 
-    IntakeJoystick.L3Button().onTrue(new SetReefLevel(
-      Positions.L3_POSITION
-    ));
+    IntakeJoystick.L3Button().onTrue(new SetReefLevel());
 
-    IntakeJoystick.L4Button().onTrue(new SetReefLevel(
-      Positions.L4_POSITION
-    ));
+    IntakeJoystick.L4Button().onTrue(new SetReefLevel());
 
-    IntakeJoystick.ProcessorButton().onTrue(new SetReefLevel(
-      Positions.PROCESSADOR
-    ));
+    IntakeJoystick.ProcessorButton().onTrue(new SetReefLevel());
 
-    IntakeJoystick.L2Algae().onTrue(new SetReefLevel(
-      Positions.ALGAE_L2
-    ));
+    IntakeJoystick.L2Algae().onTrue(new SetReefLevel());
 
-    IntakeJoystick.L3Algae().onTrue(new SetReefLevel(
-      Positions.ALGAE_L3
-    ));
+    IntakeJoystick.L3Algae().onTrue(new SetReefLevel());
 }
 
   public Command getAutonomousCommand() {

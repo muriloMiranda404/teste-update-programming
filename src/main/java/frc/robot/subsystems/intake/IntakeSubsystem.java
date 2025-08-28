@@ -88,14 +88,14 @@ public class IntakeSubsystem extends SubsystemBase{
     public double getCoralMotorTemperature(){
         return getCoral.getMotorTemperature();
     }
+    
+    public void set(double speed) {
+        getCoral.setSpeed(speed);
+    }
 
     @Override
     public void periodic() {
         SmartDashboard.putNumber("angulo", getDistance());
         SmartDashboard.putBoolean("fim de curos do coral", IsTouched());
-    }
-
-    public void set(double speed) {
-       getCoral.setSpeed(speed);
     }
 }

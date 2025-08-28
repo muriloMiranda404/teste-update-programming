@@ -31,7 +31,6 @@ public class TurnRobot extends Command{
 
     @Override
     public void execute() {
-        
         try{
         double atual = pigeon2.getYaw().getValueAsDouble();
         double output = controller.calculate(atual, angulo);

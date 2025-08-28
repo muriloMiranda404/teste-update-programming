@@ -16,7 +16,7 @@ public class IntakePosition extends Command{
 
     @Override
     public void initialize() {
-        System.out.println("inicializando");
+        System.out.println("inicializando mudança de posição do intake");
     }
 
     @Override

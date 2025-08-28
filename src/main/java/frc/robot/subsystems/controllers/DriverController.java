@@ -8,14 +8,13 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.Controllers;
-import frc.robot.subsystems.swerve.SwerveSubsystem;
 
 public class DriverController implements IDDriverController{
 
     public static DriverController mInstance = null;
 
     private CommandXboxController controller;
-    private SwerveSubsystem swerveSubsystem;
+    private double invert;
 
     public static DriverController getInstance(){
         if(mInstance == null){
@@ -26,7 +25,12 @@ public class DriverController implements IDDriverController{
     
     private DriverController(){
         this.controller = new CommandXboxController(Controllers.DRIVE_CONTROLLER);
-        this.swerveSubsystem = SwerveSubsystem.getInstance();
+        invert = 1;
+    }
+
+    @Override
+    public double Invert(){
+        return invert *= -1.0;
     }
 
     public double ConfigureInputs(boolean active, int choose){
@@ -152,49 +156,54 @@ public class DriverController implements IDDriverController{
     @Override
     public double getLeftX(){
         if(TurboMode().getAsBoolean()){
-           return MathUtil.applyDeadband(automaticInverted(controller.getLeftX()), Controllers.DEADBAND);
+           return MathUtil.applyDeadband(automaticInverted(controller.getLeftX()), Controllers.DEADBAND) * invert;
         } 
         else if(slowMode().getAsBoolean()){
-            return MathUtil.applyDeadband(automaticInverted(controller.getLeftX()), Controllers.DEADBAND) * 0.2;
+            return MathUtil.applyDeadband(automaticInverted(controller.getLeftX()), Controllers.DEADBAND) * 0.2 * invert;
         }
-        return MathUtil.applyDeadband(automaticInverted(controller.getLeftX()), Controllers.DEADBAND) * 0.6;
+        return MathUtil.applyDeadband(automaticInverted(controller.getLeftX()), Controllers.DEADBAND) * 0.6 * invert;
     }
 
     @Override
     public double getLeftY(){
         if(TurboMode().getAsBoolean()){
-            return MathUtil.applyDeadband(automaticInverted(controller.getLeftY()), Controllers.DEADBAND);
+            return MathUtil.applyDeadband(automaticInverted(controller.getLeftY()), Controllers.DEADBAND) * invert;
         }
         else if(slowMode().getAsBoolean()){
-            return MathUtil.applyDeadband(automaticInverted(controller.getLeftY()), Controllers.DEADBAND) * 0.2;
+            return MathUtil.applyDeadband(automaticInverted(controller.getLeftY()), Controllers.DEADBAND) * 0.2 * invert;
         }
-        return MathUtil.applyDeadband(automaticInverted(controller.getLeftX()), Controllers.DEADBAND) * 0.6;
+        return MathUtil.applyDeadband(automaticInverted(controller.getLeftX()), Controllers.DEADBAND) * 0.6 * invert;
     }
 
     @Override
     public double getRightX(){
         if(TurboMode().getAsBoolean()){
-            return MathUtil.applyDeadband(automaticInverted(controller.getRightX()), Controllers.DEADBAND);
+            return MathUtil.applyDeadband(automaticInverted(controller.getRightX()), Controllers.DEADBAND) * invert;
         }
         else if(slowMode().getAsBoolean()){
-            return MathUtil.applyDeadband(automaticInverted(controller.getRightX()), Controllers.DEADBAND) * 0.2;
+            return MathUtil.applyDeadband(automaticInverted(controller.getRightX()), Controllers.DEADBAND) * 0.2 * invert;
         }
-        return MathUtil.applyDeadband(automaticInverted(controller.getRightX()), Controllers.DEADBAND) * 0.6;
+        return MathUtil.applyDeadband(automaticInverted(controller.getRightX()), Controllers.DEADBAND) * 0.6 * invert;
     }
 
     @Override
     public double getRightY(){
         if(TurboMode().getAsBoolean()){
-            return MathUtil.applyDeadband(automaticInverted(controller.getRightY()), Controllers.DEADBAND);
+            return MathUtil.applyDeadband(automaticInverted(controller.getRightY()), Controllers.DEADBAND) * invert;
         }
         else if(slowMode().getAsBoolean()){
-            return MathUtil.applyDeadband(automaticInverted(controller.getRightY()), Controllers.DEADBAND) * 0.2;
+            return MathUtil.applyDeadband(automaticInverted(controller.getRightY()), Controllers.DEADBAND) * 0.2 * invert;
         }
-        return MathUtil.applyDeadband(automaticInverted(controller.getRightY()), Controllers.DEADBAND) * 0.6;
+        return MathUtil.applyDeadband(automaticInverted(controller.getRightY()), Controllers.DEADBAND) * 0.6 * invert;
     }
 
     @Override
     public Trigger slowMode() {
         return controller.leftTrigger(0.8);
+    }
+
+    @Override
+    public Trigger emergencyInvert(){
+        return controller.start();
     }
 }

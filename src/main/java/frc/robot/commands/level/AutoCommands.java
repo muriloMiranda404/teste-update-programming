@@ -2,17 +2,17 @@ package frc.robot.commands.level;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.Constants.Positions;
 import frc.robot.Constants.Elevator.ElevatorPositions;
 import frc.robot.Constants.Intake.IntakePositions;
+import frc.robot.Constants.Positions;
 import frc.robot.commands.level.elevator.ElevatorPosition;
 import frc.robot.commands.level.intake.IntakePosition;
 import frc.robot.subsystems.controllers.IntakeController;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 
-public class SetReefLevel extends Command{
-
+public class AutoCommands extends Command{
+    
     ElevatorSubsystem elevatorSubsystem;
     IntakeSubsystem intakeSubsystem;
     IntakeController intakeController;
@@ -83,8 +83,8 @@ public class SetReefLevel extends Command{
         return sequentialCommandGroup;
     }
 
-    public SetReefLevel(){
-        this.setpoint = intakeController.getSetpoint();
+    public AutoCommands(double setpoint){
+        this.setpoint = setpoint;
         this.intakeController = IntakeController.getInstance();
         this.intakeSubsystem = IntakeSubsystem.getInstance();
         this.elevatorSubsystem = ElevatorSubsystem.getInstance();
