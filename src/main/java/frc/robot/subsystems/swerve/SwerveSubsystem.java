@@ -81,7 +81,7 @@ public class SwerveSubsystem extends SubsystemBase{
                 swerveDrive.setChassisSpeeds(speeds);
               }}, 
               new PPLTVController(0.02), 
-              config,
+              config, 
               () -> {
                 
               var alliance = DriverStation.getAlliance();
