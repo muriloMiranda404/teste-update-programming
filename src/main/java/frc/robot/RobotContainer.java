@@ -1,7 +1,5 @@
 package frc.robot;
 
-import org.dyn4j.dynamics.Settings;
-
 import com.ctre.phoenix6.hardware.Pigeon2;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -16,7 +14,6 @@ import frc.robot.subsystems.controllers.IntakeController;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
-import swervelib.imu.NavXSwerve;
 
 public class RobotContainer {
 
@@ -52,8 +49,7 @@ public class RobotContainer {
     swerve.setDefaultCommand(swerve.driveCommand(
       () -> driverJoystick.getLeftY(),
       () -> driverJoystick.getLeftX(),
-      () -> driverJoystick.getRightX(),
-      frc.robot.Constants.swerve.FIELD_ORIENTED
+      () -> driverJoystick.getRightX()
     ));
 
     configureDriveBindings();
