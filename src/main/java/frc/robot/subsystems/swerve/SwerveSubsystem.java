@@ -41,10 +41,17 @@ public class SwerveSubsystem extends SubsystemBase{
     } catch(Exception e){
       System.out.println("erro ao criar o swervedrive");
     }finally{
-      xPID = new PIDController(0.01, 0, 0);
-      yPID = new PIDController(0.01, 0, 0);
-      profilePid = new ProfiledPIDController(0.01, 0, 0, new TrapezoidProfile.Constraints(Math.PI, Math.PI));
-      driveController = new HolonomicDriveController(yPID, xPID, profilePid);
+      xPID = new PIDController(1.0, 0.0, 0.1); // Controle de posição X
+      yPID = new PIDController(1.0, 0.0, 0.1); // Controle de posição Y
+      profilePid = new ProfiledPIDController(1.0, 0.0, 0.1, new TrapezoidProfile.Constraints(Math.PI, Math.PI)); // Controle de rotação
+      
+      xPID.setTolerance(0.05); // 5cm de tolerância
+      yPID.setTolerance(0.05); // 5cm de tolerância
+      profilePid.setTolerance(0.05); // ~3 graus de tolerância
+      
+      driveController = new HolonomicDriveController(xPID, yPID, profilePid);
+      driveController.setEnabled(true); 
+      
       pigeon = new Pigeon2(9);
     }
   }
@@ -105,16 +112,57 @@ public class SwerveSubsystem extends SubsystemBase{
     return swerveDrive.getRobotVelocity();
   }
 
-  public Command driveCommand(DoubleSupplier X, DoubleSupplier Y, DoubleSupplier rotation){
-    return run(() ->{
- 
+  /**
+   * Comando de direção com controle de malha fechada ativado por padrão
+   * @param X Fornecedor de velocidade no eixo X
+   * @param Y Fornecedor de velocidade no eixo Y
+   * @param rotation Fornecedor de velocidade de rotação
+   * @return Comando para dirigir o robô
+   */
+  public Command driveCommand(DoubleSupplier X, DoubleSupplier Y, DoubleSupplier rotation) {
+    return driveCommand(X, Y, rotation, true); // Usa malha fechada por padrão
+  }
+  
+  /**
+   * Comando de direção com opção de escolher entre malha aberta ou fechada
+   * @param X Fornecedor de velocidade no eixo X
+   * @param Y Fornecedor de velocidade no eixo Y
+   * @param rotation Fornecedor de velocidade de rotação
+   * @param useClosedLoop Se true, usa controle de malha fechada; se false, usa malha aberta
+   * @return Comando para dirigir o robô
+   */
+  public Command driveCommand(DoubleSupplier X, DoubleSupplier Y, DoubleSupplier rotation, boolean useClosedLoop) {
+    return run(() -> {
       double xController = Math.pow(X.getAsDouble(), 3);
       double yController = Math.pow(Y.getAsDouble(), 3);
+      double rotationValue = rotation.getAsDouble();
 
-      driveFieldOriented(swerveDrive.swerveController.getTargetSpeeds(xController, yController, 
-                                                                      rotation.getAsDouble(), 
-                                                                      getHeading().getRadians(), 
-                                                                      swerve.MAX_SPEED));
+      ChassisSpeeds targetSpeeds = swerveDrive.swerveController.getTargetSpeeds(
+          xController, 
+          yController, 
+          rotationValue, 
+          getHeading().getRadians(), 
+          swerve.MAX_SPEED);
+      
+      if (useClosedLoop) {
+        Pose2d currentPose = getPose();
+        
+        double dt = 0.02; 
+        Pose2d desiredPose = new Pose2d(
+            currentPose.getX() + targetSpeeds.vxMetersPerSecond * dt,
+            currentPose.getY() + targetSpeeds.vyMetersPerSecond * dt,
+            currentPose.getRotation().plus(new Rotation2d(targetSpeeds.omegaRadiansPerSecond * dt)));
+        
+        ChassisSpeeds adjustedSpeeds = driveController.calculate(
+            currentPose, 
+            desiredPose,
+            targetSpeeds.vxMetersPerSecond,
+            currentPose.getRotation());
+        
+        driveFieldOriented(adjustedSpeeds);
+      } else {
+        driveFieldOriented(targetSpeeds);
+      }
     });
   }
 
@@ -144,5 +192,44 @@ public class SwerveSubsystem extends SubsystemBase{
 
   public void zeroGyro(){
     swerveDrive.zeroGyro();
+  }
+  
+  /**
+   * Configura os ganhos PID para o controlador holonômico de malha fechada
+   * @param xKp Ganho proporcional para o controlador X
+   * @param xKi Ganho integral para o controlador X
+   * @param xKd Ganho derivativo para o controlador X
+   * @param yKp Ganho proporcional para o controlador Y
+   * @param yKi Ganho integral para o controlador Y
+   * @param yKd Ganho derivativo para o controlador Y
+   * @param rotKp Ganho proporcional para o controlador de rotação
+   * @param rotKi Ganho integral para o controlador de rotação
+   * @param rotKd Ganho derivativo para o controlador de rotação
+   */
+  public void configurePIDGains(double xKp, double xKi, double xKd,
+                               double yKp, double yKi, double yKd,
+                               double rotKp, double rotKi, double rotKd) {
+    // Atualizar ganhos do controlador X
+    xPID.setP(xKp);
+    xPID.setI(xKi);
+    xPID.setD(xKd);
+    
+    // Atualizar ganhos do controlador Y
+    yPID.setP(yKp);
+    yPID.setI(yKi);
+    yPID.setD(yKd);
+    
+    // Atualizar ganhos do controlador de rotação
+    profilePid.setP(rotKp);
+    profilePid.setI(rotKi);
+    profilePid.setD(rotKd);
+  }
+  
+  /**
+   * Verifica se o controlador holonômico atingiu a posição desejada
+   * @return true se todos os controladores estiverem dentro da tolerância
+   */
+  public boolean atReference() {
+    return xPID.atSetpoint() && yPID.atSetpoint() && profilePid.atGoal();
   }
 }
