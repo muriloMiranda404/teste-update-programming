@@ -43,7 +43,7 @@ public class RobotContainer {
     this.intake = IntakeSubsystem.getInstance();
     this.elevator = ElevatorSubsystem.getInstance();
 
-    this.named = new RegisterNamedCommands();
+    this.named = RegisterNamedCommands.getInstance();
     named.configureNamedCommands();
 
     swerve.setDefaultCommand(swerve.driveCommand(

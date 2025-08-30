@@ -16,16 +16,17 @@ public class DriverController implements IDDriverController{
     private CommandXboxController controller;
     private double invert;
 
-    public static DriverController getInstance(){
-        if(mInstance == null){
-            return new DriverController();
-        }
-        return mInstance;
-    }
     
     private DriverController(){
         this.controller = new CommandXboxController(Controllers.DRIVE_CONTROLLER);
         invert = 1;
+    }
+    
+    public static DriverController getInstance(){
+        if(mInstance == null){
+            mInstance = new DriverController();
+        }
+        return mInstance;
     }
 
     @Override

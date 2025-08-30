@@ -20,11 +20,11 @@ public class ElevatorSubsystem extends SubsystemBase{
 
     private Encoder encoder;
 
-    public static ElevatorSubsystem mInstance = new ElevatorSubsystem();
+    public static ElevatorSubsystem mInstance = null;
 
     public static ElevatorSubsystem getInstance(){
         if(mInstance == null){
-            return new ElevatorSubsystem();
+            mInstance = new ElevatorSubsystem();
         }
         return mInstance;
     }

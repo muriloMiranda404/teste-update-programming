@@ -24,11 +24,20 @@ public class RegisterNamedCommands {
     private IntakeSubsystem intake;
     private LimelightConfig limelightConfig;
 
-    public RegisterNamedCommands(){
+    public static RegisterNamedCommands mInstance = null;
+
+    private RegisterNamedCommands(){
         this.swerve = SwerveSubsystem.getInstance();
         this.elevator = ElevatorSubsystem.getInstance();
         this.intake = IntakeSubsystem.getInstance();
         this.limelightConfig = LimelightConfig.getInstance();
+    }
+
+    public static RegisterNamedCommands getInstance(){
+        if(mInstance == null){
+            mInstance = new RegisterNamedCommands();
+        }
+        return mInstance;
     }
 
     public void configureNamedCommands(){

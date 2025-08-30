@@ -46,6 +46,11 @@ public class SparkMaxMotors implements SparkMaxMotorsIO{
     }
 
     @Override
+    public boolean usingInternalMotor() {
+        return usingInternalEncoder;
+    }
+    
+    @Override
     public AbsoluteEncoder getAbsoluteEncoder(boolean usingAbsoluteEncoder) {
        if(usingAbsoluteEncoder){
         return motor.getAbsoluteEncoder();
@@ -55,8 +60,18 @@ public class SparkMaxMotors implements SparkMaxMotorsIO{
     }
 
     @Override
+    public String getMotorName() {
+        return name;
+    }
+
+    @Override
     public void setSpeed(double speed) {
         motor.set(speed);
+    }
+
+    @Override
+    public int getMotorId() {
+        return id;
     }
 
     @Override

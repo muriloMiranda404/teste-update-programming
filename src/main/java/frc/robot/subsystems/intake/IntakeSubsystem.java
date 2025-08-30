@@ -19,7 +19,7 @@ public class IntakeSubsystem extends SubsystemBase{
 
     DigitalInput coralswitch;
 
-    public static IntakeSubsystem mInstance = new IntakeSubsystem();
+    public static IntakeSubsystem mInstance = null;
 
     private IntakeSubsystem(){
 
@@ -38,7 +38,7 @@ public class IntakeSubsystem extends SubsystemBase{
 
     public static IntakeSubsystem getInstance(){
         if(mInstance == null){
-            return new IntakeSubsystem();
+            mInstance = new IntakeSubsystem();
         }
         return mInstance;
     }

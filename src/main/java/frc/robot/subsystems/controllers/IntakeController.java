@@ -12,15 +12,16 @@ public class IntakeController implements IDIntakeController{
 
     public static IntakeController mInstance = null;
 
-    public static IntakeController getInstance(){
-        if(mInstance == null){
-            return new IntakeController();
-        }
-        return mInstance;
-    }
-
+    
     private IntakeController(){
         this.controller = new CommandXboxController(Controllers.INTAKE_CONTROLLER);
+    }
+    
+    public static IntakeController getInstance(){
+        if(mInstance == null){
+            mInstance =  new IntakeController();
+        }
+        return mInstance;
     }
 
     @Override

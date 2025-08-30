@@ -8,8 +8,8 @@ import frc.robot.subsystems.swerve.SwerveSubsystem;
 
 public class ResetPigeon extends Command{
     
-    Pigeon2 pigeon2;
-    SwerveSubsystem subsystem;
+    private Pigeon2 pigeon2;
+    private SwerveSubsystem subsystem;
 
     public ResetPigeon(Pigeon2 pigeon2){
         this.subsystem = SwerveSubsystem.getInstance();

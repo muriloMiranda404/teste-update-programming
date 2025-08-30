@@ -8,7 +8,7 @@ public class LimelightConfig {
     
     NetworkTable limelight;
 
-    public static LimelightConfig mInstance = new LimelightConfig(Components.LIMELIGHT);
+    public static LimelightConfig mInstance = null;
 
     private LimelightConfig(String table){
         this.limelight = NetworkTableInstance.getDefault().getTable(table);
@@ -16,7 +16,7 @@ public class LimelightConfig {
 
     public static LimelightConfig getInstance(){
         if(mInstance ==  null){
-            return new LimelightConfig(Components.LIMELIGHT);
+            mInstance = new LimelightConfig(Components.LIMELIGHT);
         }
         return mInstance;
     }

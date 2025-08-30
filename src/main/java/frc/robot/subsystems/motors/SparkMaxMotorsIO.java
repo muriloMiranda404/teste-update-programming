@@ -26,4 +26,9 @@ public interface SparkMaxMotorsIO {
 
     SparkMax getSpark();
 
+    int getMotorId();
+
+    String getMotorName();
+
+    boolean usingInternalMotor();
 }

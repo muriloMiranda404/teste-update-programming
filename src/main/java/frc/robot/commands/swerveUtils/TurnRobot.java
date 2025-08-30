@@ -9,9 +9,9 @@ import frc.robot.subsystems.swerve.SwerveSubsystem;
 
 public class TurnRobot extends Command{
     
-    SwerveSubsystem swerve;
-    Pigeon2 pigeon2;
-    double angulo;
+    private SwerveSubsystem swerve;
+    private Pigeon2 pigeon2;
+    private double angulo;
 
     PIDController controller;
 
