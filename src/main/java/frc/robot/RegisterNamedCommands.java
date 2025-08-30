@@ -19,10 +19,10 @@ import frc.robot.subsystems.swerve.SwerveSubsystem;
 
 public class RegisterNamedCommands {
 
-    SwerveSubsystem swerve;
-    ElevatorSubsystem elevator;
-    IntakeSubsystem intake;
-    LimelightConfig limelightConfig;
+    private SwerveSubsystem swerve;
+    private ElevatorSubsystem elevator;
+    private IntakeSubsystem intake;
+    private LimelightConfig limelightConfig;
 
     public RegisterNamedCommands(){
         this.swerve = SwerveSubsystem.getInstance();
@@ -37,7 +37,7 @@ public class RegisterNamedCommands {
         this.configureSwerveAutoCommands(swerve, limelightConfig, elevator);
     }
 
-    public void configurePositionsToAutonomous(ElevatorSubsystem elevator, IntakeSubsystem intakeSubsystem){
+    private void configurePositionsToAutonomous(ElevatorSubsystem elevator, IntakeSubsystem intakeSubsystem){
 
         NamedCommands.registerCommand("L1", new AutoCommands(
             Positions.L1_POSITION
@@ -69,7 +69,7 @@ public class RegisterNamedCommands {
    
     }
 
-    public void configureSwerveAutoCommands(SwerveSubsystem swerve, LimelightConfig limelightConfig, ElevatorSubsystem elevatorSubsystem){
+    private void configureSwerveAutoCommands(SwerveSubsystem swerve, LimelightConfig limelightConfig, ElevatorSubsystem elevatorSubsystem){
 
         NamedCommands.registerCommand("RESET PIGEON", new InstantCommand(() ->{
             new ResetPigeon(new Pigeon2(9));
@@ -88,7 +88,7 @@ public class RegisterNamedCommands {
         }));
     }
 
-    public void configureSubsystemsUtils(IntakeSubsystem intakeSubsystem){
+    private void configureSubsystemsUtils(IntakeSubsystem intakeSubsystem){
 
         NamedCommands.registerCommand("THROW CORAL", new SetIntakeSpeed(0.8));
 
