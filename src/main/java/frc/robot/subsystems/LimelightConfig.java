@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import frc.robot.Constants.Components;
@@ -51,5 +53,22 @@ public class LimelightConfig {
 
     public double[] getAprilTagCordenates(){
         return limelight.getEntry("targetpose_robotspace").getDoubleArray(new double[6]);
+    }
+
+    public Pose2d getEstimatedGlobalPose(){
+        double[] poseArray = getBotPoseBlue();
+
+        if(poseArray.length >= 6){
+            return new Pose2d(
+                poseArray[0],
+                poseArray[1],
+                Rotation2d.fromDegrees(poseArray[5])
+            );
+        }
+        return new Pose2d();
+    }
+
+    public double[] getBotPoseBlue(){
+        return limelight.getEntry("botpose_wpiblue").getDoubleArray(new double[6]);
     }
 }

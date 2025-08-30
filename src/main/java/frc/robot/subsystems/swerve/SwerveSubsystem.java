@@ -11,6 +11,7 @@ import com.pathplanner.lib.controllers.PPLTVController;
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -18,26 +19,40 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.swerve;
+import frc.robot.subsystems.LimelightConfig;
 import swervelib.SwerveDrive;
 import swervelib.parser.SwerveParser;
 
 public class SwerveSubsystem extends SubsystemBase{
 
-  SwerveDrive swerveDrive;
-  Pigeon2 pigeon;
-  PIDController xPID;
-  PIDController yPID;
-  ProfiledPIDController profilePid;
-  HolonomicDriveController driveController;
+  private SwerveDrive swerveDrive;
+  private Pigeon2 pigeon;
+  private PIDController xPID;
+  private PIDController yPID;
+  private ProfiledPIDController profilePid;
+  private HolonomicDriveController driveController;
+  private LimelightConfig limelightConfig;
+  private SwerveDrivePoseEstimator swerveDrivePoseEstimator;
+  private static Timer timer;
 
   public static SwerveSubsystem mInstance = null;
 
   private SwerveSubsystem(File directory){
     try{
-      swerveDrive = new SwerveParser(directory).createSwerveDrive(swerve.MAX_SPEED);
+      this.swerveDrivePoseEstimator = new SwerveDrivePoseEstimator(
+        swerveDrive.kinematics, 
+        pigeon.getRotation2d(), 
+        swerveDrive.getModulePositions(), 
+        new Pose2d());
+
+        this.limelightConfig = LimelightConfig.getInstance();
+        this.timer = new Timer();
+
+      this.swerveDrive = new SwerveParser(directory).createSwerveDrive(swerve.MAX_SPEED);
     } catch(Exception e){
       System.out.println("erro ao criar o swervedrive");
     }finally{
@@ -67,7 +82,13 @@ public class SwerveSubsystem extends SubsystemBase{
 
   @Override
   public void periodic() {
-      swerveDrive.updateOdometry();
+    swerveDrivePoseEstimator.update(pigeon.getRotation2d(), swerveDrive.getModulePositions());  
+    swerveDrive.updateOdometry();
+
+    if(limelightConfig.getHasTarget()){
+      Pose2d poseEstimated = limelightConfig.getEstimatedGlobalPose();
+      swerveDrivePoseEstimator.addVisionMeasurement(poseEstimated, Timer.getFPGATimestamp());
+    }
   }
 
   public void setupPathPlanner(){
@@ -143,12 +164,13 @@ public class SwerveSubsystem extends SubsystemBase{
       double xController = Math.pow(X.getAsDouble(), 3);
       double yController = Math.pow(Y.getAsDouble(), 3);
       double rotationValue = rotation.getAsDouble();
+      Rotation2d rotation2d = swerveDrivePoseEstimator.getEstimatedPosition().getRotation();
 
       ChassisSpeeds targetSpeeds = swerveDrive.swerveController.getTargetSpeeds(
           xController, 
           yController, 
           rotationValue, 
-          getHeading().getRadians(), 
+          getGyroAccum().getRadians(), 
           swerve.MAX_SPEED);
       
       if (useClosedLoop) {
@@ -164,7 +186,7 @@ public class SwerveSubsystem extends SubsystemBase{
             currentPose, 
             desiredPose,
             targetSpeeds.vxMetersPerSecond,
-            currentPose.getRotation());
+            rotation2d);
         
         driveFieldOriented(adjustedSpeeds);
       } else {
@@ -183,6 +205,22 @@ public class SwerveSubsystem extends SubsystemBase{
 
   public Command getAutonomousCommand(String pathName, boolean odom){
     return new PathPlannerAuto(pathName);
+  }
+
+  public Rotation2d getGyroAccum(){
+    double acumulo = pigeon.getAccumGyroX().getValueAsDouble();
+
+    if(acumulo > 360){
+      pigeon.reset();
+    }
+
+    acumulo = Math.IEEEremainder(acumulo, 360);
+
+    return Rotation2d.fromDegrees(acumulo);
+  }
+
+  public double getYaw(){
+    return pigeon.getYaw().getValueAsDouble();
   }
 
   public void setMotorBrake(boolean brake){
