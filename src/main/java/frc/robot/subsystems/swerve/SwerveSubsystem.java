@@ -53,6 +53,8 @@ public class SwerveSubsystem extends SubsystemBase{
       driveController.setEnabled(true); 
       
       pigeon = new Pigeon2(9);
+
+      swerveDrive.setChassisDiscretization(true, 0.2);
     }
   }
 
@@ -61,6 +63,11 @@ public class SwerveSubsystem extends SubsystemBase{
       mInstance = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
     }
     return mInstance;
+  }
+
+  @Override
+  public void periodic() {
+      swerveDrive.updateOdometry();
   }
 
   public void setupPathPlanner(){
@@ -171,7 +178,7 @@ public class SwerveSubsystem extends SubsystemBase{
   }
 
   public Rotation2d getHeading(){
-    return Rotation2d.fromDegrees(pigeon.getYaw().getValueAsDouble());
+    return Rotation2d.fromDegrees(scope0To360(pigeon.getYaw().getValueAsDouble()));
   }
 
   public Command getAutonomousCommand(String pathName, boolean odom){
@@ -223,6 +230,12 @@ public class SwerveSubsystem extends SubsystemBase{
     profilePid.setP(rotKp);
     profilePid.setI(rotKi);
     profilePid.setD(rotKd);
+  }
+
+  public double scope0To360(double value){
+    value %= 360;
+
+    return value;
   }
   
   /**
