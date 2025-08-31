@@ -5,8 +5,8 @@ import frc.robot.subsystems.intake.IntakeSubsystem;
 
 public class IntakePosition extends Command{
     
-    IntakeSubsystem intake;
-    double setpoint;
+    private IntakeSubsystem intake;
+    private double setpoint;
 
     public IntakePosition(double setpoint){
         this.intake = IntakeSubsystem.getInstance();

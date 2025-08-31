@@ -58,6 +58,7 @@ public class AlingToTarget extends Command {
             System.out.println("Sem ajuste");
             ajuste = 1;
         } 
+
         System.out.println("Ajustado na função: " + ajustado * ajuste);
         return ajustado * ajuste;
     }
@@ -69,6 +70,12 @@ public class AlingToTarget extends Command {
     public AlingToTarget(boolean automaticSetpoint){
         this(0, 0, true);
     }
+
+    /**
+     * @param setpointX //alvo para lateral
+     * @param setpointY //alvo para frontal
+     * @param automaticSetpoint // variavel para obter setpoint automaticamente
+     */
 
     private AlingToTarget(double setpointX, double setpointY, boolean automaticSetpoint) {
         this.limelight = LimelightConfig.getInstance();

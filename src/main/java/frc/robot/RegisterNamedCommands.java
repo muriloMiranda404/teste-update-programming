@@ -91,7 +91,7 @@ public class RegisterNamedCommands {
 
         NamedCommands.registerCommand("ALINHAMENTO", new AlingToTarget(true));
 
-        NamedCommands.registerCommand("TURN ROBOT", new TurnRobot(new Pigeon2(9), 45));
+        NamedCommands.registerCommand("TURN ROBOT", new TurnRobot(45));
 
         NamedCommands.registerCommand("RESET ELEVATOR", new InstantCommand(() ->{
             elevatorSubsystem.resetElevator();

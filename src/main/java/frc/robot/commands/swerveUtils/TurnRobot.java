@@ -1,7 +1,6 @@
 package frc.robot.commands.swerveUtils;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -13,11 +12,11 @@ public class TurnRobot extends Command{
     private Pigeon2 pigeon2;
     private double angulo;
 
-    PIDController controller;
+    private PIDController controller;
 
-    public TurnRobot(Pigeon2 pigeon2, double angulo){
+    public TurnRobot(double angulo){
         this.swerve = SwerveSubsystem.getInstance();
-        this.pigeon2 = pigeon2;
+        this.pigeon2 = new Pigeon2(9);
         this.angulo = angulo;
         this.controller = new PIDController(0.01, 0, 0);
         addRequirements(swerve);

@@ -5,8 +5,8 @@ import frc.robot.subsystems.elevator.ElevatorSubsystem;
 
 public class ElevatorPosition extends Command{
 
-    ElevatorSubsystem elevator;
-    double setpoint;
+    private ElevatorSubsystem elevator;
+    private double setpoint;
 
     public ElevatorPosition(double setpoint){
         this.elevator = ElevatorSubsystem.getInstance();

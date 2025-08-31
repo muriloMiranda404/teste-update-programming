@@ -5,9 +5,9 @@ import frc.robot.subsystems.intake.IntakeSubsystem;
 
 public class SetIntakeSpeed extends Command{
     
-    IntakeSubsystem intake;
-    double speed;
-    boolean getCoralBoolean;
+    private IntakeSubsystem intake;
+    private double speed;
+    private boolean getCoralBoolean;
 
     public SetIntakeSpeed(double speed){
         this(speed, false);
