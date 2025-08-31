@@ -37,7 +37,6 @@ public class SwerveSubsystem extends SubsystemBase{
   private HolonomicDriveController driveController;
   private LimelightConfig limelightConfig;
   private SwerveDrivePoseEstimator swerveDrivePoseEstimator;
-  private static Timer timer;
 
   public static SwerveSubsystem mInstance = null;
 
@@ -50,11 +49,11 @@ public class SwerveSubsystem extends SubsystemBase{
         new Pose2d());
 
         this.limelightConfig = LimelightConfig.getInstance();
-        this.timer = new Timer();
 
       this.swerveDrive = new SwerveParser(directory).createSwerveDrive(swerve.MAX_SPEED);
+
     } catch(Exception e){
-      System.out.println("erro ao criar o swervedrive");
+        System.out.println("erro ao criar o swervedrive");
     }finally{
       xPID = new PIDController(1.0, 0.0, 0.1); // Controle de posição X
       yPID = new PIDController(1.0, 0.0, 0.1); // Controle de posição Y
@@ -89,6 +88,14 @@ public class SwerveSubsystem extends SubsystemBase{
       Pose2d poseEstimated = limelightConfig.getEstimatedGlobalPose();
       swerveDrivePoseEstimator.addVisionMeasurement(poseEstimated, Timer.getFPGATimestamp());
     }
+  }
+
+  public SwerveDrive getSwerveDrive(){
+    return swerveDrive;
+  }
+
+  public SwerveDrivePoseEstimator getPoseEstimator(){
+    return this.swerveDrivePoseEstimator;
   }
 
   public void setupPathPlanner(){

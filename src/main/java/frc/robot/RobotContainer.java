@@ -65,7 +65,7 @@ public class RobotContainer {
       }));
 
     driverJoystick.rightBumper().onTrue(new InstantCommand(() ->{
-       new TurnRobot(pigeon2, 45); 
+       new TurnRobot(pigeon2, 45);
       }));
 
     driverJoystick.leftBumper().onTrue(new InstantCommand(() ->{

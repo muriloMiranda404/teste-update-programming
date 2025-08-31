@@ -3,6 +3,7 @@ package frc.robot;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.pathplanner.lib.auto.NamedCommands;
 
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -23,6 +24,8 @@ public class RegisterNamedCommands {
     private ElevatorSubsystem elevator;
     private IntakeSubsystem intake;
     private LimelightConfig limelightConfig;
+    private SwerveDrivePoseEstimator swerveDrivePoseEstimator;
+    private Pigeon2 pigeon2;
 
     public static RegisterNamedCommands mInstance = null;
 
@@ -31,6 +34,8 @@ public class RegisterNamedCommands {
         this.elevator = ElevatorSubsystem.getInstance();
         this.intake = IntakeSubsystem.getInstance();
         this.limelightConfig = LimelightConfig.getInstance();
+        this.swerveDrivePoseEstimator = swerve.getPoseEstimator();
+        this.pigeon2 = new Pigeon2(9);
     }
 
     public static RegisterNamedCommands getInstance(){
@@ -81,7 +86,7 @@ public class RegisterNamedCommands {
     private void configureSwerveAutoCommands(SwerveSubsystem swerve, LimelightConfig limelightConfig, ElevatorSubsystem elevatorSubsystem){
 
         NamedCommands.registerCommand("RESET PIGEON", new InstantCommand(() ->{
-            new ResetPigeon(new Pigeon2(9));
+            new ResetPigeon(pigeon2);
         }));
 
         NamedCommands.registerCommand("ALINHAMENTO", new AlingToTarget(true));
@@ -94,6 +99,13 @@ public class RegisterNamedCommands {
 
         NamedCommands.registerCommand("RESET ODOMETRY CENTER AUTO", new InstantCommand(() ->{
             swerve.resetOdometry(new Pose2d(7.492, 3.839, Rotation2d.fromDegrees(179.832)));
+        }));
+
+        NamedCommands.registerCommand("RESET POSE FOR CENTER AUTONOMOUS", new InstantCommand(() ->{
+            swerveDrivePoseEstimator.resetPosition(
+                pigeon2.getRotation2d(),
+                swerve.getSwerveDrive().getModulePositions(), 
+                new Pose2d(7.492, 3.839, Rotation2d.fromDegrees(179.832)));
         }));
     }
 

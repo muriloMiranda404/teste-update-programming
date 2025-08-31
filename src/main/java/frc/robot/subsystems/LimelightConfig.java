@@ -56,16 +56,16 @@ public class LimelightConfig {
     }
 
     public Pose2d getEstimatedGlobalPose(){
-        double[] poseArray = getBotPoseBlue();
+       double[] blue = getBotPoseBlue();
 
-        if(poseArray.length >= 6){
-            return new Pose2d(
-                poseArray[0],
-                poseArray[1],
-                Rotation2d.fromDegrees(poseArray[5])
-            );
-        }
-        return new Pose2d();
+       if(blue.length >= 6){
+        return new Pose2d(
+            blue[0],
+            blue[1],
+            Rotation2d.fromDegrees(blue[5])
+        );
+       }
+       return new Pose2d();
     }
 
     public double[] getBotPoseBlue(){
