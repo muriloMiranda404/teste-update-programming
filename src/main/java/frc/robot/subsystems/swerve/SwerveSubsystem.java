@@ -283,10 +283,6 @@ public class SwerveSubsystem extends SubsystemBase{
     return value;
   }
   
-  /**
-   * Verifica se o controlador holonômico atingiu a posição desejada
-   * @return true se todos os controladores estiverem dentro da tolerância
-   */
   public boolean atReference() {
     return xPID.atSetpoint() && yPID.atSetpoint() && profilePid.atGoal();
   }
