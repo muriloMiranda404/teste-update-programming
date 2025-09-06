@@ -88,6 +88,13 @@ public class IntakeSubsystem extends SubsystemBase{
     public double getCoralMotorTemperature(){
         return getCoral.getMotorTemperature();
     }
+
+    public void getCoralOnIntake(){
+        if(!IsTouched()){
+            getCoral.setSpeed(0.2);
+        }
+        getCoral.setSpeed(0);
+    }
     
     public void set(double speed) {
         getCoral.setSpeed(speed);
