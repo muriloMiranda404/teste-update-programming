@@ -30,6 +30,10 @@ public class SuperStruct extends SubsystemBase{
         elevatorSubsystem.setElevatorPosition(elevatorInput);
         intakeSubsystem.setPosition(intakeInput);
     }
+
+    public int getButtonPessed(){
+        return getButtonPessed();
+    }
     
     public enum StatesToScore{
         L1(1),
@@ -44,6 +48,10 @@ public class SuperStruct extends SubsystemBase{
         int button;
         StatesToScore(int button){
             this.button = button;
+        }
+
+        public int getButtonPessed(){
+            return button;
         }
     }
 
