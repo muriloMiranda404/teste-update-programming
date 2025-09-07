@@ -31,4 +31,6 @@ public interface SparkMaxMotorsIO {
     String getMotorName();
 
     boolean usingInternalMotor();
+
+    void setPID(double Kp, double Ki, double Kd);
 }

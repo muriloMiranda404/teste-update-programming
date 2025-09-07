@@ -4,12 +4,14 @@ import com.ctre.phoenix6.hardware.Pigeon2;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.SuperStruct.StatesToScore;
 
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
   public Pigeon2 pigeon2;
+  private SuperStruct struct = new SuperStruct();
 
   public Robot(){
     pigeon2 = new Pigeon2(9);
@@ -53,12 +55,11 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+    struct.scorePieceOnLevel(StatesToScore.L1);
   }
 
   @Override
-  public void teleopPeriodic() {
-    
-  }
+  public void teleopPeriodic() {}
 
   @Override
   public void testInit() {

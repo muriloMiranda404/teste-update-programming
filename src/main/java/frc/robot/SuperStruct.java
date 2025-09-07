@@ -15,11 +15,10 @@ public class SuperStruct extends SubsystemBase{
     private double intakeInput;
 
     private boolean activateGetCoral;
-
+    
     public SuperStruct(){
         this.elevatorSubsystem = ElevatorSubsystem.getInstance();
         this.intakeSubsystem = IntakeSubsystem.getInstance();
-
         this.activateGetCoral = false;
         this.elevatorInput = 0;
         this.intakeInput = 0;
@@ -27,8 +26,11 @@ public class SuperStruct extends SubsystemBase{
 
     @Override
     public void periodic() {
-        elevatorSubsystem.setElevatorPosition(elevatorInput);
-        intakeSubsystem.setPosition(intakeInput);
+        this.elevatorSubsystem.setElevatorPosition(elevatorInput);
+        this.intakeSubsystem.setPosition(intakeInput);
+
+        this.elevatorSubsystem.periodic();
+        this.intakeSubsystem.periodic();
     }
 
     public int getButtonPessed(){

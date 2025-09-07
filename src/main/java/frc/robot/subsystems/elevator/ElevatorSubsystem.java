@@ -22,15 +22,9 @@ public class ElevatorSubsystem extends SubsystemBase{
 
     public static ElevatorSubsystem mInstance = null;
 
-    public static ElevatorSubsystem getInstance(){
-        if(mInstance == null){
-            mInstance = new ElevatorSubsystem();
-        }
-        return mInstance;
-    }
-
+    
     private ElevatorSubsystem(){
-
+        
         this.rightMotor = new SparkMaxMotors(Elevator.RIGHT_ELEVATOR_MOTOR, true, "right elevator motor");
         this.leftMotor = new SparkMaxMotors(Elevator.LEFT_ELEVATOR_MOTOR, false, "left elevator motor");
 
@@ -43,7 +37,14 @@ public class ElevatorSubsystem extends SubsystemBase{
         this.controller = Elevator.ELEVATOR_PID;
         this.controller.setTolerance(Elevator.ELEVATOR_TOLERANCE);
     }
-
+    
+    public static ElevatorSubsystem getInstance(){
+        if(mInstance == null){
+            mInstance = new ElevatorSubsystem();
+        }
+        return mInstance;
+    }
+    
     public double getDistance(){
         return encoder.getDistance();
     }
