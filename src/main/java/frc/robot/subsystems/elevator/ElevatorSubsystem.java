@@ -133,6 +133,11 @@ public class ElevatorSubsystem extends SubsystemBase{
         encoder.reset();
     }
 
+    public void setElevatorSpeed(double speed){
+        rightMotor.setSpeed(speed);
+        leftMotor.setSpeed(speed);
+    }
+
     @Override
     public void periodic() {
         SmartDashboard.putNumber("elevador", getDistance());
