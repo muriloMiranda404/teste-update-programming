@@ -21,7 +21,7 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     m_robotContainer = new RobotContainer();
     pigeon2.reset();
-    }
+  }
 
   @Override
   public void robotPeriodic() {

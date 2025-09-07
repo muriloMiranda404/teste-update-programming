@@ -15,7 +15,7 @@ public class SuperStruct extends SubsystemBase{
     private double intakeInput;
 
     private boolean activateGetCoral;
-    
+
     public SuperStruct(){
         this.elevatorSubsystem = ElevatorSubsystem.getInstance();
         this.intakeSubsystem = IntakeSubsystem.getInstance();
