@@ -20,8 +20,8 @@ public class SuperStruct extends SubsystemBase{
         this.elevatorSubsystem = ElevatorSubsystem.getInstance();
         this.intakeSubsystem = IntakeSubsystem.getInstance();
         this.activateGetCoral = false;
-        this.elevatorInput = 0;
-        this.intakeInput = 0;
+        this.elevatorInput = ElevatorPositions.HOME;
+        this.intakeInput = IntakePositions.DEFAULT_POSITION;
     }
 
     @Override
@@ -57,27 +57,75 @@ public class SuperStruct extends SubsystemBase{
         }
     }
 
+    public enum ScoreSequence{
+        ABRIR_INTAKE,
+        SUBIR_ELEVADOR,
+        FECHAR_INTAKE
+    }
+
+    public void sequenceToScoreL1(){
+        ScoreSequence sequence = ScoreSequence.ABRIR_INTAKE;
+
+        switch (sequence) {
+            case ABRIR_INTAKE:
+                this.intakeInput = IntakePositions.ABERTURA_COMUMM;
+                if(this.intakeSubsystem.atSetpoint()) sequence = ScoreSequence.SUBIR_ELEVADOR;
+                break;
+        
+            case SUBIR_ELEVADOR:
+                this.elevatorInput = ElevatorPositions.HOME;
+                if(this.elevatorSubsystem.atSetpoint()) sequence = ScoreSequence.FECHAR_INTAKE;
+                break;
+
+            case FECHAR_INTAKE:
+                this.intakeInput = IntakePositions.DEFAULT_POSITION;
+                if(this.intakeSubsystem.atSetpoint()) this.activateGetCoralMotor();
+                break;
+        }
+    }
+
+    public void sequenceToScoreL4(){
+        ScoreSequence sequence = ScoreSequence.ABRIR_INTAKE;
+
+        switch (sequence) {
+            case ABRIR_INTAKE:
+                this.intakeInput = IntakePositions.ABERTURA_COMUMM;
+                if(this.intakeSubsystem.atSetpoint()) sequence = ScoreSequence.SUBIR_ELEVADOR;
+                break;
+        
+            case SUBIR_ELEVADOR:
+                this.elevatorInput = ElevatorPositions.L4;
+                if(this.elevatorSubsystem.atSetpoint()) sequence = ScoreSequence.FECHAR_INTAKE;
+                break;
+
+            case FECHAR_INTAKE:
+                this.intakeInput = IntakePositions.OPEN_L4;
+                break;
+        }
+    }
+
     public void scorePieceOnLevel(StatesToScore state){
         switch (state) {
             case L1:
-                intakeInput = IntakePositions.ABERTURA_COMUMM;
-                elevatorInput = ElevatorPositions.HOME;
-                activateGetCoral = true;
+               this.sequenceToScoreL1();
                 break;
             
             case L2:
-                intakeInput = IntakePositions.PUT_CORAL;
-                elevatorInput = ElevatorPositions.L2;
+                this.intakeInput = IntakePositions.PUT_CORAL;
+                if(this.intakeSubsystem.atSetpoint()){
+                    this.elevatorInput = ElevatorPositions.L2;
+                }    
                 break;
 
             case L3:
-                intakeInput = IntakePositions.PUT_CORAL;
-                elevatorInput = ElevatorPositions.L3;
+                this.intakeInput = IntakePositions.PUT_CORAL;
+                if(this.intakeSubsystem.atSetpoint()){
+                    this.elevatorInput = ElevatorPositions.L3;
+                }    
                 break;
 
             case L4:
-                intakeInput = IntakePositions.PUT_CORAL;
-                elevatorInput = ElevatorPositions.L4;
+                this.sequenceToScoreL4();
                 break;
 
             case ALGAE_L2:
