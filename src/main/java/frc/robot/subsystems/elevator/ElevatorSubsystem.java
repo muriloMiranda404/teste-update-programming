@@ -22,6 +22,7 @@ public class ElevatorSubsystem extends SubsystemBase{
 
     public static ElevatorSubsystem mInstance = null;
 
+    public double setpoint;
     
     private ElevatorSubsystem(){
         
@@ -36,6 +37,8 @@ public class ElevatorSubsystem extends SubsystemBase{
 
         this.controller = Elevator.ELEVATOR_PID;
         this.controller.setTolerance(Elevator.ELEVATOR_TOLERANCE);
+    
+        this.setpoint = 0;
     }
     
     public static ElevatorSubsystem getInstance(){
@@ -58,8 +61,13 @@ public class ElevatorSubsystem extends SubsystemBase{
         return speed;
     }
 
+    public double getSetpoint(){
+        return setpoint;
+    }
+
     public void setElevatorPosition(double setpoint){
         double ang = getDistance();
+        this.setpoint = setpoint;
 
         if(setpoint < 0){
             setpoint = 0.0;

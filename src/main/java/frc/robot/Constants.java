@@ -68,6 +68,7 @@ public class Constants{
       public static final double ABERTURA_COMUMM = 68.0;
       public static final double DEFAULT_POSITION = 55.0;
       public static final double PUT_CORAL = 72.0;
+      public static final double PUT_CORAL_ALTERNATIVE = 72.0;
       public static final double OPEN_L4 = 92.0;
     }
   }

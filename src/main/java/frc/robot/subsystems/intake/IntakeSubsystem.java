@@ -10,14 +10,16 @@ import frc.robot.subsystems.motors.SparkMaxMotors;
 
 public class IntakeSubsystem extends SubsystemBase{
     
-    SparkMaxMotors turnIntake;
-    SparkMaxMotors getCoral;
+    public SparkMaxMotors turnIntake;
+    public SparkMaxMotors getCoral;
+ 
+    public DutyCycleEncoder encoder;
+ 
+    public PIDController controller;
+ 
+    public DigitalInput coralswitch;
 
-    DutyCycleEncoder encoder;
-
-    PIDController controller;
-
-    DigitalInput coralswitch;
+    public double setpoint;
 
     public static IntakeSubsystem mInstance = null;
 
@@ -34,6 +36,7 @@ public class IntakeSubsystem extends SubsystemBase{
 
         this.coralswitch = new DigitalInput(Intake.CORAL_SWITCH);
 
+        this.setpoint = 0;
     }
 
     public static IntakeSubsystem getInstance(){
@@ -57,9 +60,14 @@ public class IntakeSubsystem extends SubsystemBase{
     public double getDistance(){
         return encoder.get() * 360.0;
     }
+
+    public double getSetpoint(){
+        return setpoint;
+    }
     
     public void setPosition(double setpoint){
         double ang = getDistance();
+        this.setpoint = setpoint;
 
         if(setpoint < 55.0){
 

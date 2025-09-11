@@ -107,25 +107,37 @@ public class SuperStruct extends SubsystemBase{
     public void scorePieceOnLevel(StatesToScore state){
         switch (state) {
             case L1:
-               this.sequenceToScoreL1();
-                break;
+            if(this.elevatorInput != ElevatorPositions.HOME) this.intakeInput = IntakePositions.ABERTURA_COMUMM;
+            if(this.intakeSubsystem.atSetpoint()){
+                this.elevatorInput = ElevatorPositions.HOME;
+                if(this.elevatorSubsystem.atSetpoint() && intakeSubsystem.getSetpoint() == IntakePositions.ABERTURA_COMUMM){
+                    this.intakeInput = IntakePositions.DEFAULT_POSITION;
+                }
+            }
+            break;
             
             case L2:
-                this.intakeInput = IntakePositions.PUT_CORAL;
+                this.intakeInput = IntakePositions.PUT_CORAL_ALTERNATIVE;
                 if(this.intakeSubsystem.atSetpoint()){
                     this.elevatorInput = ElevatorPositions.L2;
                 }    
                 break;
 
             case L3:
-                this.intakeInput = IntakePositions.PUT_CORAL;
+                this.intakeInput = IntakePositions.PUT_CORAL_ALTERNATIVE;
                 if(this.intakeSubsystem.atSetpoint()){
                     this.elevatorInput = ElevatorPositions.L3;
                 }    
                 break;
 
             case L4:
-                this.sequenceToScoreL4();
+                if(this.elevatorInput != ElevatorPositions.L4) this.intakeInput = IntakePositions.PUT_CORAL;
+                if(this.intakeSubsystem.atSetpoint()){
+                    this.elevatorInput = ElevatorPositions.L4;
+                    if(this.elevatorSubsystem.atSetpoint() && this.intakeSubsystem.getSetpoint() == IntakePositions.PUT_CORAL){
+                        this.intakeInput = IntakePositions.OPEN_L4;
+                    }
+                }
                 break;
 
             case ALGAE_L2:
