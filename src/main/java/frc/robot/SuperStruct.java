@@ -1,8 +1,10 @@
 package frc.robot;
 
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Elevator.ElevatorPositions;
 import frc.robot.Constants.Intake.IntakePositions;
+import frc.robot.subsystems.Led.LedSubsystem;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 
@@ -10,18 +12,29 @@ public class SuperStruct extends SubsystemBase{
 
     private ElevatorSubsystem elevatorSubsystem;
     private IntakeSubsystem intakeSubsystem;
+    private LedSubsystem ledSubsystem;
 
     private double elevatorInput;
     private double intakeInput;
 
     private boolean activateGetCoral;
 
-    public SuperStruct(){
+    public static SuperStruct mInstance = null;
+
+    private SuperStruct(){
         this.elevatorSubsystem = ElevatorSubsystem.getInstance();
         this.intakeSubsystem = IntakeSubsystem.getInstance();
+        this.ledSubsystem = LedSubsystem.getInstance();
         this.activateGetCoral = false;
         this.elevatorInput = ElevatorPositions.HOME;
         this.intakeInput = IntakePositions.DEFAULT_POSITION;
+    }
+
+    public static SuperStruct getInstance(){
+        if(mInstance == null){
+            mInstance = new SuperStruct();
+        }
+        return mInstance;
     }
 
     @Override
@@ -32,10 +45,6 @@ public class SuperStruct extends SubsystemBase{
         this.elevatorSubsystem.periodic();
         this.intakeSubsystem.periodic();
     }
-
-    public int getButtonPessed(){
-        return getButtonPessed();
-    }
     
     public enum StatesToScore{
         L1(1),
@@ -45,7 +54,7 @@ public class SuperStruct extends SubsystemBase{
 
         ALGAE_L2(5),
         ALGAE_L3(6),
-        PRROCESSOR(7);
+        PROCESSOR(7);
 
         int button;
         StatesToScore(int button){
@@ -63,98 +72,60 @@ public class SuperStruct extends SubsystemBase{
         FECHAR_INTAKE
     }
 
-    public void sequenceToScoreL1(){
-        ScoreSequence sequence = ScoreSequence.ABRIR_INTAKE;
+    public Command scorePieceOnLevel(StatesToScore state){
+        return run(() ->{
 
-        switch (sequence) {
-            case ABRIR_INTAKE:
-                this.intakeInput = IntakePositions.ABERTURA_COMUMM;
-                if(this.intakeSubsystem.atSetpoint()) sequence = ScoreSequence.SUBIR_ELEVADOR;
-                break;
-        
-            case SUBIR_ELEVADOR:
-                this.elevatorInput = ElevatorPositions.HOME;
-                if(this.elevatorSubsystem.atSetpoint()) sequence = ScoreSequence.FECHAR_INTAKE;
-                break;
-
-            case FECHAR_INTAKE:
-                this.intakeInput = IntakePositions.DEFAULT_POSITION;
-                if(this.intakeSubsystem.atSetpoint()) this.activateGetCoralMotor();
-                break;
-        }
-    }
-
-    public void sequenceToScoreL4(){
-        ScoreSequence sequence = ScoreSequence.ABRIR_INTAKE;
-
-        switch (sequence) {
-            case ABRIR_INTAKE:
-                this.intakeInput = IntakePositions.ABERTURA_COMUMM;
-                if(this.intakeSubsystem.atSetpoint()) sequence = ScoreSequence.SUBIR_ELEVADOR;
-                break;
-        
-            case SUBIR_ELEVADOR:
-                this.elevatorInput = ElevatorPositions.L4;
-                if(this.elevatorSubsystem.atSetpoint()) sequence = ScoreSequence.FECHAR_INTAKE;
-                break;
-
-            case FECHAR_INTAKE:
-                this.intakeInput = IntakePositions.OPEN_L4;
-                break;
-        }
-    }
-
-    public void scorePieceOnLevel(StatesToScore state){
-        switch (state) {
-            case L1:
-            if(this.elevatorInput != ElevatorPositions.HOME) this.intakeInput = IntakePositions.ABERTURA_COMUMM;
-            if(this.intakeSubsystem.atSetpoint()){
-                this.elevatorInput = ElevatorPositions.HOME;
-                if(this.elevatorSubsystem.atSetpoint() && intakeSubsystem.getSetpoint() == IntakePositions.ABERTURA_COMUMM){
-                    this.intakeInput = IntakePositions.DEFAULT_POSITION;
-                }
-            }
-            break;
-            
-            case L2:
-                this.intakeInput = IntakePositions.PUT_CORAL_ALTERNATIVE;
+            switch (state) {
+                case L1:
+                if(this.elevatorInput != ElevatorPositions.HOME) this.intakeInput = IntakePositions.ABERTURA_COMUMM;
                 if(this.intakeSubsystem.atSetpoint()){
-                    this.elevatorInput = ElevatorPositions.L2;
-                }    
-                break;
-
-            case L3:
-                this.intakeInput = IntakePositions.PUT_CORAL_ALTERNATIVE;
-                if(this.intakeSubsystem.atSetpoint()){
-                    this.elevatorInput = ElevatorPositions.L3;
-                }    
-                break;
-
-            case L4:
-                if(this.elevatorInput != ElevatorPositions.L4) this.intakeInput = IntakePositions.PUT_CORAL;
-                if(this.intakeSubsystem.atSetpoint()){
-                    this.elevatorInput = ElevatorPositions.L4;
-                    if(this.elevatorSubsystem.atSetpoint() && this.intakeSubsystem.getSetpoint() == IntakePositions.PUT_CORAL){
-                        this.intakeInput = IntakePositions.OPEN_L4;
+                    this.elevatorInput = ElevatorPositions.HOME;
+                    if(this.elevatorSubsystem.atSetpoint() && intakeSubsystem.getSetpoint() == IntakePositions.ABERTURA_COMUMM){
+                        this.intakeInput = IntakePositions.DEFAULT_POSITION;
                     }
                 }
                 break;
-
-            case ALGAE_L2:
-                intakeInput = IntakePositions.CONTROL_BALL;
-                elevatorInput = ElevatorPositions.ALGAE_L2;
-                break;
-
-            case ALGAE_L3:
-                intakeInput = IntakePositions.CONTROL_BALL;
-                elevatorInput = ElevatorPositions.ALGAE_L3;
-                break;
-
-            case PRROCESSOR:
-                intakeInput = IntakePositions.CONTROL_BALL;
-                elevatorInput = ElevatorPositions.HOME;
-                break;
-        }
+                
+                case L2:
+                    this.intakeInput = IntakePositions.PUT_CORAL_ALTERNATIVE;
+                    if(this.intakeSubsystem.atSetpoint()){
+                        this.elevatorInput = ElevatorPositions.L2;
+                    }    
+                    break;
+    
+                case L3:
+                    this.intakeInput = IntakePositions.PUT_CORAL_ALTERNATIVE;
+                    if(this.intakeSubsystem.atSetpoint()){
+                        this.elevatorInput = ElevatorPositions.L3;
+                    }    
+                    break;
+    
+                case L4:
+                    if(this.elevatorInput != ElevatorPositions.L4) this.intakeInput = IntakePositions.PUT_CORAL;
+                    if(this.intakeSubsystem.atSetpoint()){
+                        this.elevatorInput = ElevatorPositions.L4;
+                        if(this.elevatorSubsystem.atSetpoint() && this.intakeSubsystem.getSetpoint() == IntakePositions.PUT_CORAL){
+                            this.intakeInput = IntakePositions.OPEN_L4;
+                        }
+                    }
+                    break;
+    
+                case ALGAE_L2:
+                    intakeInput = IntakePositions.CONTROL_BALL;
+                    elevatorInput = ElevatorPositions.ALGAE_L2;
+                    break;
+    
+                case ALGAE_L3:
+                    intakeInput = IntakePositions.CONTROL_BALL;
+                    elevatorInput = ElevatorPositions.ALGAE_L3;
+                    break;
+    
+                case PROCESSOR:
+                    intakeInput = IntakePositions.CONTROL_BALL;
+                    elevatorInput = ElevatorPositions.HOME;
+                    break;
+            }
+        });
     }
 
     public void activateGetCoralMotor(){

@@ -3,9 +3,12 @@ package frc.robot;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.Constants.Components;
+import frc.robot.SuperStruct.StatesToScore;
 import frc.robot.commands.ResetPigeon;
 import frc.robot.commands.level.SetReefLevel;
+import frc.robot.commands.level.intake.SetIntakeSpeed;
 import frc.robot.commands.swerveUtils.AlingToTarget;
 import frc.robot.commands.swerveUtils.TurnRobot;
 import frc.robot.subsystems.LimelightConfig;
@@ -27,6 +30,7 @@ public class RobotContainer {
   
   private IntakeSubsystem intake;
   private ElevatorSubsystem elevator;
+  private SuperStruct struct;
 
   private RegisterNamedCommands named;
 
@@ -42,6 +46,7 @@ public class RobotContainer {
 
     this.intake = IntakeSubsystem.getInstance();
     this.elevator = ElevatorSubsystem.getInstance();
+    this.struct = SuperStruct.getInstance();
 
     this.named = RegisterNamedCommands.getInstance();
     named.configureNamedCommands();
@@ -78,20 +83,18 @@ public class RobotContainer {
   }
   
   private void configureIntakeBindings(){ 
+    
+    IntakeJoystick.L1Button().onTrue(new ParallelCommandGroup(
+      struct.scorePieceOnLevel(StatesToScore.L1),
+      new SetIntakeSpeed(true)
+    ));
+    IntakeJoystick.L2Button().onTrue(struct.scorePieceOnLevel(StatesToScore.L2));
+    IntakeJoystick.L3Button().onTrue(struct.scorePieceOnLevel(StatesToScore.L3));
+    IntakeJoystick.L4Button().onTrue(struct.scorePieceOnLevel(StatesToScore.L4));    
 
-    IntakeJoystick.L1Button().onTrue( new SetReefLevel());
-
-    IntakeJoystick.L2Button().onTrue(new SetReefLevel());
-
-    IntakeJoystick.L3Button().onTrue(new SetReefLevel());
-
-    IntakeJoystick.L4Button().onTrue(new SetReefLevel());
-
-    IntakeJoystick.ProcessorButton().onTrue(new SetReefLevel());
-
-    IntakeJoystick.L2Algae().onTrue(new SetReefLevel());
-
-    IntakeJoystick.L3Algae().onTrue(new SetReefLevel());
+    IntakeJoystick.ProcessorButton().onTrue(struct.scorePieceOnLevel(StatesToScore.PROCESSOR));
+    IntakeJoystick.L2Algae().onTrue(struct.scorePieceOnLevel(StatesToScore.ALGAE_L2));
+    IntakeJoystick.L3Algae().onTrue(struct.scorePieceOnLevel(StatesToScore.ALGAE_L3));
 }
 
   public Command getAutonomousCommand() {

@@ -13,7 +13,6 @@ public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
   private Pigeon2 pigeon2;
-  private SuperStruct struct = new SuperStruct();
 
   public Robot(){
     pigeon2 = new Pigeon2(9);
@@ -57,7 +56,7 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-    struct.scorePieceOnLevel(StatesToScore.L1);
+
   }
 
   @Override
