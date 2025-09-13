@@ -5,7 +5,9 @@ import java.util.function.DoubleSupplier;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.controllers.PPLTVController;
 
 import edu.wpi.first.math.controller.HolonomicDriveController;
@@ -67,6 +69,7 @@ public class SwerveSubsystem extends SubsystemBase{
       driveController.setEnabled(true); 
       
       pigeon = new Pigeon2(9);
+      this.setupPathPlanner();
 
       swerveDrive.setChassisDiscretization(true, 0.2);
     }
@@ -122,7 +125,7 @@ public class SwerveSubsystem extends SubsystemBase{
               {
                 swerveDrive.setChassisSpeeds(speeds);
               }}, 
-              new PPLTVController(0.02), 
+              new PPLTVController(0.05),
               config, 
               () -> {
                 
