@@ -1,12 +1,12 @@
-package frc.robot;
+package frc.robot.subsystems.Mechanism;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Elevator.ElevatorPositions;
 import frc.robot.Constants.Intake.IntakePositions;
 import frc.robot.subsystems.Led.LedSubsystem;
-import frc.robot.subsystems.elevator.ElevatorSubsystem;
-import frc.robot.subsystems.intake.IntakeSubsystem;
+import frc.robot.subsystems.Mechanism.elevator.ElevatorSubsystem;
+import frc.robot.subsystems.Mechanism.intake.IntakeSubsystem;
 
 public class SuperStruct extends SubsystemBase{
 
@@ -39,7 +39,7 @@ public class SuperStruct extends SubsystemBase{
 
     @Override
     public void periodic() {
-        this.elevatorSubsystem.setElevatorPosition(elevatorInput);
+        this.elevatorSubsystem.setPosition(elevatorInput);
         this.intakeSubsystem.setPosition(intakeInput);
 
         this.elevatorSubsystem.periodic();
@@ -74,9 +74,9 @@ public class SuperStruct extends SubsystemBase{
 
     public Command scorePieceOnLevel(StatesToScore state){
         return run(() ->{
-
             switch (state) {
                 case L1:
+                this.ledSubsystem.setColor(edu.wpi.first.wpilibj.util.Color.kWhite);
                 if(this.elevatorInput != ElevatorPositions.HOME) this.intakeInput = IntakePositions.ABERTURA_COMUMM;
                 if(this.intakeSubsystem.atSetpoint()){
                     this.elevatorInput = ElevatorPositions.HOME;
@@ -87,6 +87,7 @@ public class SuperStruct extends SubsystemBase{
                 break;
                 
                 case L2:
+                    this.ledSubsystem.setColor(edu.wpi.first.wpilibj.util.Color.kGray);
                     this.intakeInput = IntakePositions.PUT_CORAL_ALTERNATIVE;
                     if(this.intakeSubsystem.atSetpoint()){
                         this.elevatorInput = ElevatorPositions.L2;
@@ -94,6 +95,7 @@ public class SuperStruct extends SubsystemBase{
                     break;
     
                 case L3:
+                    this.ledSubsystem.setColor(edu.wpi.first.wpilibj.util.Color.kBeige);                    
                     this.intakeInput = IntakePositions.PUT_CORAL_ALTERNATIVE;
                     if(this.intakeSubsystem.atSetpoint()){
                         this.elevatorInput = ElevatorPositions.L3;
@@ -101,6 +103,7 @@ public class SuperStruct extends SubsystemBase{
                     break;
     
                 case L4:
+                    this.ledSubsystem.setColor(edu.wpi.first.wpilibj.util.Color.kBlack);
                     if(this.elevatorInput != ElevatorPositions.L4) this.intakeInput = IntakePositions.PUT_CORAL;
                     if(this.intakeSubsystem.atSetpoint()){
                         this.elevatorInput = ElevatorPositions.L4;
@@ -111,16 +114,19 @@ public class SuperStruct extends SubsystemBase{
                     break;
     
                 case ALGAE_L2:
+                    this.ledSubsystem.setColor(edu.wpi.first.wpilibj.util.Color.kAliceBlue);
                     intakeInput = IntakePositions.CONTROL_BALL;
                     elevatorInput = ElevatorPositions.ALGAE_L2;
                     break;
     
                 case ALGAE_L3:
+                    this.ledSubsystem.setColor(edu.wpi.first.wpilibj.util.Color.kAquamarine);
                     intakeInput = IntakePositions.CONTROL_BALL;
                     elevatorInput = ElevatorPositions.ALGAE_L3;
                     break;
     
                 case PROCESSOR:
+                    this.ledSubsystem.setColor(edu.wpi.first.wpilibj.util.Color.kAqua);
                     intakeInput = IntakePositions.CONTROL_BALL;
                     elevatorInput = ElevatorPositions.HOME;
                     break;
@@ -130,17 +136,17 @@ public class SuperStruct extends SubsystemBase{
 
     public void activateGetCoralMotor(){
         if(activateGetCoral){
-            intakeSubsystem.set(0.2);
+            intakeSubsystem.setSpeed(0.2);
         }
         if(intakeSubsystem.IsTouched()){
-            intakeSubsystem.set(0);
+            intakeSubsystem.setSpeed(0);
             activateGetCoral = false;
         }
     }
 
     public void seguranceSetpoint(){
         if(intakeSubsystem.getDistance() < 55){
-            elevatorSubsystem.setElevatorSpeed(0);
+            elevatorSubsystem.setSpeed(0);
         }
     }
 }

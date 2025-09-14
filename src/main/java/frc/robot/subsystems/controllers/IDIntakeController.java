@@ -28,4 +28,7 @@ public interface IDIntakeController {
     double getSetpoint();
 
     XboxController getHID();
+
+    boolean joystickIsNothingUsingMechanism();
+
 }

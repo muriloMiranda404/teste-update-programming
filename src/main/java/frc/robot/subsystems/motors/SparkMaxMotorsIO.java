@@ -1,4 +1,4 @@
-package frc.robot.subsystems.motors;
+package frc.robot.subsystems.Motors;
 
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.RelativeEncoder;
@@ -27,10 +27,14 @@ public interface SparkMaxMotorsIO {
     SparkMax getSpark();
 
     int getMotorId();
+    
+    void setPosition(double position);
 
     String getMotorName();
 
     boolean usingInternalMotor();
 
     void setPID(double Kp, double Ki, double Kd);
+
+    void clearStickyFaults();
 }

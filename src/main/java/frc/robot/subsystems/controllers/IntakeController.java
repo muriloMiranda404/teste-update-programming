@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.Controllers;
 import frc.robot.Constants.Positions;
+import frc.robot.subsystems.utils.Util;
 
 public class IntakeController implements IDIntakeController{
     
@@ -89,5 +90,11 @@ public class IntakeController implements IDIntakeController{
     @Override
     public double getSetpoint(){
         return this.setpoint;
+    }
+
+    @Override
+    public boolean joystickIsNothingUsingMechanism() {
+        return Util.inRange(controller.getRightY(), -Controllers.DEADBAND, Controllers.DEADBAND) 
+        && Util.inRange(controller.getRightX(), -Controllers.DEADBAND, Controllers.DEADBAND);
     }
 }

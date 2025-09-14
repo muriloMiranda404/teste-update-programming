@@ -5,17 +5,20 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.Constants.Components;
-import frc.robot.SuperStruct.StatesToScore;
+import frc.robot.commands.AutoChooser;
 import frc.robot.commands.ResetPigeon;
 import frc.robot.commands.level.intake.SetIntakeSpeed;
 import frc.robot.commands.swerveUtils.AlingToTarget;
 import frc.robot.commands.swerveUtils.TurnRobot;
 import frc.robot.subsystems.LimelightConfig;
+import frc.robot.subsystems.Mechanism.SuperStruct;
+import frc.robot.subsystems.Mechanism.SuperStruct.StatesToScore;
+import frc.robot.subsystems.Mechanism.elevator.ElevatorSubsystem;
+import frc.robot.subsystems.Mechanism.intake.IntakeSubsystem;
 import frc.robot.subsystems.controllers.DriverController;
 import frc.robot.subsystems.controllers.IntakeController;
-import frc.robot.subsystems.elevator.ElevatorSubsystem;
-import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
+import frc.robot.subsystems.utils.RegisterNamedCommands;
 
 public class RobotContainer {
 
@@ -33,6 +36,8 @@ public class RobotContainer {
 
   private RegisterNamedCommands named;
 
+  private AutoChooser autoChooser;
+
   public RobotContainer() {
     this.driverJoystick = DriverController.getInstance();
     this.IntakeJoystick = IntakeController.getInstance();
@@ -49,6 +54,8 @@ public class RobotContainer {
 
     this.named = RegisterNamedCommands.getInstance();
     named.configureNamedCommands();
+
+    this.autoChooser = AutoChooser.getInstance();
 
     swerve.setDefaultCommand(swerve.driveCommand(
       () -> driverJoystick.getLeftY(),
@@ -97,7 +104,7 @@ public class RobotContainer {
 }
 
   public Command getAutonomousCommand() {
-    return swerve.getAutonomousCommand(Components.AUTO, true);
+    return swerve.getAutonomousCommand(autoChooser.getPathName(), true);
   }
 
   public void setMotorBrake(boolean brake) {

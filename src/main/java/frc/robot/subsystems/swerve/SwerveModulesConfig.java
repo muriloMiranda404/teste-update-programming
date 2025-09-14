@@ -15,7 +15,7 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import frc.robot.Constants.swerve;
-import frc.robot.subsystems.motors.SparkMaxMotors;
+import frc.robot.subsystems.Motors.SparkMaxMotors;
 
 public class SwerveModulesConfig {
     

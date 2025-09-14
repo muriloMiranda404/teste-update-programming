@@ -1,14 +1,19 @@
-package frc.robot.subsystems.intake;
+package frc.robot.subsystems.Mechanism.intake;
+
+import java.util.function.Supplier;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Intake;
-import frc.robot.subsystems.motors.SparkMaxMotors;
+import frc.robot.subsystems.Led.LedSubsystem;
+import frc.robot.subsystems.Mechanism.MechanismIO;
+import frc.robot.subsystems.Motors.SparkMaxMotors;
 
-public class IntakeSubsystem extends SubsystemBase{
+public class IntakeSubsystem extends SubsystemBase implements MechanismIO{
     
     public SparkMaxMotors turnIntake;
     public SparkMaxMotors getCoral;
@@ -22,6 +27,8 @@ public class IntakeSubsystem extends SubsystemBase{
     public double setpoint;
 
     public static IntakeSubsystem mInstance = null;
+
+    private LedSubsystem ledSubsystem;
 
     private IntakeSubsystem(){
 
@@ -37,6 +44,8 @@ public class IntakeSubsystem extends SubsystemBase{
         this.coralswitch = new DigitalInput(Intake.CORAL_SWITCH);
 
         this.setpoint = 0;
+
+        this.ledSubsystem = LedSubsystem.getInstance();
     }
 
     public static IntakeSubsystem getInstance(){
@@ -47,6 +56,7 @@ public class IntakeSubsystem extends SubsystemBase{
     }
 
     public boolean IsTouched(){
+        ledSubsystem.setColor(Color.kGreen);
         return !coralswitch.get();
     }
 
@@ -57,14 +67,17 @@ public class IntakeSubsystem extends SubsystemBase{
         turnIntake.setVoltage(0);
     }
 
+    @Override
     public double getDistance(){
         return encoder.get() * 360.0;
     }
 
+    @Override
     public double getSetpoint(){
         return setpoint;
     }
     
+    @Override
     public void setPosition(double setpoint){
         double ang = getDistance();
         this.setpoint = setpoint;
@@ -85,6 +98,7 @@ public class IntakeSubsystem extends SubsystemBase{
         System.out.println("setpoint: " + setpoint);
     }
 
+    @Override
     public boolean atSetpoint(){
         return controller.atSetpoint();
     }
@@ -104,8 +118,10 @@ public class IntakeSubsystem extends SubsystemBase{
         getCoral.setSpeed(0);
     }
     
-    public void set(double speed) {
+    @Override
+    public void setSpeed(double speed) {
         getCoral.setSpeed(speed);
+        if(getCoral.getSpeed() != 0) ledSubsystem.setColor(Color.kRed);
     }
 
     @Override

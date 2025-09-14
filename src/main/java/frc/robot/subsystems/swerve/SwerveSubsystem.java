@@ -1,15 +1,21 @@
 package frc.robot.subsystems.swerve;
 
 import java.io.File;
+import java.io.IOException;
+import java.text.ParseException;
 import java.util.function.DoubleSupplier;
+
+import com.ctre.phoenix.motorcontrol.StickyFaults;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.controllers.PPLTVController;
-
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.trajectory.PathPlannerTrajectory;
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -23,6 +29,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.swerve;
 import frc.robot.subsystems.LimelightConfig;
@@ -135,7 +142,7 @@ public class SwerveSubsystem extends SubsystemBase{
               }
               return false;
             },
-            this // Reference to this subsystem to set requirements
+            this
             );
           } catch (Exception e) {
             e.printStackTrace();
@@ -213,8 +220,12 @@ public class SwerveSubsystem extends SubsystemBase{
     return Rotation2d.fromDegrees(scope0To360(pigeon.getYaw().getValueAsDouble()));
   }
 
-  public Command getAutonomousCommand(String pathName, boolean odom){
-    return new PathPlannerAuto(pathName);
+  public Command getAutonomousCommand(String name, boolean resetOdom){
+    return new PathPlannerAuto(name);
+  }
+  
+  public void stopSwerve(){
+    this.driveFieldOriented(new ChassisSpeeds());
   }
 
   public Rotation2d getGyroAccum(){
@@ -264,17 +275,15 @@ public class SwerveSubsystem extends SubsystemBase{
   public void configurePIDGains(double xKp, double xKi, double xKd,
                                double yKp, double yKi, double yKd,
                                double rotKp, double rotKi, double rotKd) {
-    // Atualizar ganhos do controlador X
+
     xPID.setP(xKp);
     xPID.setI(xKi);
     xPID.setD(xKd);
     
-    // Atualizar ganhos do controlador Y
     yPID.setP(yKp);
     yPID.setI(yKi);
     yPID.setD(yKd);
     
-    // Atualizar ganhos do controlador de rotação
     profilePid.setP(rotKp);
     profilePid.setI(rotKi);
     profilePid.setD(rotKd);

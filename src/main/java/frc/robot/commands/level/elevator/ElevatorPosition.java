@@ -1,7 +1,7 @@
 package frc.robot.commands.level.elevator;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.elevator.ElevatorSubsystem;
+import frc.robot.subsystems.Mechanism.elevator.ElevatorSubsystem;
 
 public class ElevatorPosition extends Command{
 
@@ -21,7 +21,7 @@ public class ElevatorPosition extends Command{
 
     @Override
     public void execute() {
-        elevator.setElevatorPosition(setpoint);
+        elevator.setPosition(setpoint);
     }
 
     @Override

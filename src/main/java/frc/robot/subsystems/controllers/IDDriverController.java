@@ -40,4 +40,8 @@ public interface IDDriverController {
     double Invert();
 
     Trigger emergencyInvert();
+
+    double getPerformByAlliance(double value);
+
+    boolean joystickIsNothingUsingDrive();
 }

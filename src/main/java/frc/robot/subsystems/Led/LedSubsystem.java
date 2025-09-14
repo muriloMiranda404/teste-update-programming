@@ -40,7 +40,7 @@ public class LedSubsystem extends SubsystemBase{
         this.addressableLED.setData(buffer);
     }
 
-    public void getRGBColor(int index, int r, int g, int b){
+    public void setRGBColor(int index, int r, int g, int b){
         this.buffer.setRGB(index, r, g, b);
         this.addressableLED.setData(buffer);
     }

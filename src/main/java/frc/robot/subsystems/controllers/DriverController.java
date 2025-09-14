@@ -1,6 +1,5 @@
 package frc.robot.subsystems.controllers;
 
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -8,6 +7,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.Controllers;
+import frc.robot.subsystems.utils.Util;
 
 public class DriverController implements IDDriverController{
 
@@ -206,5 +206,22 @@ public class DriverController implements IDDriverController{
     @Override
     public Trigger emergencyInvert(){
         return controller.start();
+    }
+
+    @Override
+    public double getPerformByAlliance(double value) {
+        var alliance = DriverStation.getAlliance().isPresent() ? DriverStation.getAlliance().get() : Alliance.Red;
+
+        if(alliance == Alliance.Red){
+            return value *= -1;
+        } else{
+            return value;
+        }
+    }
+
+    @Override
+    public boolean joystickIsNothingUsingDrive() {
+        return Util.inRange(getLeftY(), -Controllers.DEADBAND, Controllers.DEADBAND)
+        && Util.inRange(getLeftX(), -Controllers.DEADBAND, Controllers.DEADBAND);
     }
 }

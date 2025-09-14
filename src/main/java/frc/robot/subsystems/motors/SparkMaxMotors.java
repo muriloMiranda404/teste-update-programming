@@ -1,14 +1,21 @@
-package frc.robot.subsystems.motors;
+package frc.robot.subsystems.Motors;
 
+import static edu.wpi.first.units.Units.Milliseconds;
+import static edu.wpi.first.units.Units.Seconds;
+import java.util.function.Supplier;
 import com.pathplanner.lib.config.PIDConstants;
 import com.revrobotics.AbsoluteEncoder;
+import com.revrobotics.REVLibError;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
-
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 
 public class SparkMaxMotors implements SparkMaxMotorsIO{
     
@@ -23,6 +30,8 @@ public class SparkMaxMotors implements SparkMaxMotorsIO{
     private PIDController controller;
     private PIDConstants constants;
 
+    private double percentOutput = 0;
+
     public SparkMaxMotors(int id, boolean usingInternalEncoder, String name){
         this.name = name;
         this.id = id;
@@ -31,6 +40,31 @@ public class SparkMaxMotors implements SparkMaxMotorsIO{
         this.constants = new PIDConstants(0, 0, 0);
         this.controller = new PIDController(constants.kP, constants.kI, constants.kD);
         this.motor = new SparkMax(id, SparkMax.MotorType.kBrushless);
+    }
+
+    private void configureSpark(Supplier<REVLibError> config){
+        for(int i = 0; i < 5; i++){
+            if(config.get() == REVLibError.kError){
+                return;
+            }
+            Timer.delay(Milliseconds.of(5).in(Seconds));
+        }
+
+        DriverStation.reportError("falha no motor: " + getMotorId(), true);
+    }
+
+    @Override
+    public void clearStickyFaults(){
+        configureSpark(motor::clearFaults);
+    }
+
+    public void updateConfig(SparkMaxConfig config){
+        if(!DriverStation.isEnabled()){
+            throw new RuntimeException("o motor não pode ser fazer o update da sua configuração com o robo ligado");
+        }
+
+        this.config.apply(config);
+        configureSpark(() -> motor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters));
     }
 
     @Override
@@ -73,7 +107,16 @@ public class SparkMaxMotors implements SparkMaxMotorsIO{
 
     @Override
     public void setSpeed(double speed) {
-        motor.set(speed);
+        if(speed != percentOutput){
+            motor.getClosedLoopController().setReference(speed, ControlType.kDutyCycle, ClosedLoopSlot.kSlot0, 0);
+        }
+
+        this.percentOutput = speed;
+    }
+
+    @Override
+    public void setPosition(double position){
+        motor.getEncoder().setPosition(position);
     }
 
     @Override

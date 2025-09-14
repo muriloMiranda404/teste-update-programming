@@ -1,14 +1,17 @@
-package frc.robot.subsystems.elevator;
+package frc.robot.subsystems.Mechanism.elevator;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Elevator;
-import frc.robot.subsystems.motors.SparkMaxMotors;
+import frc.robot.subsystems.Led.LedSubsystem;
+import frc.robot.subsystems.Mechanism.MechanismIO;
+import frc.robot.subsystems.Motors.SparkMaxMotors;
 
-public class ElevatorSubsystem extends SubsystemBase{
+public class ElevatorSubsystem extends SubsystemBase implements MechanismIO{
     
     private SparkMaxMotors rightMotor;
     private SparkMaxMotors leftMotor;
@@ -23,6 +26,8 @@ public class ElevatorSubsystem extends SubsystemBase{
     public static ElevatorSubsystem mInstance = null;
 
     public double setpoint;
+
+    private LedSubsystem ledSubsystem;
     
     private ElevatorSubsystem(){
         
@@ -39,6 +44,10 @@ public class ElevatorSubsystem extends SubsystemBase{
         this.controller.setTolerance(Elevator.ELEVATOR_TOLERANCE);
     
         this.setpoint = 0;
+
+        this.ledSubsystem = LedSubsystem.getInstance();
+
+        configureElevatorLed();
     }
     
     public static ElevatorSubsystem getInstance(){
@@ -47,7 +56,14 @@ public class ElevatorSubsystem extends SubsystemBase{
         }
         return mInstance;
     }
+
+    public void configureElevatorLed(){
+        if(getOutputInElevatorMotors()[0] > 0){
+            ledSubsystem.setColor(Color.kViolet);
+        }
+    }
     
+    @Override
     public double getDistance(){
         return encoder.getDistance();
     }
@@ -61,11 +77,13 @@ public class ElevatorSubsystem extends SubsystemBase{
         return speed;
     }
 
+    @Override
     public double getSetpoint(){
         return setpoint;
     }
 
-    public void setElevatorPosition(double setpoint){
+    @Override
+    public void setPosition(double setpoint){
         double ang = getDistance();
         this.setpoint = setpoint;
 
@@ -104,6 +122,7 @@ public class ElevatorSubsystem extends SubsystemBase{
         leftMotor.setSpeed(-output);
     }
 
+    @Override
     public boolean atSetpoint(){
         return controller.atSetpoint();
     }
@@ -142,7 +161,8 @@ public class ElevatorSubsystem extends SubsystemBase{
         encoder.reset();
     }
 
-    public void setElevatorSpeed(double speed){
+    @Override
+    public void setSpeed(double speed){
         rightMotor.setSpeed(speed);
         leftMotor.setSpeed(speed);
     }

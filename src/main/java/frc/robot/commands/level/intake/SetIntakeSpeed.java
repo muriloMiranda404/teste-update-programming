@@ -1,7 +1,7 @@
 package frc.robot.commands.level.intake;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.intake.IntakeSubsystem;
+import frc.robot.subsystems.Mechanism.intake.IntakeSubsystem;
 
 public class SetIntakeSpeed extends Command{
     
@@ -34,7 +34,7 @@ public class SetIntakeSpeed extends Command{
     public void execute() {
         try{
             
-        intake.set(speed);
+        intake.setSpeed(speed);
 
     } catch(Exception e){
         System.out.println("erro ao colocar velocidade");
