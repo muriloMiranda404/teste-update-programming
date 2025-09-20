@@ -11,7 +11,6 @@ import frc.robot.commands.level.intake.SetIntakeSpeed;
 import frc.robot.commands.swerveUtils.AlingToTarget;
 import frc.robot.commands.swerveUtils.TurnRobot;
 import frc.robot.subsystems.LimelightConfig;
-import frc.robot.subsystems.Led.LedSubsystem;
 import frc.robot.subsystems.Mechanism.SuperStruct;
 import frc.robot.subsystems.Mechanism.SuperStruct.StatesToScore;
 import frc.robot.subsystems.Mechanism.elevator.ElevatorSubsystem;
@@ -30,7 +29,6 @@ public class RobotContainer {
 
   private SwerveSubsystem swerve;
   private LimelightConfig limelightConfig;
-  private LedSubsystem ledSubsystem;
   
   private IntakeSubsystem intake;
   private ElevatorSubsystem elevator;
@@ -46,7 +44,6 @@ public class RobotContainer {
 
     this.pigeon2 = new Pigeon2(Components.PIGEON);
 
-    this.ledSubsystem = LedSubsystem.getInstance();    
     this.swerve = SwerveSubsystem.getInstance();
     this.limelightConfig = LimelightConfig.getInstance();
 
@@ -65,8 +62,6 @@ public class RobotContainer {
       () -> driverJoystick.getRightX()
     ));
 
-    ledSubsystem.setDefaultCommand(ledSubsystem.runPattern());
-
     configureDriveBindings();
     configureIntakeBindings();
   }
@@ -76,7 +71,7 @@ public class RobotContainer {
     driverJoystick.alingRobotOnReef().whileTrue(new AlingToTarget(true));
 
     driverJoystick.a().onTrue(new InstantCommand(() ->{
-       new ResetPigeon(pigeon2); 
+       new ResetPigeon(); 
       }));
 
     driverJoystick.rightBumper().onTrue(new InstantCommand(() ->{

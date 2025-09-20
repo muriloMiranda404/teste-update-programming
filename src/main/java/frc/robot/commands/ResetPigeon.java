@@ -11,9 +11,9 @@ public class ResetPigeon extends Command{
     private Pigeon2 pigeon2;
     private SwerveSubsystem subsystem;
 
-    public ResetPigeon(Pigeon2 pigeon2){
+    public ResetPigeon(){
         this.subsystem = SwerveSubsystem.getInstance();
-        this.pigeon2 = pigeon2;
+        this.pigeon2 = new Pigeon2(9);
         addRequirements(subsystem);
     }
 

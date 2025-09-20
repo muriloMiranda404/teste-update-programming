@@ -128,24 +128,6 @@ public class DriverController implements IDDriverController{
         } else {
             marcha = 1;
         }
-        
-        // double invert = automaticInverted() == true ? -1.0 : 1.0;
-        
-        // if(automaticInverted()){
-        //     invert = -1;
-        // } else{
-        //     invert = 1;
-        // }
-        
-        // double leftY = controller.getLeftY() * marcha * invert;
-        // double leftX= controller.getLeftX() * marcha * invert;
-        // double rightX = controller.getRightX() * marcha; 
-
-        // Command drive = swerveSubsystem.driveCommand(
-        //     () -> MathUtil.applyDeadband(leftY, Controllers.DEADBAND),
-        //     () -> MathUtil.applyDeadband(leftX, Controllers.DEADBAND),
-        //     () -> MathUtil.applyDeadband(rightX, Controllers.DEADBAND));
-
             return null;
     }
 

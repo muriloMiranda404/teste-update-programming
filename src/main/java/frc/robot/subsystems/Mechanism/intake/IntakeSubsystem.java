@@ -1,7 +1,5 @@
 package frc.robot.subsystems.Mechanism.intake;
 
-import java.util.function.Supplier;
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
