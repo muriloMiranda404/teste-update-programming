@@ -9,13 +9,13 @@ import frc.robot.commands.level.elevator.ElevatorPosition;
 import frc.robot.commands.level.intake.IntakePosition;
 import frc.robot.subsystems.Mechanism.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.Mechanism.intake.IntakeSubsystem;
-import frc.robot.subsystems.controllers.IntakeController;
+import frc.robot.subsystems.controllers.MechanismController;
 
 public class AutoCommands extends Command{
     
     ElevatorSubsystem elevatorSubsystem;
     IntakeSubsystem intakeSubsystem;
-    IntakeController intakeController;
+    MechanismController intakeController;
 
     double setpoint;
     boolean autonomous;
@@ -85,7 +85,7 @@ public class AutoCommands extends Command{
 
     public AutoCommands(double setpoint){
         this.setpoint = setpoint;
-        this.intakeController = IntakeController.getInstance();
+        this.intakeController = MechanismController.getInstance();
         this.intakeSubsystem = IntakeSubsystem.getInstance();
         this.elevatorSubsystem = ElevatorSubsystem.getInstance();
         addRequirements(intakeSubsystem);

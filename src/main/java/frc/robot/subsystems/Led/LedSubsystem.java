@@ -19,6 +19,7 @@ public class LedSubsystem extends SubsystemBase{
     private LedSubsystem(){
         this.addressableLED = new AddressableLED(9);
         this.buffer = new AddressableLEDBuffer(60);
+        this.pattern = LEDPattern.solid(Color.kBlack);
 
         this.addressableLED.setLength(this.buffer.getLength());
         this.addressableLED.start();
@@ -39,6 +40,10 @@ public class LedSubsystem extends SubsystemBase{
         return mInstance;
     }
 
+    public LEDPattern getActualPattern(){
+        return pattern;
+    }
+
     public Command runPattern() {
         return run(() -> {
             if (this.pattern != null) {
@@ -57,7 +62,9 @@ public class LedSubsystem extends SubsystemBase{
     }
 
     public void setRGBColor(int index, int r, int g, int b){
-        this.buffer.setRGB(index, r, g, b);
-        this.addressableLED.setData(buffer);
+        for(int i = 0; i <= index; i++){
+            this.buffer.setRGB(index, r, g, b);
+            this.addressableLED.setData(buffer);
+    }
     }
 }

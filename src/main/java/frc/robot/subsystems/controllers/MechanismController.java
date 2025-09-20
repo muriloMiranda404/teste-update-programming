@@ -7,20 +7,20 @@ import frc.robot.Constants.Controllers;
 import frc.robot.Constants.Positions;
 import frc.robot.subsystems.utils.Util;
 
-public class IntakeController implements IDIntakeController{
+public class MechanismController implements IDMechanism{
     
     private CommandXboxController controller;
     public double setpoint;
 
-    public static IntakeController mInstance = null;
+    public static MechanismController mInstance = null;
 
-    private IntakeController(){
+    private MechanismController(){
         this.controller = new CommandXboxController(Controllers.INTAKE_CONTROLLER);
     }
     
-    public static IntakeController getInstance(){
+    public static MechanismController getInstance(){
         if(mInstance == null){
-            mInstance =  new IntakeController();
+            mInstance =  new MechanismController();
         }
         return mInstance;
     }

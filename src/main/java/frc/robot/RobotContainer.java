@@ -1,9 +1,6 @@
 package frc.robot;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
-
-import edu.wpi.first.wpilibj.LEDPattern;
-import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -20,14 +17,14 @@ import frc.robot.subsystems.Mechanism.SuperStruct.StatesToScore;
 import frc.robot.subsystems.Mechanism.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.Mechanism.intake.IntakeSubsystem;
 import frc.robot.subsystems.controllers.DriverController;
-import frc.robot.subsystems.controllers.IntakeController;
+import frc.robot.subsystems.controllers.MechanismController;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 import frc.robot.subsystems.utils.RegisterNamedCommands;
 
 public class RobotContainer {
 
   private DriverController driverJoystick;
-  private IntakeController IntakeJoystick;
+  private MechanismController mechanismJoystick;
 
   private Pigeon2 pigeon2;
 
@@ -45,7 +42,7 @@ public class RobotContainer {
 
   public RobotContainer() {
     this.driverJoystick = DriverController.getInstance();
-    this.IntakeJoystick = IntakeController.getInstance();
+    this.mechanismJoystick = MechanismController.getInstance();
 
     this.pigeon2 = new Pigeon2(Components.PIGEON);
 
@@ -58,7 +55,7 @@ public class RobotContainer {
     this.struct = SuperStruct.getInstance();
 
     this.named = RegisterNamedCommands.getInstance();
-    named.configureNamedCommands();
+    this.named.configureNamedCommands();
 
     this.autoChooser = AutoChooser.getInstance();
 
@@ -97,17 +94,17 @@ public class RobotContainer {
   
   private void configureIntakeBindings(){ 
     
-    IntakeJoystick.L1Button().onTrue(new ParallelCommandGroup(
+    mechanismJoystick.L1Button().onTrue(new ParallelCommandGroup(
       struct.scorePieceOnLevel(StatesToScore.L1),
       new SetIntakeSpeed(true)
     ));
-    IntakeJoystick.L2Button().onTrue(struct.scorePieceOnLevel(StatesToScore.L2));
-    IntakeJoystick.L3Button().onTrue(struct.scorePieceOnLevel(StatesToScore.L3));
-    IntakeJoystick.L4Button().onTrue(struct.scorePieceOnLevel(StatesToScore.L4));    
+    mechanismJoystick.L2Button().onTrue(struct.scorePieceOnLevel(StatesToScore.L2));
+    mechanismJoystick.L3Button().onTrue(struct.scorePieceOnLevel(StatesToScore.L3));
+    mechanismJoystick.L4Button().onTrue(struct.scorePieceOnLevel(StatesToScore.L4));    
 
-    IntakeJoystick.ProcessorButton().onTrue(struct.scorePieceOnLevel(StatesToScore.PROCESSOR));
-    IntakeJoystick.L2Algae().onTrue(struct.scorePieceOnLevel(StatesToScore.ALGAE_L2));
-    IntakeJoystick.L3Algae().onTrue(struct.scorePieceOnLevel(StatesToScore.ALGAE_L3));
+    mechanismJoystick.ProcessorButton().onTrue(struct.scorePieceOnLevel(StatesToScore.PROCESSOR));
+    mechanismJoystick.L2Algae().onTrue(struct.scorePieceOnLevel(StatesToScore.ALGAE_L2));
+    mechanismJoystick.L3Algae().onTrue(struct.scorePieceOnLevel(StatesToScore.ALGAE_L3));
 }
 
   public Command getAutonomousCommand() {

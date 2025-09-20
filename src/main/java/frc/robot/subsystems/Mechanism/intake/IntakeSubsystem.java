@@ -25,6 +25,7 @@ public class IntakeSubsystem extends SubsystemBase implements MechanismIO{
     public DigitalInput coralswitch;
 
     public double setpoint;
+    public double speed;
 
     public static IntakeSubsystem mInstance = null;
 
@@ -44,6 +45,7 @@ public class IntakeSubsystem extends SubsystemBase implements MechanismIO{
         this.coralswitch = new DigitalInput(Intake.CORAL_SWITCH);
 
         this.setpoint = 0;
+        this.speed = 0;
 
         this.ledSubsystem = LedSubsystem.getInstance();
     }
@@ -110,18 +112,15 @@ public class IntakeSubsystem extends SubsystemBase implements MechanismIO{
     public double getCoralMotorTemperature(){
         return getCoral.getMotorTemperature();
     }
-
-    public void getCoralOnIntake(){
-        if(!IsTouched()){
-            getCoral.setSpeed(0.2);
-        }
-        getCoral.setSpeed(0);
-    }
     
     @Override
     public void setSpeed(double speed) {
+        this.speed = speed;
         getCoral.setSpeed(speed);
-        if(getCoral.getSpeed() != 0) ledSubsystem.setColor(Color.kRed);
+    }
+
+    public double getSpeedOnIntakeMotor(){
+        return speed;
     }
 
     @Override

@@ -64,8 +64,6 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-    ledSubsystem.setColor(Color.kAqua);
-    ledSubsystem.setPattern(LEDPattern.rainbow(1, 1));
     ledSubsystem.setPattern(LEDPattern.solid(Color.kSpringGreen).mask(LEDPattern.progressMaskLayer(() -> 1)));
   }
 

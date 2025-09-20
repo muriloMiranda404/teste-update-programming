@@ -1,21 +1,12 @@
 package frc.robot.subsystems.swerve;
 
 import java.io.File;
-import java.io.IOException;
-import java.text.ParseException;
 import java.util.function.DoubleSupplier;
-
-import com.ctre.phoenix.motorcontrol.StickyFaults;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
-import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.controllers.PPLTVController;
-import com.pathplanner.lib.path.PathPlannerPath;
-import com.pathplanner.lib.trajectory.PathPlannerTrajectory;
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -29,7 +20,6 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.swerve;
 import frc.robot.subsystems.LimelightConfig;
@@ -57,13 +47,12 @@ public class SwerveSubsystem extends SubsystemBase{
         swerveDrive.getModulePositions(), 
         new Pose2d());
 
-        this.limelightConfig = LimelightConfig.getInstance();
-
-      this.swerveDrive = new SwerveParser(directory).createSwerveDrive(swerve.MAX_SPEED);
-
-    } catch(Exception e){
+        this.swerveDrive = new SwerveParser(directory).createSwerveDrive(swerve.MAX_SPEED);
+        
+      } catch(Exception e){
         System.out.println("erro ao criar o swervedrive");
-    }finally{
+      }finally{
+      this.limelightConfig = LimelightConfig.getInstance();
       xPID = new PIDController(1.0, 0.0, 0.1); // Controle de posição X
       yPID = new PIDController(1.0, 0.0, 0.1); // Controle de posição Y
       profilePid = new ProfiledPIDController(1.0, 0.0, 0.1, new TrapezoidProfile.Constraints(Math.PI, Math.PI)); // Controle de rotação
@@ -211,7 +200,7 @@ public class SwerveSubsystem extends SubsystemBase{
       }
     });
   }
-
+  
   public void driveFieldOriented(ChassisSpeeds speed){
     swerveDrive.driveFieldOriented(speed);
   }
