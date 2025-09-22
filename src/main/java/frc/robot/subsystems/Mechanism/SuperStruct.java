@@ -1,5 +1,7 @@
 package frc.robot.subsystems.Mechanism;
 
+import edu.wpi.first.wpilibj.LEDPattern;
+import edu.wpi.first.wpilibj.LEDPattern.GradientType;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -19,6 +21,7 @@ public class SuperStruct extends SubsystemBase{
     private double intakeInput;
 
     private String state;
+    private Color color;
 
     public static SuperStruct mInstance = null;
 
@@ -28,6 +31,7 @@ public class SuperStruct extends SubsystemBase{
         this.ledSubsystem = LedSubsystem.getInstance();
         this.elevatorInput = ElevatorPositions.HOME;
         this.intakeInput = IntakePositions.DEFAULT_POSITION;
+        this.color = Color.kBlack;
         this.state = "INITIAL STATE";
     }
 
@@ -46,7 +50,7 @@ public class SuperStruct extends SubsystemBase{
     public void periodic() {
         this.elevatorSubsystem.setPosition(elevatorInput);
         this.intakeSubsystem.setPosition(intakeInput);
-
+        alternLedColor(color);
         this.elevatorSubsystem.periodic();
         this.intakeSubsystem.periodic();
     }
@@ -71,18 +75,12 @@ public class SuperStruct extends SubsystemBase{
         }
     }
 
-    public enum ScoreSequence{
-        ABRIR_INTAKE,
-        SUBIR_ELEVADOR,
-        FECHAR_INTAKE
-    }
-
     private void alternLedColor(Color color){
         if(intakeSubsystem.IsTouched()){
-            ledSubsystem.setColor(Color.kRed);
+            ledSubsystem.setPattern(LEDPattern.gradient(GradientType.kDiscontinuous, Color.kRed, color));
         } else if(elevatorSubsystem.getOutputInElevatorMotors()[0] != 0){
-            ledSubsystem.setColor(Color.kWhite);
-        } else{
+            ledSubsystem.setPattern(LEDPattern.gradient(GradientType.kDiscontinuous, Color.kWhite, color));
+        } else {
             ledSubsystem.setColor(color);
         }
     }
@@ -92,7 +90,7 @@ public class SuperStruct extends SubsystemBase{
             switch (state) {
                 case L1:
                 this.state = "L1 STATE";
-                alternLedColor(Color.kGreen);
+                color = Color.kGreen;
                 if(this.elevatorInput != ElevatorPositions.HOME) this.intakeInput = IntakePositions.ABERTURA_COMUMM;
                 if(this.intakeSubsystem.atSetpoint()){
                     this.elevatorInput = ElevatorPositions.HOME;
@@ -104,7 +102,7 @@ public class SuperStruct extends SubsystemBase{
                 
                 case L2:
                     this.state = "L2 STATE";
-                    alternLedColor(Color.kYellow);
+                    color = Color.kYellow;
                     this.ledSubsystem.setColor(edu.wpi.first.wpilibj.util.Color.kGray);
                     this.intakeInput = IntakePositions.PUT_CORAL_ALTERNATIVE;
                     if(this.intakeSubsystem.atSetpoint()){
@@ -114,7 +112,7 @@ public class SuperStruct extends SubsystemBase{
     
                 case L3:
                     this.state = "L3 STATE";
-                    alternLedColor(Color.kPurple);
+                    color = Color.kPurple;
                     this.intakeInput = IntakePositions.PUT_CORAL_ALTERNATIVE;
                     if(this.intakeSubsystem.atSetpoint()){
                         this.elevatorInput = ElevatorPositions.L3;
@@ -123,7 +121,7 @@ public class SuperStruct extends SubsystemBase{
     
                 case L4:
                     this.state = "L4 STATE";
-                    alternLedColor(Color.kDarkBlue);
+                    color = Color.kDarkBlue;
                     if(this.elevatorInput != ElevatorPositions.L4) this.intakeInput = IntakePositions.PUT_CORAL;
                     if(this.intakeSubsystem.atSetpoint()){
                         this.elevatorInput = ElevatorPositions.L4;

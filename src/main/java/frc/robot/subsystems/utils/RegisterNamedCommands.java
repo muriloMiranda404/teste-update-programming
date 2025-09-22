@@ -5,7 +5,6 @@ import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.commands.ResetPigeon;
 import frc.robot.commands.level.intake.SetIntakeSpeed;
@@ -71,36 +70,21 @@ public class RegisterNamedCommands {
 
     private void configureSwerveAutoCommands(SwerveSubsystem swerve, LimelightConfig limelightConfig, ElevatorSubsystem elevatorSubsystem){
 
-        NamedCommands.registerCommand("RESET PIGEON", new InstantCommand(() ->{
-            new ResetPigeon();
-        }));
+        NamedCommands.registerCommand("RESET PIGEON", new ResetPigeon());
 
         NamedCommands.registerCommand("ALINHAMENTO", new AlingToTarget(true));
 
         NamedCommands.registerCommand("TURN ROBOT", new TurnRobot(45));
 
-        NamedCommands.registerCommand("RESET ELEVATOR", new InstantCommand(() ->{
-            elevatorSubsystem.resetElevator();
-        }));
+        NamedCommands.registerCommand("RESET ELEVATOR", elevatorSubsystem.resetElevator());
 
-        NamedCommands.registerCommand("RESET ODOMETRY CENTER AUTO", new InstantCommand(() ->{
-            swerve.resetOdometry(new Pose2d(7.492, 3.839, Rotation2d.fromDegrees(179.832)));
-        }));
-
-        NamedCommands.registerCommand("RESET POSE FOR CENTER AUTONOMOUS", new InstantCommand(() ->{
-            swerveDrivePoseEstimator.resetPosition(
-                pigeon2.getRotation2d(),
-                swerve.getSwerveDrive().getModulePositions(), 
-                new Pose2d(7.492, 3.839, Rotation2d.fromDegrees(179.832)));
-        }));
+        NamedCommands.registerCommand("RESET ODOMETRY CENTER AUTO", swerve.resetOdometry(new Pose2d(7.492, 3.839, Rotation2d.fromDegrees(179.832))));
     }
 
     private void configureSubsystemsUtils(IntakeSubsystem intakeSubsystem){
 
         NamedCommands.registerCommand("THROW CORAL", new SetIntakeSpeed(0.8));
 
-        NamedCommands.registerCommand("GET CORAL", new InstantCommand(() ->{
-            new SetIntakeSpeed(true);
-        }));
+        NamedCommands.registerCommand("GET CORAL", new SetIntakeSpeed(true));
     }
 }

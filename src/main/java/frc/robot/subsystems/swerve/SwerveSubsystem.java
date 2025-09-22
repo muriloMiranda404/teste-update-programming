@@ -15,6 +15,8 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
@@ -22,12 +24,15 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.swerve;
+import frc.robot.commands.AutoChooser;
 import frc.robot.subsystems.LimelightConfig;
 import swervelib.SwerveDrive;
+import swervelib.SwerveModule;
 import swervelib.parser.SwerveParser;
 
 public class SwerveSubsystem extends SubsystemBase{
 
+  private AutoChooser builder;
   private SwerveDrive swerveDrive;
   private Pigeon2 pigeon;
   private PIDController xPID;
@@ -36,6 +41,9 @@ public class SwerveSubsystem extends SubsystemBase{
   private HolonomicDriveController driveController;
   private LimelightConfig limelightConfig;
   private SwerveDrivePoseEstimator swerveDrivePoseEstimator;
+  private SwerveModule modules;
+  private SwerveModuleState[] state;
+  private SwerveModule[] module;
 
   public static SwerveSubsystem mInstance = null;
 
@@ -66,6 +74,7 @@ public class SwerveSubsystem extends SubsystemBase{
       
       pigeon = new Pigeon2(9);
       this.setupPathPlanner();
+      this.builder = AutoChooser.getInstance();
 
       swerveDrive.setChassisDiscretization(true, 0.2);
     }
@@ -200,7 +209,32 @@ public class SwerveSubsystem extends SubsystemBase{
       }
     });
   }
-  
+
+  /**
+   * @param x eixo de x do joystick
+   * @param y eixo de y do joystick
+   * @param omega eixo de rotaçãp
+   * @param fromField drive orientado ao campo
+   * @return
+  **/
+  public Command driveRobot(DoubleSupplier x, DoubleSupplier y, DoubleSupplier omega, boolean fromField){
+    return run(() ->{
+
+      ChassisSpeeds speed = fromField == true ? ChassisSpeeds.fromFieldRelativeSpeeds(x.getAsDouble(), y.getAsDouble(),
+                                                                                      omega.getAsDouble(), pigeon.getRotation2d()) 
+                                                                                      : new ChassisSpeeds(x.getAsDouble(), 
+                                                                                                          y.getAsDouble(), omega.getAsDouble());
+
+      state = swerveDrive.kinematics.toSwerveModuleStates(speed);
+      SwerveDriveKinematics.desaturateWheelSpeeds(state, swerve.MAX_SPEED);
+
+      module = swerveDrive.getModules();
+      for(int i = 0; i <= state.length; i++){
+        module[i].setDesiredState(state[i], false, true);
+      }
+      });
+  }
+
   public void driveFieldOriented(ChassisSpeeds speed){
     swerveDrive.driveFieldOriented(speed);
   }
@@ -209,7 +243,10 @@ public class SwerveSubsystem extends SubsystemBase{
     return Rotation2d.fromDegrees(scope0To360(pigeon.getYaw().getValueAsDouble()));
   }
 
-  public Command getAutonomousCommand(String name, boolean resetOdom){
+  public Command getAutonomousCommand(String name, boolean altern){
+    if(altern){
+      return AutoBuilder.buildAuto(name);
+    }
     return new PathPlannerAuto(name);
   }
   
@@ -237,8 +274,10 @@ public class SwerveSubsystem extends SubsystemBase{
     swerveDrive.setMotorIdleMode(brake);
   }
 
-  public void resetOdometry(Pose2d pose){
-    swerveDrive.resetOdometry(pose);
+  public Command resetOdometry(Pose2d pose){
+    return run(() ->{
+      swerveDrive.resetOdometry(pose);
+    });
   }
 
   public void drive(Translation2d translation2d, double rotation, boolean fieldOriented){

@@ -1,10 +1,8 @@
 package frc.robot;
 
-import com.ctre.phoenix6.hardware.Pigeon2;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import frc.robot.Constants.Components;
 import frc.robot.commands.AutoChooser;
 import frc.robot.commands.ResetPigeon;
 import frc.robot.commands.level.intake.SetIntakeSpeed;
@@ -22,27 +20,23 @@ import frc.robot.subsystems.utils.RegisterNamedCommands;
 
 public class RobotContainer {
 
-  private DriverController driverJoystick;
-  private MechanismController mechanismJoystick;
+  private final DriverController driverController;
+  private final MechanismController mechanismController;
 
-  private Pigeon2 pigeon2;
-
-  private SwerveSubsystem swerve;
-  private LimelightConfig limelightConfig;
+  private final SwerveSubsystem swerve;
+  private final LimelightConfig limelightConfig;
   
-  private IntakeSubsystem intake;
-  private ElevatorSubsystem elevator;
-  private SuperStruct struct;
+  private final IntakeSubsystem intake;
+  private final ElevatorSubsystem elevator;
+  private final SuperStruct struct;
 
-  private RegisterNamedCommands named;
+  private final RegisterNamedCommands named;
 
-  private AutoChooser autoChooser;
+  private final AutoChooser autoChooser;
 
   public RobotContainer() {
-    this.driverJoystick = DriverController.getInstance();
-    this.mechanismJoystick = MechanismController.getInstance();
-
-    this.pigeon2 = new Pigeon2(Components.PIGEON);
+    this.driverController = DriverController.getInstance();
+    this.mechanismController = MechanismController.getInstance();
 
     this.swerve = SwerveSubsystem.getInstance();
     this.limelightConfig = LimelightConfig.getInstance();
@@ -56,10 +50,11 @@ public class RobotContainer {
 
     this.autoChooser = AutoChooser.getInstance();
 
-    swerve.setDefaultCommand(swerve.driveCommand(
-      () -> driverJoystick.getLeftY(),
-      () -> driverJoystick.getLeftX(),
-      () -> driverJoystick.getRightX()
+    swerve.setDefaultCommand(swerve.driveRobot(
+      () -> driverController.getLeftY(),
+      () -> driverController.getLeftX(),
+      () -> driverController.getRightX(),
+      true
     ));
 
     configureDriveBindings();
@@ -68,38 +63,38 @@ public class RobotContainer {
 
   private void configureDriveBindings() {
     
-    driverJoystick.alingRobotOnReef().whileTrue(new AlingToTarget(true));
+    driverController.alingRobotOnReef().whileTrue(new AlingToTarget(true));
 
-    driverJoystick.a().onTrue(new InstantCommand(() ->{
+    driverController.a().onTrue(new InstantCommand(() ->{
        new ResetPigeon(); 
       }));
 
-    driverJoystick.rightBumper().onTrue(new InstantCommand(() ->{
+    driverController.rightBumper().onTrue(new InstantCommand(() ->{
        new TurnRobot(45);
       }));
 
-    driverJoystick.leftBumper().onTrue(new InstantCommand(() ->{
+    driverController.leftBumper().onTrue(new InstantCommand(() ->{
         new TurnRobot(-45);
       }));
 
-    driverJoystick.emergencyInvert().onTrue(new InstantCommand(() ->{
-        driverJoystick.Invert();
+    driverController.emergencyInvert().onTrue(new InstantCommand(() ->{
+        driverController.Invert();
       }));
   }
   
   private void configureIntakeBindings(){ 
     
-    mechanismJoystick.L1Button().onTrue(new ParallelCommandGroup(
+    mechanismController.L1Button().onTrue(new ParallelCommandGroup(
       struct.scorePieceOnLevel(StatesToScore.L1),
       new SetIntakeSpeed(true)
     ));
-    mechanismJoystick.L2Button().onTrue(struct.scorePieceOnLevel(StatesToScore.L2));
-    mechanismJoystick.L3Button().onTrue(struct.scorePieceOnLevel(StatesToScore.L3));
-    mechanismJoystick.L4Button().onTrue(struct.scorePieceOnLevel(StatesToScore.L4));    
+    mechanismController.L2Button().onTrue(struct.scorePieceOnLevel(StatesToScore.L2));
+    mechanismController.L3Button().onTrue(struct.scorePieceOnLevel(StatesToScore.L3));
+    mechanismController.L4Button().onTrue(struct.scorePieceOnLevel(StatesToScore.L4));    
 
-    mechanismJoystick.ProcessorButton().onTrue(struct.scorePieceOnLevel(StatesToScore.PROCESSOR));
-    mechanismJoystick.L2Algae().onTrue(struct.scorePieceOnLevel(StatesToScore.ALGAE_L2));
-    mechanismJoystick.L3Algae().onTrue(struct.scorePieceOnLevel(StatesToScore.ALGAE_L3));
+    mechanismController.ProcessorButton().onTrue(struct.scorePieceOnLevel(StatesToScore.PROCESSOR));
+    mechanismController.L2Algae().onTrue(struct.scorePieceOnLevel(StatesToScore.ALGAE_L2));
+    mechanismController.L3Algae().onTrue(struct.scorePieceOnLevel(StatesToScore.ALGAE_L3));
 }
 
   public Command getAutonomousCommand() {
