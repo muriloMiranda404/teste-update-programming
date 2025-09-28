@@ -7,6 +7,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPLTVController;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -25,6 +26,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.swerve;
 import frc.robot.subsystems.LimelightConfig;
+import frc.robot.subsystems.Motors.MotorIO;
 import frc.robot.subsystems.Motors.SparkMaxMotors;
 import frc.robot.subsystems.utils.RegisterNamedCommands;
 import swervelib.SwerveDrive;
@@ -44,39 +46,46 @@ public class SwerveSubsystem extends SubsystemBase implements SwerveIO{
   private SwerveModuleState[] state;
   private SwerveModule[] module;
 
-  private SparkMaxMotors[] driveMotors;
-  private SparkMaxMotors[] angleMotors;
+  private MotorIO[] driveMotors;
+  private MotorIO[] angleMotors;
+
+  private double direçãoX;
+  private double direçãoY;
+  private double rotação;
+  private double lastMovingTime;
+  private boolean isMoving;
 
   public static SwerveSubsystem mInstance = null;
 
   private SwerveSubsystem(File directory){
-    try{
+    try{      
+      this.swerveDrive = new SwerveParser(directory).createSwerveDrive(swerve.MAX_SPEED);
+      
+    } catch(Exception e){
+      System.out.println("erro ao criar o swervedrive");
+    }finally{
+      
       this.swerveDrivePoseEstimator = new SwerveDrivePoseEstimator(
         swerveDrive.kinematics, 
         pigeon.getRotation2d(), 
         swerveDrive.getModulePositions(), 
         new Pose2d());
 
-        this.swerveDrive = new SwerveParser(directory).createSwerveDrive(swerve.MAX_SPEED);
+      this.driveMotors = new SparkMaxMotors[]{
+        new SparkMaxMotors(1, false, "front right drive motor"),
+        new SparkMaxMotors(8, false, "front left drive motor"),
+        new SparkMaxMotors(6, false, "back left drive motor"),
+        new SparkMaxMotors(3, false, "back right drive motor")
+      };
 
-        this.driveMotors = new SparkMaxMotors[]{
-          new SparkMaxMotors(1, false, "front right drive motor"),
-          new SparkMaxMotors(8, false, "front left drive motor"),
-          new SparkMaxMotors(6, false, "back left drive motor"),
-          new SparkMaxMotors(3, false, "back right drive motor")
-        };
-
-        this.angleMotors = new SparkMaxMotors[]{
-          new SparkMaxMotors(2, false, "front right angle motor"),
-          new SparkMaxMotors(7, false, "front left angle motor"),
-          new SparkMaxMotors(5, false, "back right angle motor"),
-          new SparkMaxMotors(4, false, "back left angle motor")
-        };
-        
-        this.setupPathPlanner();
-      } catch(Exception e){
-        System.out.println("erro ao criar o swervedrive");
-      }finally{
+      this.angleMotors = new SparkMaxMotors[]{
+        new SparkMaxMotors(2, false, "front right angle motor"),
+        new SparkMaxMotors(7, false, "front left angle motor"),
+        new SparkMaxMotors(5, false, "back right angle motor"),
+        new SparkMaxMotors(4, false, "back left angle motor")
+      };
+      
+      this.setupPathPlanner();
 
       this.limelightConfig = LimelightConfig.getInstance();
       xPID = new PIDController(1.0, 0.0, 0.1); // Controle de posição X
@@ -93,7 +102,25 @@ public class SwerveSubsystem extends SubsystemBase implements SwerveIO{
       pigeon = new Pigeon2(9);
       configureAutonomousCommands();
 
+      this.direçãoX = 0;
+      this.direçãoY = 0;
+      this.rotação = 0;
+      this.lastMovingTime = 0;
+      this.isMoving = false;
+
       swerveDrive.setChassisDiscretization(true, 0.2);
+    }
+  }
+
+  @Override
+  public void periodic() {
+    swerveDrivePoseEstimator.update(pigeon.getRotation2d(), swerveDrive.getModulePositions());  
+    swerveDrive.updateOdometry();
+    automaticSwerveMode();
+
+    if(limelightConfig.getHasTarget()){
+      Pose2d poseEstimated = limelightConfig.getEstimatedGlobalPose();
+      swerveDrivePoseEstimator.addVisionMeasurement(poseEstimated, Timer.getFPGATimestamp());
     }
   }
 
@@ -108,14 +135,31 @@ public class SwerveSubsystem extends SubsystemBase implements SwerveIO{
     RegisterNamedCommands.configureNamedCommands();
   }
 
-  @Override
-  public void periodic() {
-    swerveDrivePoseEstimator.update(pigeon.getRotation2d(), swerveDrive.getModulePositions());  
-    swerveDrive.updateOdometry();
+  private boolean swerveIsMoving(){
+    boolean isMoving = Math.abs(direçãoX) > 0.05 || Math.abs(direçãoY) > 0.05 || Math.abs(rotação) > 0.05;
+    this.isMoving = isMoving;
 
-    if(limelightConfig.getHasTarget()){
-      Pose2d poseEstimated = limelightConfig.getEstimatedGlobalPose();
-      swerveDrivePoseEstimator.addVisionMeasurement(poseEstimated, Timer.getFPGATimestamp());
+    return isMoving;
+  }
+
+  @Override
+  public void automaticSwerveMode(){
+    boolean moving = swerveIsMoving();
+    IdleMode mode = IdleMode.kBrake;
+
+    if(moving){
+      this.lastMovingTime = Timer.getFPGATimestamp();
+      if(mode != IdleMode.kCoast){
+        swerveDrive.setMotorIdleMode(false);
+        mode = IdleMode.kCoast;
+      }
+    } else {
+      if(Timer.getFPGATimestamp() - lastMovingTime > 1.0){
+        if(mode != IdleMode.kBrake){
+          swerveDrive.setMotorIdleMode(true);
+          mode = IdleMode.kBrake;
+        }
+      }
     }
   }
 
@@ -127,6 +171,7 @@ public class SwerveSubsystem extends SubsystemBase implements SwerveIO{
     return this.swerveDrivePoseEstimator;
   }
 
+  @Override
   public void setupPathPlanner(){
     RobotConfig config;
     try{
@@ -243,18 +288,26 @@ public class SwerveSubsystem extends SubsystemBase implements SwerveIO{
   public Command driveRobot(DoubleSupplier x, DoubleSupplier y, DoubleSupplier omega, boolean fromField){
     return run(() ->{
 
+      this.direçãoX = x.getAsDouble() * swerveDrive.getMaximumChassisVelocity();
+      this.direçãoY = y.getAsDouble() * swerveDrive.getMaximumChassisVelocity();
+      this.rotação = omega.getAsDouble() * swerveDrive.getMaximumChassisAngularVelocity();
+
       double td = 0.02;
-      ChassisSpeeds speed = fromField == true ? ChassisSpeeds.fromFieldRelativeSpeeds(x.getAsDouble(), y.getAsDouble(),
-                                                                                      omega.getAsDouble(), pigeon.getRotation2d()) 
-                                                                                      : new ChassisSpeeds(x.getAsDouble(), 
-                                                                                                          y.getAsDouble(), omega.getAsDouble());
+      ChassisSpeeds speed = fromField == true ? ChassisSpeeds.fromFieldRelativeSpeeds(x.getAsDouble() * swerveDrive.getMaximumChassisVelocity(),
+                                                                                      y.getAsDouble() * swerveDrive.getMaximumChassisVelocity(),
+                                                                                      omega.getAsDouble() * swerveDrive.getMaximumChassisAngularVelocity(),
+                                                                                      pigeon.getRotation2d()) 
+                                                                                      : new ChassisSpeeds(
+                                                                                      x.getAsDouble() * swerveDrive.getMaximumChassisVelocity(), 
+                                                                                      y.getAsDouble() * swerveDrive.getMaximumChassisVelocity(),
+                                                                                      omega.getAsDouble() * swerveDrive.getMaximumChassisAngularVelocity());
 
       ChassisSpeeds discretize = ChassisSpeeds.discretize(speed, td);
       state = swerveDrive.kinematics.toSwerveModuleStates(discretize);
       SwerveDriveKinematics.desaturateWheelSpeeds(state, swerve.MAX_SPEED);
 
       module = swerveDrive.getModules();
-      for(int i = 0; i <= state.length; i++){
+      for(int i = 0; i < state.length; i++){
         module[i].setDesiredState(state[i], false, true);
       }
       });
@@ -265,6 +318,7 @@ public class SwerveSubsystem extends SubsystemBase implements SwerveIO{
     swerveDrive.driveFieldOriented(speed);
   }
 
+  @Override
   public Rotation2d getHeading(){
     return Rotation2d.fromDegrees(scope0To360(pigeon.getYaw().getValueAsDouble()));
   }
@@ -294,6 +348,7 @@ public class SwerveSubsystem extends SubsystemBase implements SwerveIO{
     return Rotation2d.fromDegrees(acumulo);
   }
 
+  @Override
   public double getYaw(){
     return pigeon.getYaw().getValueAsDouble();
   }

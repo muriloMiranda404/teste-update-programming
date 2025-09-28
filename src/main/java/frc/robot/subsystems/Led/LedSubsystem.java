@@ -1,5 +1,9 @@
 package frc.robot.subsystems.Led;
 
+import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.MetersPerSecond;
+
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.LEDPattern;
@@ -57,7 +61,7 @@ public class LedSubsystem extends SubsystemBase{
         this.pattern = pattern;
     }
 
-    public void setColor(Color color){
+    public void setSolidColor(Color color){
         setPattern(LEDPattern.solid(color));
     }
 
@@ -65,6 +69,15 @@ public class LedSubsystem extends SubsystemBase{
         for(int i = 0; i <= index; i++){
             this.buffer.setRGB(index, r, g, b);
             this.addressableLED.setData(buffer);
+      }
     }
+
+    public void setRainbow() {
+        Distance ledSpace = Meters.of(1.0 / 60.0);
+        LEDPattern rainbowPattern = LEDPattern.rainbow(255, 128);
+        LEDPattern scrollingRainbowPattern = 
+            rainbowPattern.scrollAtAbsoluteSpeed(MetersPerSecond.of(1), ledSpace);
+
+        scrollingRainbowPattern.applyTo(buffer);
     }
 }

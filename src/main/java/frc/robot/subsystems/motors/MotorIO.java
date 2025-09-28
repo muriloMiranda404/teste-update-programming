@@ -4,7 +4,7 @@ import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkMax;
 
-public interface SparkMaxMotorsIO {
+public interface MotorIO {
     
     double getVoltage();
 

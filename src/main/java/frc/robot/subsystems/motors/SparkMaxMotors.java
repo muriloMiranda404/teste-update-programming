@@ -17,7 +17,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 
-public class SparkMaxMotors implements SparkMaxMotorsIO{
+public class SparkMaxMotors implements MotorIO{
     
     private int id;
     private boolean usingInternalEncoder;

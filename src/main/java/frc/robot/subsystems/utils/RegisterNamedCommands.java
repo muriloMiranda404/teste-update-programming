@@ -13,8 +13,8 @@ import frc.robot.commands.level.intake.SetIntakeSpeed;
 import frc.robot.commands.swerveUtils.AlingToTarget;
 import frc.robot.commands.swerveUtils.TurnRobot;
 import frc.robot.subsystems.LimelightConfig;
-import frc.robot.subsystems.Mechanism.SuperStruct;
-import frc.robot.subsystems.Mechanism.SuperStruct.StatesToScore;
+import frc.robot.subsystems.Mechanism.SuperStructure;
+import frc.robot.subsystems.Mechanism.SuperStructure.StatesToScore;
 import frc.robot.subsystems.Mechanism.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.Mechanism.intake.IntakeSubsystem;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
@@ -27,7 +27,7 @@ public class RegisterNamedCommands {
     private static LimelightConfig limelightConfig;
     private static SwerveDrivePoseEstimator swerveDrivePoseEstimator;
     private static Pigeon2 pigeon2;
-    private static SuperStruct struct;
+    private static SuperStructure struct;
 
     public static RegisterNamedCommands mInstance = null;
 
@@ -36,7 +36,7 @@ public class RegisterNamedCommands {
         RegisterNamedCommands.elevator = ElevatorSubsystem.getInstance();
         RegisterNamedCommands.intake = IntakeSubsystem.getInstance();
         RegisterNamedCommands.limelightConfig = LimelightConfig.getInstance();
-        RegisterNamedCommands.struct = SuperStruct.getInstance();
+        RegisterNamedCommands.struct = SuperStructure.getInstance();
         RegisterNamedCommands.swerveDrivePoseEstimator = swerve.getPoseEstimator();
         RegisterNamedCommands.pigeon2 = new Pigeon2(9);
     }
@@ -54,7 +54,7 @@ public class RegisterNamedCommands {
         configureSwerveAutoCommands(swerve, limelightConfig, elevator);
     }
 
-    private static void configurePositionsToAutonomous(SuperStruct struct){
+    private static void configurePositionsToAutonomous(SuperStructure struct){
 
         NamedCommands.registerCommand("SCORE ON L1", struct.scorePieceOnLevel(StatesToScore.L1));
         NamedCommands.registerCommand("GO TO HOME POSITION", new ParallelCommandGroup(

@@ -4,18 +4,17 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Intake;
 import frc.robot.Constants.Intake.IntakePositions;
-import frc.robot.subsystems.Led.LedSubsystem;
 import frc.robot.subsystems.Mechanism.MechanismIO;
+import frc.robot.subsystems.Motors.MotorIO;
 import frc.robot.subsystems.Motors.SparkMaxMotors;
 
 public class IntakeSubsystem extends SubsystemBase implements MechanismIO{
     
-    public SparkMaxMotors turnIntake;
-    public SparkMaxMotors getCoral;
+    public MotorIO turnIntake;
+    public MotorIO getCoral;
  
     public DutyCycleEncoder encoder;
  
@@ -25,8 +24,6 @@ public class IntakeSubsystem extends SubsystemBase implements MechanismIO{
 
     public double setpoint;
     public double speed;
-
-    private LedSubsystem ledSubsystem;
     
     public static IntakeSubsystem mInstance = null;
 
@@ -38,19 +35,17 @@ public class IntakeSubsystem extends SubsystemBase implements MechanismIO{
         this.getCoral = new SparkMaxMotors(Intake.CORAL_MOTOR, true, "get game piece motor");
 
         this.encoder = new DutyCycleEncoder(Intake.INTAKE_ENCODER);
-        this.encoder.setDutyCycleRange(0, 360);
 
         this.controller = Intake.INTAKE_PID;
-        this.controller.setTolerance(Intake.INTAKE_TOLERANCE);
 
         this.coralswitch = new DigitalInput(Intake.CORAL_SWITCH);
 
         this.setpoint = 0;
         this.speed = 0;
 
-        this.ledSubsystem = LedSubsystem.getInstance();
-        
         this.hasCoral = false;
+
+        configureIntake();
     }
 
     public static IntakeSubsystem getInstance(){
@@ -58,6 +53,12 @@ public class IntakeSubsystem extends SubsystemBase implements MechanismIO{
             mInstance = new IntakeSubsystem();
         }
         return mInstance;
+    }
+
+    private void configureIntake(){
+        this.encoder.setDutyCycleRange(0, 360);
+
+        this.controller.setTolerance(Intake.INTAKE_TOLERANCE);
     }
 
     public boolean IsTouched(){

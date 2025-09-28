@@ -4,18 +4,17 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Elevator;
-import frc.robot.subsystems.Led.LedSubsystem;
 import frc.robot.subsystems.Mechanism.MechanismIO;
+import frc.robot.subsystems.Motors.MotorIO;
 import frc.robot.subsystems.Motors.SparkMaxMotors;
 
 public class ElevatorSubsystem extends SubsystemBase implements MechanismIO{
     
-    private SparkMaxMotors rightMotor;
-    private SparkMaxMotors leftMotor;
+    private MotorIO rightMotor;
+    private MotorIO leftMotor;
 
     private DigitalInput downSwitch;
     private DigitalInput upSwitch;
@@ -28,7 +27,6 @@ public class ElevatorSubsystem extends SubsystemBase implements MechanismIO{
 
     public double setpoint;
 
-    private LedSubsystem ledSubsystem;
     
     private ElevatorSubsystem(){
         
@@ -46,9 +44,6 @@ public class ElevatorSubsystem extends SubsystemBase implements MechanismIO{
     
         this.setpoint = 0;
 
-        this.ledSubsystem = LedSubsystem.getInstance();
-
-        configureElevatorLed();
     }
     
     public static ElevatorSubsystem getInstance(){
@@ -56,12 +51,6 @@ public class ElevatorSubsystem extends SubsystemBase implements MechanismIO{
             mInstance = new ElevatorSubsystem();
         }
         return mInstance;
-    }
-
-    public void configureElevatorLed(){
-        if(getOutputInElevatorMotors()[0] > 0){
-            ledSubsystem.setColor(Color.kViolet);
-        }
     }
     
     @Override

@@ -12,7 +12,7 @@ import frc.robot.subsystems.Led.LedSubsystem;
 import frc.robot.subsystems.Mechanism.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.Mechanism.intake.IntakeSubsystem;
 
-public class SuperStruct extends SubsystemBase{
+public class SuperStructure extends SubsystemBase{
 
     private ElevatorSubsystem elevatorSubsystem;
     private IntakeSubsystem intakeSubsystem;
@@ -24,9 +24,9 @@ public class SuperStruct extends SubsystemBase{
     private String state;
     private Color color;
 
-    public static SuperStruct mInstance = null;
+    public static SuperStructure mInstance = null;
 
-    private SuperStruct(){
+    private SuperStructure(){
         this.elevatorSubsystem = ElevatorSubsystem.getInstance();
         this.intakeSubsystem = IntakeSubsystem.getInstance();
         this.ledSubsystem = LedSubsystem.getInstance();
@@ -36,9 +36,9 @@ public class SuperStruct extends SubsystemBase{
         this.state = "INITIAL STATE";
     }
 
-    public static SuperStruct getInstance(){
+    public static SuperStructure getInstance(){
         if(mInstance == null){
-            mInstance = new SuperStruct();
+            mInstance = new SuperStructure();
         }
         return mInstance;
     }
@@ -84,7 +84,7 @@ public class SuperStruct extends SubsystemBase{
                 } else if(elevatorSubsystem.getOutputInElevatorMotors()[0] != 0){
                     ledSubsystem.setPattern(LEDPattern.gradient(GradientType.kDiscontinuous, Color.kWhite, color));
                 } else {
-                    ledSubsystem.setColor(color);
+                    ledSubsystem.setSolidColor(color);
             }
         }
     }
@@ -107,7 +107,7 @@ public class SuperStruct extends SubsystemBase{
                 case L2:
                     this.state = "L2 STATE";
                     this.color = Color.kYellow;
-                    this.ledSubsystem.setColor(edu.wpi.first.wpilibj.util.Color.kGray);
+                    this.ledSubsystem.setSolidColor(edu.wpi.first.wpilibj.util.Color.kGray);
                     this.intakeInput = IntakePositions.PUT_CORAL_ALTERNATIVE;
                     if(this.intakeSubsystem.atSetpoint()){
                         this.elevatorInput = ElevatorPositions.L2;
@@ -154,6 +154,10 @@ public class SuperStruct extends SubsystemBase{
                     break;
             }
         });
+    }
+
+    public boolean HasGamePieceOnIntake(){
+        return intakeSubsystem.hasCoralOnIntake();
     }
 
     public boolean seguranceSystem(){
