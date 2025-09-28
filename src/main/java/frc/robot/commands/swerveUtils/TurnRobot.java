@@ -9,14 +9,15 @@ import frc.robot.subsystems.swerve.SwerveSubsystem;
 public class TurnRobot extends Command{
     
     private SwerveSubsystem swerve;
-    private Pigeon2 pigeon2;
     private double angulo;
 
     private PIDController controller;
 
+    private double atual;
+    private double output;
+
     public TurnRobot(double angulo){
         this.swerve = SwerveSubsystem.getInstance();
-        this.pigeon2 = new Pigeon2(9);
         this.angulo = angulo;
         this.controller = new PIDController(0.01, 0, 0);
         addRequirements(swerve);
@@ -25,20 +26,18 @@ public class TurnRobot extends Command{
     @Override
     public void initialize() {
         System.out.println("mudando posição para: " +  angulo);
+        controller.enableContinuousInput(-180, 180);
         controller.setTolerance(1.0);
     }
 
     @Override
     public void execute() {
         try{
-        double atual = pigeon2.getYaw().getValueAsDouble();
-        double output = controller.calculate(atual, angulo);
-
-        if(atual == angulo || atual > angulo){
-            swerve.drive(new Translation2d(0, 0), 0, true);
-        }
+        atual = swerve.getYaw();
+        output = controller.calculate(atual, angulo);
 
         swerve.drive(new Translation2d(0, 0), output, true);
+
     } catch(Exception e){
         System.out.println("erro o mudar angulação: " + e.getMessage());
     }
@@ -46,7 +45,7 @@ public class TurnRobot extends Command{
 
     @Override
     public boolean isFinished() {
-        return controller.atSetpoint();
+        return controller.atSetpoint() || atual >= angulo;
     }
 
     @Override

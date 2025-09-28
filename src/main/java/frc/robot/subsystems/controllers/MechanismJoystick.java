@@ -7,20 +7,20 @@ import frc.robot.Constants.Controllers;
 import frc.robot.Constants.Positions;
 import frc.robot.subsystems.utils.Util;
 
-public class MechanismController implements IDMechanism{
+public class MechanismJoystick implements IDMechanism{
     
     private CommandXboxController controller;
     public double setpoint;
 
-    public static MechanismController mInstance = null;
+    public static MechanismJoystick mInstance = null;
 
-    private MechanismController(){
+    private MechanismJoystick(){
         this.controller = new CommandXboxController(Controllers.INTAKE_CONTROLLER);
     }
     
-    public static MechanismController getInstance(){
+    public static MechanismJoystick getInstance(){
         if(mInstance == null){
-            mInstance =  new MechanismController();
+            mInstance =  new MechanismJoystick();
         }
         return mInstance;
     }
@@ -66,8 +66,7 @@ public class MechanismController implements IDMechanism{
 
     @Override
     public Trigger ProcessorButton(){
-        this.setpoint = Positions.PROCESSADOR;
-        return controller.start();
+        return L2Button().and(L3Algae());
     }
 
     @Override

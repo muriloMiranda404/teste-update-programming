@@ -54,6 +54,23 @@ public class SparkMaxMotors implements SparkMaxMotorsIO{
     }
 
     @Override
+    public boolean atSetpoint(double setpoint){
+        return Math.abs(getPosition() - setpoint) <= 0.001;
+    }
+
+    @Override
+    public double getPosition(){
+        return motor.getEncoder().getPosition();
+    }
+
+    @Override
+    public void setReferencePosition(double position){
+        if(!atSetpoint(position)){
+            motor.getClosedLoopController().setReference(position, ControlType.kPosition);
+        }
+    }
+
+    @Override
     public void clearStickyFaults(){
         configureSpark(motor::clearFaults);
     }

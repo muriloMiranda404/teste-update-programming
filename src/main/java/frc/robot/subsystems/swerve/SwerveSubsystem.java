@@ -24,15 +24,15 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.swerve;
-import frc.robot.commands.AutoChooser;
 import frc.robot.subsystems.LimelightConfig;
+import frc.robot.subsystems.Motors.SparkMaxMotors;
+import frc.robot.subsystems.utils.RegisterNamedCommands;
 import swervelib.SwerveDrive;
 import swervelib.SwerveModule;
 import swervelib.parser.SwerveParser;
 
-public class SwerveSubsystem extends SubsystemBase{
+public class SwerveSubsystem extends SubsystemBase implements SwerveIO{
 
-  private AutoChooser builder;
   private SwerveDrive swerveDrive;
   private Pigeon2 pigeon;
   private PIDController xPID;
@@ -41,9 +41,11 @@ public class SwerveSubsystem extends SubsystemBase{
   private HolonomicDriveController driveController;
   private LimelightConfig limelightConfig;
   private SwerveDrivePoseEstimator swerveDrivePoseEstimator;
-  private SwerveModule modules;
   private SwerveModuleState[] state;
   private SwerveModule[] module;
+
+  private SparkMaxMotors[] driveMotors;
+  private SparkMaxMotors[] angleMotors;
 
   public static SwerveSubsystem mInstance = null;
 
@@ -56,10 +58,26 @@ public class SwerveSubsystem extends SubsystemBase{
         new Pose2d());
 
         this.swerveDrive = new SwerveParser(directory).createSwerveDrive(swerve.MAX_SPEED);
+
+        this.driveMotors = new SparkMaxMotors[]{
+          new SparkMaxMotors(1, false, "front right drive motor"),
+          new SparkMaxMotors(8, false, "front left drive motor"),
+          new SparkMaxMotors(6, false, "back left drive motor"),
+          new SparkMaxMotors(3, false, "back right drive motor")
+        };
+
+        this.angleMotors = new SparkMaxMotors[]{
+          new SparkMaxMotors(2, false, "front right angle motor"),
+          new SparkMaxMotors(7, false, "front left angle motor"),
+          new SparkMaxMotors(5, false, "back right angle motor"),
+          new SparkMaxMotors(4, false, "back left angle motor")
+        };
         
+        this.setupPathPlanner();
       } catch(Exception e){
         System.out.println("erro ao criar o swervedrive");
       }finally{
+
       this.limelightConfig = LimelightConfig.getInstance();
       xPID = new PIDController(1.0, 0.0, 0.1); // Controle de posição X
       yPID = new PIDController(1.0, 0.0, 0.1); // Controle de posição Y
@@ -73,8 +91,7 @@ public class SwerveSubsystem extends SubsystemBase{
       driveController.setEnabled(true); 
       
       pigeon = new Pigeon2(9);
-      this.setupPathPlanner();
-      this.builder = AutoChooser.getInstance();
+      configureAutonomousCommands();
 
       swerveDrive.setChassisDiscretization(true, 0.2);
     }
@@ -85,6 +102,10 @@ public class SwerveSubsystem extends SubsystemBase{
       mInstance = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
     }
     return mInstance;
+  }
+
+  private void configureAutonomousCommands(){
+    RegisterNamedCommands.configureNamedCommands();
   }
 
   @Override
@@ -107,7 +128,6 @@ public class SwerveSubsystem extends SubsystemBase{
   }
 
   public void setupPathPlanner(){
-
     RobotConfig config;
     try{
       config = RobotConfig.fromGUISettings();
@@ -147,6 +167,7 @@ public class SwerveSubsystem extends SubsystemBase{
           }
   }
 
+  @Override
   public Pose2d getPose(){
     return swerveDrive.getPose();
   }
@@ -162,8 +183,8 @@ public class SwerveSubsystem extends SubsystemBase{
    * @param rotation Fornecedor de velocidade de rotação
    * @return Comando para dirigir o robô
    */
-  public Command driveCommand(DoubleSupplier X, DoubleSupplier Y, DoubleSupplier rotation) {
-    return driveCommand(X, Y, rotation, true); // Usa malha fechada por padrão
+  public Command alternDriveCommand(DoubleSupplier X, DoubleSupplier Y, DoubleSupplier rotation) {
+    return alternDriveCommand(X, Y, rotation, true); // Usa malha fechada por padrão
   }
   
   /**
@@ -174,7 +195,8 @@ public class SwerveSubsystem extends SubsystemBase{
    * @param useClosedLoop Se true, usa controle de malha fechada; se false, usa malha aberta
    * @return Comando para dirigir o robô
    */
-  public Command driveCommand(DoubleSupplier X, DoubleSupplier Y, DoubleSupplier rotation, boolean useClosedLoop) {
+  @Override
+  public Command alternDriveCommand(DoubleSupplier X, DoubleSupplier Y, DoubleSupplier rotation, boolean useClosedLoop) {
     return run(() -> {
       double xController = Math.pow(X.getAsDouble(), 3);
       double yController = Math.pow(Y.getAsDouble(), 3);
@@ -217,15 +239,18 @@ public class SwerveSubsystem extends SubsystemBase{
    * @param fromField drive orientado ao campo
    * @return
   **/
+  @Override
   public Command driveRobot(DoubleSupplier x, DoubleSupplier y, DoubleSupplier omega, boolean fromField){
     return run(() ->{
 
+      double td = 0.02;
       ChassisSpeeds speed = fromField == true ? ChassisSpeeds.fromFieldRelativeSpeeds(x.getAsDouble(), y.getAsDouble(),
                                                                                       omega.getAsDouble(), pigeon.getRotation2d()) 
                                                                                       : new ChassisSpeeds(x.getAsDouble(), 
                                                                                                           y.getAsDouble(), omega.getAsDouble());
 
-      state = swerveDrive.kinematics.toSwerveModuleStates(speed);
+      ChassisSpeeds discretize = ChassisSpeeds.discretize(speed, td);
+      state = swerveDrive.kinematics.toSwerveModuleStates(discretize);
       SwerveDriveKinematics.desaturateWheelSpeeds(state, swerve.MAX_SPEED);
 
       module = swerveDrive.getModules();
@@ -235,6 +260,7 @@ public class SwerveSubsystem extends SubsystemBase{
       });
   }
 
+  @Override
   public void driveFieldOriented(ChassisSpeeds speed){
     swerveDrive.driveFieldOriented(speed);
   }
@@ -243,6 +269,7 @@ public class SwerveSubsystem extends SubsystemBase{
     return Rotation2d.fromDegrees(scope0To360(pigeon.getYaw().getValueAsDouble()));
   }
 
+  @Override
   public Command getAutonomousCommand(String name, boolean altern){
     if(altern){
       return AutoBuilder.buildAuto(name);
@@ -250,6 +277,7 @@ public class SwerveSubsystem extends SubsystemBase{
     return new PathPlannerAuto(name);
   }
   
+  @Override
   public void stopSwerve(){
     this.driveFieldOriented(new ChassisSpeeds());
   }
@@ -270,20 +298,22 @@ public class SwerveSubsystem extends SubsystemBase{
     return pigeon.getYaw().getValueAsDouble();
   }
 
+  @Override
   public void setMotorBrake(boolean brake){
     swerveDrive.setMotorIdleMode(brake);
   }
 
-  public Command resetOdometry(Pose2d pose){
-    return run(() ->{
-      swerveDrive.resetOdometry(pose);
-    });
+  @Override
+  public void resetOdometry(Pose2d pose){
+   swerveDrive.resetOdometry(pose);
   }
 
+  @Override
   public void drive(Translation2d translation2d, double rotation, boolean fieldOriented){
     swerveDrive.drive(translation2d, rotation, fieldOriented, false);
   }
 
+  @Override
   public void zeroGyro(){
     swerveDrive.zeroGyro();
   }
@@ -317,6 +347,7 @@ public class SwerveSubsystem extends SubsystemBase{
     profilePid.setD(rotKd);
   }
 
+  @Override
   public double scope0To360(double value){
     value %= 360;
 

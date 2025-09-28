@@ -8,7 +8,11 @@ public interface SparkMaxMotorsIO {
     
     double getVoltage();
 
+    double getPosition();
+
     double getSpeed();
+
+    boolean atSetpoint(double setpoint);
 
     RelativeEncoder getAlternativeEncoder(boolean usingRelativeEncoder);
 
@@ -37,4 +41,6 @@ public interface SparkMaxMotorsIO {
     void setPID(double Kp, double Ki, double Kd);
 
     void clearStickyFaults();
+
+    void setReferencePosition(double position);
 }

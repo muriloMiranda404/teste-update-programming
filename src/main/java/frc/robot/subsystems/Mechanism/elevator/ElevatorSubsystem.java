@@ -164,6 +164,11 @@ public class ElevatorSubsystem extends SubsystemBase implements MechanismIO{
         });
     }
 
+    public boolean elevatorIsInCorrectRange(double range){
+        return encoder.getDistance() >= range - Elevator.ELEVATOR_TOLERANCE &&
+        encoder.getDistance() <= range + Elevator.ELEVATOR_TOLERANCE;
+    }
+
     @Override
     public void setSpeed(double speed){
         rightMotor.setSpeed(speed);

@@ -5,6 +5,8 @@ import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.commands.ResetPigeon;
 import frc.robot.commands.level.intake.SetIntakeSpeed;
@@ -19,24 +21,24 @@ import frc.robot.subsystems.swerve.SwerveSubsystem;
 
 public class RegisterNamedCommands {
 
-    private SwerveSubsystem swerve;
-    private ElevatorSubsystem elevator;
-    private IntakeSubsystem intake;
-    private LimelightConfig limelightConfig;
-    private SwerveDrivePoseEstimator swerveDrivePoseEstimator;
-    private Pigeon2 pigeon2;
-    private SuperStruct struct;
+    private static SwerveSubsystem swerve;
+    private static ElevatorSubsystem elevator;
+    private static IntakeSubsystem intake;
+    private static LimelightConfig limelightConfig;
+    private static SwerveDrivePoseEstimator swerveDrivePoseEstimator;
+    private static Pigeon2 pigeon2;
+    private static SuperStruct struct;
 
     public static RegisterNamedCommands mInstance = null;
 
     private RegisterNamedCommands(){
-        this.swerve = SwerveSubsystem.getInstance();
-        this.elevator = ElevatorSubsystem.getInstance();
-        this.intake = IntakeSubsystem.getInstance();
-        this.limelightConfig = LimelightConfig.getInstance();
-        this.struct = SuperStruct.getInstance();
-        this.swerveDrivePoseEstimator = swerve.getPoseEstimator();
-        this.pigeon2 = new Pigeon2(9);
+        RegisterNamedCommands.swerve = SwerveSubsystem.getInstance();
+        RegisterNamedCommands.elevator = ElevatorSubsystem.getInstance();
+        RegisterNamedCommands.intake = IntakeSubsystem.getInstance();
+        RegisterNamedCommands.limelightConfig = LimelightConfig.getInstance();
+        RegisterNamedCommands.struct = SuperStruct.getInstance();
+        RegisterNamedCommands.swerveDrivePoseEstimator = swerve.getPoseEstimator();
+        RegisterNamedCommands.pigeon2 = new Pigeon2(9);
     }
 
     public static RegisterNamedCommands getInstance(){
@@ -46,13 +48,13 @@ public class RegisterNamedCommands {
         return mInstance;
     }
 
-    public void configureNamedCommands(){
-        this.configurePositionsToAutonomous(struct);
-        this.configureSubsystemsUtils(intake);
-        this.configureSwerveAutoCommands(swerve, limelightConfig, elevator);
+    public static void configureNamedCommands(){
+        configurePositionsToAutonomous(struct);
+        configureSubsystemsUtils(intake);
+        configureSwerveAutoCommands(swerve, limelightConfig, elevator);
     }
 
-    private void configurePositionsToAutonomous(SuperStruct struct){
+    private static void configurePositionsToAutonomous(SuperStruct struct){
 
         NamedCommands.registerCommand("SCORE ON L1", struct.scorePieceOnLevel(StatesToScore.L1));
         NamedCommands.registerCommand("GO TO HOME POSITION", new ParallelCommandGroup(
@@ -68,7 +70,7 @@ public class RegisterNamedCommands {
         NamedCommands.registerCommand("SCORE ON PROCESSOR", struct.scorePieceOnLevel(StatesToScore.PROCESSOR));
     }
 
-    private void configureSwerveAutoCommands(SwerveSubsystem swerve, LimelightConfig limelightConfig, ElevatorSubsystem elevatorSubsystem){
+    private static void configureSwerveAutoCommands(SwerveSubsystem swerve, LimelightConfig limelightConfig, ElevatorSubsystem elevatorSubsystem){
 
         NamedCommands.registerCommand("RESET PIGEON", new ResetPigeon());
 
@@ -78,10 +80,12 @@ public class RegisterNamedCommands {
 
         NamedCommands.registerCommand("RESET ELEVATOR", elevatorSubsystem.resetElevator());
 
-        NamedCommands.registerCommand("RESET ODOMETRY CENTER AUTO", swerve.resetOdometry(new Pose2d(7.492, 3.839, Rotation2d.fromDegrees(179.832))));
+        NamedCommands.registerCommand("RESET ODOMETRY CENTER AUTO", new InstantCommand(() ->{
+            swerve.resetOdometry(new Pose2d(0, 0, new Rotation2d(0)));
+        }));
     }
 
-    private void configureSubsystemsUtils(IntakeSubsystem intakeSubsystem){
+    private static void configureSubsystemsUtils(IntakeSubsystem intakeSubsystem){
 
         NamedCommands.registerCommand("THROW CORAL", new SetIntakeSpeed(0.8));
 

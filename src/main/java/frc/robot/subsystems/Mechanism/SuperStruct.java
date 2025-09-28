@@ -1,5 +1,6 @@
 package frc.robot.subsystems.Mechanism;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.LEDPattern.GradientType;
 import edu.wpi.first.wpilibj.util.Color;
@@ -50,9 +51,10 @@ public class SuperStruct extends SubsystemBase{
     public void periodic() {
         this.elevatorSubsystem.setPosition(elevatorInput);
         this.intakeSubsystem.setPosition(intakeInput);
-        alternLedColor(color);
+
         this.elevatorSubsystem.periodic();
         this.intakeSubsystem.periodic();
+        alternLedColor(color);
     }
     
     public enum StatesToScore{
@@ -76,12 +78,14 @@ public class SuperStruct extends SubsystemBase{
     }
 
     private void alternLedColor(Color color){
-        if(intakeSubsystem.IsTouched()){
-            ledSubsystem.setPattern(LEDPattern.gradient(GradientType.kDiscontinuous, Color.kRed, color));
-        } else if(elevatorSubsystem.getOutputInElevatorMotors()[0] != 0){
-            ledSubsystem.setPattern(LEDPattern.gradient(GradientType.kDiscontinuous, Color.kWhite, color));
-        } else {
-            ledSubsystem.setColor(color);
+    if(DriverStation.isTeleopEnabled()){    
+            if(intakeSubsystem.IsTouched()){
+                    ledSubsystem.setPattern(LEDPattern.gradient(GradientType.kDiscontinuous, Color.kRed, color));
+                } else if(elevatorSubsystem.getOutputInElevatorMotors()[0] != 0){
+                    ledSubsystem.setPattern(LEDPattern.gradient(GradientType.kDiscontinuous, Color.kWhite, color));
+                } else {
+                    ledSubsystem.setColor(color);
+            }
         }
     }
 
@@ -90,7 +94,7 @@ public class SuperStruct extends SubsystemBase{
             switch (state) {
                 case L1:
                 this.state = "L1 STATE";
-                color = Color.kGreen;
+                this.color = Color.kGreen;
                 if(this.elevatorInput != ElevatorPositions.HOME) this.intakeInput = IntakePositions.ABERTURA_COMUMM;
                 if(this.intakeSubsystem.atSetpoint()){
                     this.elevatorInput = ElevatorPositions.HOME;
@@ -102,7 +106,7 @@ public class SuperStruct extends SubsystemBase{
                 
                 case L2:
                     this.state = "L2 STATE";
-                    color = Color.kYellow;
+                    this.color = Color.kYellow;
                     this.ledSubsystem.setColor(edu.wpi.first.wpilibj.util.Color.kGray);
                     this.intakeInput = IntakePositions.PUT_CORAL_ALTERNATIVE;
                     if(this.intakeSubsystem.atSetpoint()){
@@ -112,7 +116,7 @@ public class SuperStruct extends SubsystemBase{
     
                 case L3:
                     this.state = "L3 STATE";
-                    color = Color.kPurple;
+                    this.color = Color.kPurple;
                     this.intakeInput = IntakePositions.PUT_CORAL_ALTERNATIVE;
                     if(this.intakeSubsystem.atSetpoint()){
                         this.elevatorInput = ElevatorPositions.L3;
@@ -121,7 +125,7 @@ public class SuperStruct extends SubsystemBase{
     
                 case L4:
                     this.state = "L4 STATE";
-                    color = Color.kDarkBlue;
+                    this.color = Color.kDarkBlue;
                     if(this.elevatorInput != ElevatorPositions.L4) this.intakeInput = IntakePositions.PUT_CORAL;
                     if(this.intakeSubsystem.atSetpoint()){
                         this.elevatorInput = ElevatorPositions.L4;
@@ -146,9 +150,13 @@ public class SuperStruct extends SubsystemBase{
                 case PROCESSOR:
                     this.state = "PROCESSADOR";
                     intakeInput = IntakePositions.CONTROL_BALL;
-                    elevatorInput = ElevatorPositions.HOME;
+                    elevatorInput = ElevatorPositions.PROCESSOR;
                     break;
             }
         });
+    }
+
+    public boolean seguranceSystem(){
+        return intakeInput > IntakePositions.DEFAULT_POSITION;
     }
 }

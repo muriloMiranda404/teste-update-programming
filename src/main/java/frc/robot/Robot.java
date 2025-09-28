@@ -15,10 +15,7 @@ public class Robot extends TimedRobot {
   private RobotContainer m_robotContainer;
   private Pigeon2 pigeon2;
 
-  private LedSubsystem ledSubsystem;
-
   public Robot(){
-    ledSubsystem = LedSubsystem.getInstance();
     pigeon2 = new Pigeon2(9);
   }
 
@@ -65,7 +62,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-    ledSubsystem.setPattern(LEDPattern.solid(Color.kSpringGreen).mask(LEDPattern.progressMaskLayer(() -> 1)));
+    
   }
 
   @Override

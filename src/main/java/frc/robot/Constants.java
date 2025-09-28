@@ -63,6 +63,8 @@ public class Constants{
 
     public static final double INTAKE_TOLERANCE = 4.0;
 
+    public static final double GET_CORAL_SPEED = 0.3;
+
     public static final class IntakePositions{
       public static final double CONTROL_BALL = 225.0;
       public static final double ABERTURA_COMUMM = 68.0;
@@ -88,6 +90,7 @@ public class Constants{
     public static final double ELEVATOR_TOLERANCE = 30.0;
 
     public static final class ElevatorPositions{
+      public static final double PROCESSOR = 1.0;
       public static final double HOME = 0.0;
       public static final double L2 = 210.0;
       public static final double L3 = 769.0;

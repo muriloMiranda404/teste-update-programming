@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Intake;
+import frc.robot.Constants.Intake.IntakePositions;
 import frc.robot.subsystems.Led.LedSubsystem;
 import frc.robot.subsystems.Mechanism.MechanismIO;
 import frc.robot.subsystems.Motors.SparkMaxMotors;
@@ -25,9 +26,11 @@ public class IntakeSubsystem extends SubsystemBase implements MechanismIO{
     public double setpoint;
     public double speed;
 
+    private LedSubsystem ledSubsystem;
+    
     public static IntakeSubsystem mInstance = null;
 
-    private LedSubsystem ledSubsystem;
+    public boolean hasCoral;
 
     private IntakeSubsystem(){
 
@@ -46,6 +49,8 @@ public class IntakeSubsystem extends SubsystemBase implements MechanismIO{
         this.speed = 0;
 
         this.ledSubsystem = LedSubsystem.getInstance();
+        
+        this.hasCoral = false;
     }
 
     public static IntakeSubsystem getInstance(){
@@ -56,7 +61,7 @@ public class IntakeSubsystem extends SubsystemBase implements MechanismIO{
     }
 
     public boolean IsTouched(){
-        ledSubsystem.setColor(Color.kGreen);
+        hasCoral = true;
         return !coralswitch.get();
     }
 
@@ -115,6 +120,23 @@ public class IntakeSubsystem extends SubsystemBase implements MechanismIO{
     public void setSpeed(double speed) {
         this.speed = speed;
         getCoral.setSpeed(speed);
+    }
+
+    public void goToGetCoralPosition(){
+        if(!hasCoral){
+            turnIntake.setReferencePosition(IntakePositions.DEFAULT_POSITION);
+        }
+    }
+
+    public void getCoral(){
+        if(!hasCoral){
+            getCoral.setSpeed(Intake.GET_CORAL_SPEED);
+        }
+        getCoral.setSpeed(0);
+    }
+
+    public boolean hasCoralOnIntake(){
+        return hasCoral;
     }
 
     public double getSpeedOnIntakeMotor(){

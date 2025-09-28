@@ -4,6 +4,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.Controllers;
@@ -16,7 +17,6 @@ public class DriverController implements IDDriverController{
     private CommandXboxController controller;
     private double invert;
 
-    
     private DriverController(){
         this.controller = new CommandXboxController(Controllers.DRIVE_CONTROLLER);
         invert = 1;
@@ -119,16 +119,11 @@ public class DriverController implements IDDriverController{
 
     @Override
     public Command driverRobot(){
-
         double marcha = 1.0;
         if(TurboMode().getAsBoolean()){
-            marcha = controller.getRightTriggerAxis() - controller.getLeftTriggerAxis() + 0.8;
-        } else if(marcha < 0){
-            marcha *= -1.0;
-        } else {
-            marcha = 1;
+            marcha = Math.abs(controller.getRightTriggerAxis() - controller.getLeftTriggerAxis());
         }
-            return null;
+        return Commands.none();
     }
 
     @Override

@@ -24,6 +24,13 @@ public class LedSubsystem extends SubsystemBase{
         this.addressableLED.setLength(this.buffer.getLength());
         this.addressableLED.start();
     }
+    
+    public static LedSubsystem getInstance(){
+        if(mInstance == null){
+            mInstance = new LedSubsystem();
+        }
+        return mInstance;
+    }
 
     @Override
     public void periodic() {
@@ -31,13 +38,6 @@ public class LedSubsystem extends SubsystemBase{
             pattern.applyTo(buffer);
             addressableLED.setData(buffer);
         }
-    }
-
-    public static LedSubsystem getInstance(){
-        if(mInstance == null){
-            mInstance = new LedSubsystem();
-        }
-        return mInstance;
     }
 
     public LEDPattern getActualPattern(){

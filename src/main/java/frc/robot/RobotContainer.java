@@ -14,14 +14,15 @@ import frc.robot.subsystems.Mechanism.SuperStruct.StatesToScore;
 import frc.robot.subsystems.Mechanism.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.Mechanism.intake.IntakeSubsystem;
 import frc.robot.subsystems.controllers.DriverController;
-import frc.robot.subsystems.controllers.MechanismController;
+import frc.robot.subsystems.controllers.MechanismJoystick;
+import frc.robot.subsystems.controllers.MechanismKeyBoard;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
-import frc.robot.subsystems.utils.RegisterNamedCommands;
 
 public class RobotContainer {
 
   private final DriverController driverController;
-  private final MechanismController mechanismController;
+  private final MechanismJoystick mechanismController;
+  private final MechanismKeyBoard mechanismKeyboard;
 
   private final SwerveSubsystem swerve;
   private final LimelightConfig limelightConfig;
@@ -30,13 +31,13 @@ public class RobotContainer {
   private final ElevatorSubsystem elevator;
   private final SuperStruct struct;
 
-  private final RegisterNamedCommands named;
-
   private final AutoChooser autoChooser;
 
   public RobotContainer() {
+
     this.driverController = DriverController.getInstance();
-    this.mechanismController = MechanismController.getInstance();
+    this.mechanismController = MechanismJoystick.getInstance();
+    this.mechanismKeyboard = MechanismKeyBoard.getInstance();
 
     this.swerve = SwerveSubsystem.getInstance();
     this.limelightConfig = LimelightConfig.getInstance();
@@ -44,9 +45,6 @@ public class RobotContainer {
     this.intake = IntakeSubsystem.getInstance();
     this.elevator = ElevatorSubsystem.getInstance();
     this.struct = SuperStruct.getInstance();
-
-    this.named = RegisterNamedCommands.getInstance();
-    this.named.configureNamedCommands();
 
     this.autoChooser = AutoChooser.getInstance();
 
@@ -58,7 +56,8 @@ public class RobotContainer {
     ));
 
     configureDriveBindings();
-    configureIntakeBindings();
+    configureJoystickMechanismBindings();
+    configureKeyBoardMechanismBindings();
   }
 
   private void configureDriveBindings() {
@@ -81,8 +80,25 @@ public class RobotContainer {
         driverController.Invert();
       }));
   }
+
+  private void configureKeyBoardMechanismBindings(){
+
+    mechanismKeyboard.L1Button().onTrue(new ParallelCommandGroup(
+      struct.scorePieceOnLevel(StatesToScore.L1),
+      new SetIntakeSpeed(true)
+    ));
+    mechanismKeyboard.L2Button().onTrue(struct.scorePieceOnLevel(StatesToScore.L2));    
+    mechanismKeyboard.L3Button().onTrue(struct.scorePieceOnLevel(StatesToScore.L3));
+    mechanismKeyboard.L4Button().onTrue(struct.scorePieceOnLevel(StatesToScore.L4));
+    mechanismKeyboard.algae_L2().onTrue(struct.scorePieceOnLevel(StatesToScore.ALGAE_L2));
+    mechanismKeyboard.algae_L3().onTrue(struct.scorePieceOnLevel(StatesToScore.ALGAE_L3));
+    mechanismKeyboard.Processador().onTrue(struct.scorePieceOnLevel(StatesToScore.PROCESSOR));
+
+    mechanismController.throwCoralOnIntake().whileTrue(new SetIntakeSpeed(0.8));
+    mechanismKeyboard.getAlgae().whileTrue(new SetIntakeSpeed(-0.1));
+  }
   
-  private void configureIntakeBindings(){ 
+  private void configureJoystickMechanismBindings(){ 
     
     mechanismController.L1Button().onTrue(new ParallelCommandGroup(
       struct.scorePieceOnLevel(StatesToScore.L1),
@@ -95,7 +111,7 @@ public class RobotContainer {
     mechanismController.ProcessorButton().onTrue(struct.scorePieceOnLevel(StatesToScore.PROCESSOR));
     mechanismController.L2Algae().onTrue(struct.scorePieceOnLevel(StatesToScore.ALGAE_L2));
     mechanismController.L3Algae().onTrue(struct.scorePieceOnLevel(StatesToScore.ALGAE_L3));
-}
+  }
 
   public Command getAutonomousCommand() {
     return swerve.getAutonomousCommand(autoChooser.getPathName(), true);
