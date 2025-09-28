@@ -1,5 +1,6 @@
 package frc.robot.subsystems.Mechanism;
 
+import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.LEDPattern.GradientType;
@@ -30,8 +31,10 @@ public class SuperStructure extends SubsystemBase{
         this.elevatorSubsystem = ElevatorSubsystem.getInstance();
         this.intakeSubsystem = IntakeSubsystem.getInstance();
         this.ledSubsystem = LedSubsystem.getInstance();
+
         this.elevatorInput = ElevatorPositions.HOME;
         this.intakeInput = IntakePositions.DEFAULT_POSITION;
+
         this.color = Color.kBlack;
         this.state = "INITIAL STATE";
     }
@@ -55,6 +58,8 @@ public class SuperStructure extends SubsystemBase{
         this.elevatorSubsystem.periodic();
         this.intakeSubsystem.periodic();
         alternLedColor(color);
+
+        Logger.processInputs(state, intakeSubsystem);                               
     }
     
     public enum StatesToScore{

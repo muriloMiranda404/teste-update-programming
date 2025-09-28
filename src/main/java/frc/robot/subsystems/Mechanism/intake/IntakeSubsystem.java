@@ -1,5 +1,8 @@
 package frc.robot.subsystems.Mechanism.intake;
 
+import org.littletonrobotics.junction.LogTable;
+import org.littletonrobotics.junction.inputs.LoggableInputs;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
@@ -11,23 +14,25 @@ import frc.robot.subsystems.Mechanism.MechanismIO;
 import frc.robot.subsystems.Motors.MotorIO;
 import frc.robot.subsystems.Motors.SparkMaxMotors;
 
-public class IntakeSubsystem extends SubsystemBase implements MechanismIO{
+public class IntakeSubsystem extends SubsystemBase implements MechanismIO, LoggableInputs{
     
-    public MotorIO turnIntake;
-    public MotorIO getCoral;
+    private MotorIO turnIntake;
+    private MotorIO getCoral;
  
-    public DutyCycleEncoder encoder;
+    private DutyCycleEncoder encoder;
  
-    public PIDController controller;
+    private PIDController controller;
  
-    public DigitalInput coralswitch;
+    private DigitalInput coralswitch;
 
-    public double setpoint;
-    public double speed;
+    private double setpoint;
+    private double speed;
     
     public static IntakeSubsystem mInstance = null;
 
-    public boolean hasCoral;
+    private boolean hasCoral;
+    private double distance;
+    private boolean atSetpoint;
 
     private IntakeSubsystem(){
 
@@ -43,7 +48,9 @@ public class IntakeSubsystem extends SubsystemBase implements MechanismIO{
         this.setpoint = 0;
         this.speed = 0;
 
-        this.hasCoral = false;
+        this.hasCoral = !coralswitch.get();
+        this.distance = 0;
+        this.atSetpoint = false;
 
         configureIntake();
     }
@@ -62,8 +69,7 @@ public class IntakeSubsystem extends SubsystemBase implements MechanismIO{
     }
 
     public boolean IsTouched(){
-        hasCoral = true;
-        return !coralswitch.get();
+        return hasCoral;
     }
 
     public void stopCoralMotor(){
@@ -75,7 +81,9 @@ public class IntakeSubsystem extends SubsystemBase implements MechanismIO{
 
     @Override
     public double getDistance(){
-        return encoder.get() * 360.0;
+        this.distance = encoder.get() * 360;
+        
+        return distance;
     }
 
     @Override
@@ -106,7 +114,9 @@ public class IntakeSubsystem extends SubsystemBase implements MechanismIO{
 
     @Override
     public boolean atSetpoint(){
-        return controller.atSetpoint();
+        this.atSetpoint = controller.atSetpoint();
+
+        return atSetpoint;
     }
 
     public double getCoralMotorVoltage(){
@@ -148,5 +158,25 @@ public class IntakeSubsystem extends SubsystemBase implements MechanismIO{
     public void periodic() {
         SmartDashboard.putNumber("angulo", getDistance());
         SmartDashboard.putBoolean("fim de curos do coral", IsTouched());
+    }
+
+    @Override
+    public void toLog(LogTable table) {
+        table.put("speed", speed);
+        table.put("hasCoral", hasCoral);
+        table.put("AtSetpoint", atSetpoint);
+        table.put("setpoint", setpoint);
+        table.put("Distance", distance);
+        table.put("isTouched", hasCoral);
+    }
+
+    @Override
+    public void fromLog(LogTable table) {
+        speed = table.get("speed", speed);
+        hasCoral = table.get("hasCoral", hasCoral);
+        atSetpoint = table.get("atSepoint", atSetpoint);
+        setpoint = table.get("setpoint", setpoint);
+        distance = table.get("distance", distance);
+        hasCoral = table.get("isTouched", hasCoral);
     }
 }
