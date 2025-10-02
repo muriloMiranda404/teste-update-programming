@@ -8,7 +8,7 @@ import frc.robot.Constants.Components;
 
 public class LimelightConfig {
     
-    NetworkTable limelight;
+    private NetworkTable limelight;
 
     public static LimelightConfig mInstance = null;
 
