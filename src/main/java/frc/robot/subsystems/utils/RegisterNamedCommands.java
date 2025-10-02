@@ -1,11 +1,8 @@
 package frc.robot.subsystems.utils;
 
-import com.ctre.phoenix6.hardware.Pigeon2;
 import com.pathplanner.lib.auto.NamedCommands;
-import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.commands.level.intake.SetIntakeSpeed;
@@ -17,16 +14,15 @@ import frc.robot.subsystems.Mechanism.SuperStructure;
 import frc.robot.subsystems.Mechanism.SuperStructure.StatesToScore;
 import frc.robot.subsystems.Mechanism.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.Mechanism.intake.IntakeSubsystem;
+import frc.robot.subsystems.swerve.SwerveIO;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 
 public class RegisterNamedCommands {
 
-    private static SwerveSubsystem swerve;
+    private static SwerveIO swerve;
     private static ElevatorSubsystem elevator;
     private static IntakeSubsystem intake;
     private static LimelightConfig limelightConfig;
-    private static SwerveDrivePoseEstimator swerveDrivePoseEstimator;
-    private static Pigeon2 pigeon2;
     private static SuperStructure struct;
 
     public static RegisterNamedCommands mInstance = null;
@@ -37,8 +33,6 @@ public class RegisterNamedCommands {
         RegisterNamedCommands.intake = IntakeSubsystem.getInstance();
         RegisterNamedCommands.limelightConfig = LimelightConfig.getInstance();
         RegisterNamedCommands.struct = SuperStructure.getInstance();
-        RegisterNamedCommands.swerveDrivePoseEstimator = swerve.getPoseEstimator();
-        RegisterNamedCommands.pigeon2 = new Pigeon2(9);
     }
 
     public static RegisterNamedCommands getInstance(){
@@ -70,7 +64,7 @@ public class RegisterNamedCommands {
         NamedCommands.registerCommand("SCORE ON PROCESSOR", struct.scorePieceOnLevel(StatesToScore.PROCESSOR));
     }
 
-    private static void configureSwerveAutoCommands(SwerveSubsystem swerve, LimelightConfig limelightConfig, ElevatorSubsystem elevatorSubsystem){
+    private static void configureSwerveAutoCommands(SwerveIO swerve, LimelightConfig limelightConfig, ElevatorSubsystem elevatorSubsystem){
 
         NamedCommands.registerCommand("RESET PIGEON", new ResetPigeon());
 

@@ -8,11 +8,8 @@ import frc.robot.commands.level.intake.SetIntakeSpeed;
 import frc.robot.commands.swerveUtils.AlingToTarget;
 import frc.robot.commands.swerveUtils.ResetPigeon;
 import frc.robot.commands.swerveUtils.TurnRobot;
-import frc.robot.subsystems.LimelightConfig;
 import frc.robot.subsystems.Mechanism.SuperStructure;
 import frc.robot.subsystems.Mechanism.SuperStructure.StatesToScore;
-import frc.robot.subsystems.Mechanism.elevator.ElevatorSubsystem;
-import frc.robot.subsystems.Mechanism.intake.IntakeSubsystem;
 import frc.robot.subsystems.controllers.DriverController;
 import frc.robot.subsystems.controllers.MechanismJoystick;
 import frc.robot.subsystems.controllers.MechanismKeyBoard;
@@ -31,7 +28,6 @@ public class RobotContainer {
   private final AutoChooser autoChooser;
 
   public RobotContainer() {
-
     //joystick
     this.driverController = DriverController.getInstance();
     this.mechanismController = MechanismJoystick.getInstance();
