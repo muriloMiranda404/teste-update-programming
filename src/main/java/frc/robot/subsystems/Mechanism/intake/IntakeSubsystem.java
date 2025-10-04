@@ -7,12 +7,14 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Intake;
 import frc.robot.Constants.Intake.IntakePositions;
 import frc.robot.subsystems.Mechanism.MechanismIO;
 import frc.robot.subsystems.Motors.MotorIO;
 import frc.robot.subsystems.Motors.SparkMaxMotors;
+import frc.robot.subsystems.controllers.MechanismJoystick;
 
 public class IntakeSubsystem extends SubsystemBase implements MechanismIO, LoggableInputs{
     
@@ -34,6 +36,8 @@ public class IntakeSubsystem extends SubsystemBase implements MechanismIO, Logga
     private double distance;
     private boolean atSetpoint;
 
+    private final MechanismJoystick mechanismJoystick;
+
     private IntakeSubsystem(){
 
         this.turnIntake = new SparkMaxMotors(Intake.INTAKE_MOTOR, false, "Turn intake motor");
@@ -51,6 +55,7 @@ public class IntakeSubsystem extends SubsystemBase implements MechanismIO, Logga
         this.hasCoral = !coralswitch.get();
         this.distance = 0;
         this.atSetpoint = false;
+        this.mechanismJoystick = MechanismJoystick.getInstance();
 
         configureIntake();
     }
@@ -152,6 +157,12 @@ public class IntakeSubsystem extends SubsystemBase implements MechanismIO, Logga
 
     public double getSpeedOnIntakeMotor(){
         return speed;
+    }
+
+    public Command throwCoral(){
+        return run(() ->{
+           setSpeed( mechanismJoystick.getRightTrigger() - mechanismJoystick.getLeftTrigger());
+        });
     }
 
     @Override

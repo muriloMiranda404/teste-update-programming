@@ -1,17 +1,19 @@
 package frc.robot.commands.autonomousChooser;
 
+import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
+
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 
 public class AutoChooser implements AutoChooserIO{
 
-    SendableChooser<String> autoChooser;
+    LoggedDashboardChooser<String> autoChooser;
     public static AutoChooser mInstance = null;
 
     private AutoChooser(){
-        this.autoChooser = new SendableChooser<>();
+        this.autoChooser = new LoggedDashboardChooser<>("sendable chooser");
 
-        this.autoChooser.setDefaultOption("no auto for use", "no auto for use");
+        this.autoChooser.addDefaultOption("is not used", "null");
         this.autoChooser.addOption("center autonomous", "New Auto");
     }
 
@@ -24,7 +26,7 @@ public class AutoChooser implements AutoChooserIO{
 
     @Override
     public String getPathName() {
-        return this.autoChooser.getSelected();
+        return this.autoChooser.get();
     }
 
     @Override

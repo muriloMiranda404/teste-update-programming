@@ -96,4 +96,14 @@ public class MechanismJoystick implements IDMechanism{
         return Util.inRange(controller.getRightY(), -Controllers.DEADBAND, Controllers.DEADBAND) 
         && Util.inRange(controller.getRightX(), -Controllers.DEADBAND, Controllers.DEADBAND);
     }
+
+    @Override
+    public double getRightTrigger(){
+        return controller.getRightTriggerAxis();
+    }
+
+    @Override
+    public double getLeftTrigger(){
+        return controller.getLeftTriggerAxis();
+    }
 }

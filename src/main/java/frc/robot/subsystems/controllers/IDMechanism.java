@@ -30,4 +30,8 @@ public interface IDMechanism {
     XboxController getHID();
 
     boolean joystickIsNothingUsingMechanism();
+
+    double getRightTrigger();
+
+    double getLeftTrigger();
 }

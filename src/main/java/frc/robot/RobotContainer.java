@@ -10,10 +10,12 @@ import frc.robot.commands.swerveUtils.ResetPigeon;
 import frc.robot.commands.swerveUtils.TurnRobot;
 import frc.robot.subsystems.Mechanism.SuperStructure;
 import frc.robot.subsystems.Mechanism.SuperStructure.StatesToScore;
+import frc.robot.subsystems.Mechanism.intake.IntakeSubsystem;
 import frc.robot.subsystems.controllers.DriverController;
 import frc.robot.subsystems.controllers.MechanismJoystick;
 import frc.robot.subsystems.controllers.MechanismKeyBoard;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
+import frc.robot.subsystems.utils.JoystickChooser.JoystickChooser;
 
 public class RobotContainer {
 
@@ -22,22 +24,29 @@ public class RobotContainer {
   private final MechanismKeyBoard mechanismKeyboard;
 
   private final SwerveSubsystem swerve;
+  private final IntakeSubsystem intakeSubsystem;
   
   private final SuperStructure superStructure;
 
+  private final JoystickChooser joystickChooser;
   private final AutoChooser autoChooser;
+  private String mechanismSelected;
 
   public RobotContainer() {
+
     //joystick
     this.driverController = DriverController.getInstance();
     this.mechanismController = MechanismJoystick.getInstance();
     this.mechanismKeyboard = MechanismKeyBoard.getInstance();
 
     this.swerve = SwerveSubsystem.getInstance();
+    this.intakeSubsystem = IntakeSubsystem.getInstance();
 
     this.superStructure = SuperStructure.getInstance();
 
+    this.joystickChooser = new JoystickChooser();
     this.autoChooser = AutoChooser.getInstance();
+    this.mechanismSelected = joystickChooser.getSelected();
 
     swerve.setDefaultCommand(swerve.driveRobot(
       () -> driverController.getLeftY(),
@@ -46,9 +55,14 @@ public class RobotContainer {
       frc.robot.Constants.swerve.FIELD_ORIENTED
     ));
 
+    if(mechanismSelected == "joystick"){
+      configureJoystickMechanismBindings();
+      intakeSubsystem.setDefaultCommand(intakeSubsystem.throwCoral());
+    } else {
+      configureKeyBoardMechanismBindings();
+    }
+
     configureDriveBindings();
-    configureJoystickMechanismBindings();
-    configureKeyBoardMechanismBindings();
   }
 
   private void configureDriveBindings() {
