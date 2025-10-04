@@ -98,11 +98,7 @@ public class SwerveSubsystem extends SubsystemBase implements SwerveIO{
         new SparkMaxMotors(5, false, "back right angle motor"),
         new SparkMaxMotors(4, false, "back left angle motor")
       };
-      
-      configureAutonomousCommands();
-      this.limelightConfig = LimelightConfig.getInstance();
-      xPID = new PIDController(1.0, 0.0, 0.1); // Controle de posição X
-      yPID = new PIDController(1.0, 0.0, 0.1); // Controle de posição Y
+            yPID = new PIDController(1.0, 0.0, 0.1); // Controle de posição Y
       profilePid = new ProfiledPIDController(1.0, 0.0, 0.1, new TrapezoidProfile.Constraints(Math.PI, Math.PI)); // Controle de rotação
       
       xPID.setTolerance(0.05); // 5cm de tolerância
@@ -139,10 +135,6 @@ public class SwerveSubsystem extends SubsystemBase implements SwerveIO{
       mInstance = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
     }
     return mInstance;
-  }
-
-  private void configureAutonomousCommands(){
-    RegisterNamedCommands.configureNamedCommands();
   }
 
   private boolean swerveIsMoving(){

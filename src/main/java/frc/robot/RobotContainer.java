@@ -15,6 +15,7 @@ import frc.robot.subsystems.controllers.DriverController;
 import frc.robot.subsystems.controllers.MechanismJoystick;
 import frc.robot.subsystems.controllers.MechanismKeyBoard;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
+import frc.robot.subsystems.utils.RegisterNamedCommands;
 import frc.robot.subsystems.utils.JoystickChooser.JoystickChooser;
 
 public class RobotContainer {
@@ -32,6 +33,8 @@ public class RobotContainer {
   private final AutoChooser autoChooser;
   private String mechanismSelected;
 
+  private final RegisterNamedCommands registerNamedCommands;
+
   public RobotContainer() {
 
     //joystick
@@ -41,6 +44,8 @@ public class RobotContainer {
 
     this.swerve = SwerveSubsystem.getInstance();
     this.intakeSubsystem = IntakeSubsystem.getInstance();
+    this.registerNamedCommands = RegisterNamedCommands.getInstance();
+    this.configureNamedCommands();
 
     this.superStructure = SuperStructure.getInstance();
 
@@ -63,6 +68,10 @@ public class RobotContainer {
     }
 
     configureDriveBindings();
+  }
+
+  private void configureNamedCommands(){
+    registerNamedCommands.configureNamedCommands();
   }
 
   private void configureDriveBindings() {

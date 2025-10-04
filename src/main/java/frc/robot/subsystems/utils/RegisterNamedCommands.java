@@ -19,20 +19,20 @@ import frc.robot.subsystems.swerve.SwerveSubsystem;
 
 public class RegisterNamedCommands {
 
-    private static SwerveIO swerve;
-    private static ElevatorSubsystem elevator;
-    private static IntakeSubsystem intake;
-    private static LimelightConfig limelightConfig;
-    private static SuperStructure struct;
+    private SwerveIO swerve;
+    private ElevatorSubsystem elevator;
+    private IntakeSubsystem intake;
+    private LimelightConfig limelightConfig;
+    private SuperStructure struct;
 
     public static RegisterNamedCommands mInstance = null;
 
     private RegisterNamedCommands(){
-        RegisterNamedCommands.swerve = SwerveSubsystem.getInstance();
-        RegisterNamedCommands.elevator = ElevatorSubsystem.getInstance();
-        RegisterNamedCommands.intake = IntakeSubsystem.getInstance();
-        RegisterNamedCommands.limelightConfig = LimelightConfig.getInstance();
-        RegisterNamedCommands.struct = SuperStructure.getInstance();
+        this.swerve = SwerveSubsystem.getInstance();
+        this.elevator = ElevatorSubsystem.getInstance();
+        this.intake = IntakeSubsystem.getInstance();
+        this.limelightConfig = LimelightConfig.getInstance();
+        this.struct = SuperStructure.getInstance();
     }
 
     public static RegisterNamedCommands getInstance(){
@@ -42,13 +42,13 @@ public class RegisterNamedCommands {
         return mInstance;
     }
 
-    public static void configureNamedCommands(){
+    public void configureNamedCommands(){
         configurePositionsToAutonomous(struct);
         configureSubsystemsUtils(intake);
         configureSwerveAutoCommands(swerve, limelightConfig, elevator);
     }
 
-    private static void configurePositionsToAutonomous(SuperStructure struct){
+    private void configurePositionsToAutonomous(SuperStructure struct){
 
         NamedCommands.registerCommand("SCORE ON L1", struct.scorePieceOnLevel(StatesToScore.L1));
         NamedCommands.registerCommand("GO TO HOME POSITION", new ParallelCommandGroup(
@@ -64,7 +64,7 @@ public class RegisterNamedCommands {
         NamedCommands.registerCommand("SCORE ON PROCESSOR", struct.scorePieceOnLevel(StatesToScore.PROCESSOR));
     }
 
-    private static void configureSwerveAutoCommands(SwerveIO swerve, LimelightConfig limelightConfig, ElevatorSubsystem elevatorSubsystem){
+    private void configureSwerveAutoCommands(SwerveIO swerve, LimelightConfig limelightConfig, ElevatorSubsystem elevatorSubsystem){
 
         NamedCommands.registerCommand("RESET PIGEON", new ResetPigeon());
 
@@ -79,7 +79,7 @@ public class RegisterNamedCommands {
         }));
     }
 
-    private static void configureSubsystemsUtils(IntakeSubsystem intakeSubsystem){
+    private void configureSubsystemsUtils(IntakeSubsystem intakeSubsystem){
 
         NamedCommands.registerCommand("THROW CORAL", new SetIntakeSpeed(0.8));
 
