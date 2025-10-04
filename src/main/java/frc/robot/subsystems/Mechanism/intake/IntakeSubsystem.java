@@ -44,19 +44,13 @@ public class IntakeSubsystem extends SubsystemBase implements MechanismIO, Logga
         this.getCoral = new SparkMaxMotors(Intake.CORAL_MOTOR, true, "get game piece motor");
 
         this.encoder = new DutyCycleEncoder(Intake.INTAKE_ENCODER);
-
+        
         this.controller = Intake.INTAKE_PID;
-
+        
         this.coralswitch = new DigitalInput(Intake.CORAL_SWITCH);
-
-        this.setpoint = 0;
-        this.speed = 0;
-
-        this.hasCoral = !coralswitch.get();
-        this.distance = 0;
-        this.atSetpoint = false;
+        
         this.mechanismJoystick = MechanismJoystick.getInstance();
-
+        
         configureIntake();
     }
 
@@ -66,11 +60,18 @@ public class IntakeSubsystem extends SubsystemBase implements MechanismIO, Logga
         }
         return mInstance;
     }
-
+    
     private void configureIntake(){
         this.encoder.setDutyCycleRange(0, 360);
-
+        
         this.controller.setTolerance(Intake.INTAKE_TOLERANCE);
+        
+        this.setpoint = 0;
+        this.speed = 0;
+        
+        this.hasCoral = !coralswitch.get();
+        this.distance = 0;
+        this.atSetpoint = false;
     }
 
     public boolean IsTouched(){

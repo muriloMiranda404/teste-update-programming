@@ -37,13 +37,10 @@ public class ElevatorSubsystem extends SubsystemBase implements MechanismIO{
         this.upSwitch = new DigitalInput(Elevator.UP_SWITCH);
 
         this.encoder = new Encoder(Elevator.ENCODER_ELEV_A, Elevator.ENCODER_ELEV_B);
-        this.encoder.setDistancePerPulse(360.0/2048.0);
-
+        
         this.controller = Elevator.ELEVATOR_PID;
-        this.controller.setTolerance(Elevator.ELEVATOR_TOLERANCE);
-    
-        this.setpoint = 0;
 
+        this.configureElevator();
     }
     
     public static ElevatorSubsystem getInstance(){
@@ -51,6 +48,14 @@ public class ElevatorSubsystem extends SubsystemBase implements MechanismIO{
             mInstance = new ElevatorSubsystem();
         }
         return mInstance;
+    }
+    
+    public void configureElevator(){
+        this.encoder.setDistancePerPulse(360.0/2048.0);
+
+        this.controller.setTolerance(Elevator.ELEVATOR_TOLERANCE);
+    
+        this.setpoint = 0;
     }
     
     @Override
