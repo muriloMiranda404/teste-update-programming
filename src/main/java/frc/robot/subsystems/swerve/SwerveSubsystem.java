@@ -12,10 +12,8 @@ import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
-import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator3d;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -31,7 +29,6 @@ import frc.robot.Constants.swerve;
 import frc.robot.subsystems.LimelightConfig;
 import frc.robot.subsystems.Motors.MotorIO;
 import frc.robot.subsystems.Motors.SparkMaxMotors;
-import frc.robot.subsystems.utils.RegisterNamedCommands;
 import swervelib.SwerveDrive;
 import swervelib.SwerveModule;
 import swervelib.parser.SwerveParser;
@@ -109,6 +106,7 @@ public class SwerveSubsystem extends SubsystemBase implements SwerveIO{
       driveController.setEnabled(true); 
       
       this.setupPathPlanner();
+      
       this.direçãoX = 0;
       this.direçãoY = 0;
       this.rotação = 0;
