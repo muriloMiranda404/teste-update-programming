@@ -2,11 +2,13 @@ package frc.robot.subsystems.swerve;
 
 import java.util.function.DoubleSupplier;
 
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
+import swervelib.SwerveDrive;
 
 public interface SwerveIO {
     
@@ -47,4 +49,8 @@ public interface SwerveIO {
     boolean swerveIsMoving();
 
     ChassisSpeeds getRobotRelativeSpeeds();
+
+    SwerveDrive getSwerveDrive();
+
+    SwerveDrivePoseEstimator getPoseEstimator();
 }

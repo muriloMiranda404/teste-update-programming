@@ -123,9 +123,9 @@ public class SwerveSubsystem extends SubsystemBase implements SwerveIO{
 
   @Override
   public void periodic() {
-    swerveDrivePoseEstimator.update(pigeon.getRotation2d(), swerveDrive.getModulePositions());  
-    swerveDrive.updateOdometry();
-    automaticSwerveMode();
+    this.swerveDrivePoseEstimator.update(pigeon.getRotation2d(), swerveDrive.getModulePositions());  
+    this.swerveDrive.updateOdometry();
+    this.automaticSwerveMode();
 
     if(limelightConfig.getHasTarget()){
       Pose2d poseEstimated = limelightConfig.getEstimatedGlobalPose();
@@ -182,10 +182,12 @@ public class SwerveSubsystem extends SubsystemBase implements SwerveIO{
     }
   }
 
+  @Override
   public SwerveDrive getSwerveDrive(){
     return swerveDrive;
   }
 
+  @Override
   public SwerveDrivePoseEstimator getPoseEstimator(){
     return this.swerveDrivePoseEstimator;
   }
