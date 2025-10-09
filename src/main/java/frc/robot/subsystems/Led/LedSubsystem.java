@@ -12,8 +12,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class LedSubsystem extends SubsystemBase{
 
-    private AddressableLED addressableLED;
-    private AddressableLEDBuffer buffer;
+    private final AddressableLED addressableLED;
+    private final AddressableLEDBuffer buffer;
 
     private LEDPattern pattern;
 

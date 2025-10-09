@@ -31,7 +31,7 @@ public class RobotContainer {
 
   private final JoystickChooser joystickChooser;
   private final AutoChooser autoChooser;
-  private String mechanismSelected;
+  private final String mechanismSelected;
 
   private final RegisterNamedCommands registerNamedCommands;
 

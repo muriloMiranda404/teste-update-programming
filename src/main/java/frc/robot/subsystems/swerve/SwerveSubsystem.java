@@ -106,7 +106,7 @@ public class SwerveSubsystem extends SubsystemBase implements SwerveIO{
       driveController.setEnabled(true); 
       
       this.setupPathPlanner();
-      
+
       this.direçãoX = 0;
       this.direçãoY = 0;
       this.rotação = 0;
@@ -258,7 +258,6 @@ public class SwerveSubsystem extends SubsystemBase implements SwerveIO{
             Pose2d currentPose = getPose();
             double dt = 0.02;
           
-            // Construir o pose desejado de curto prazo
             Pose2d desiredPose = new Pose2d(
                 currentPose.getX() + targetSpeeds.vxMetersPerSecond * dt,
                 currentPose.getY() + targetSpeeds.vyMetersPerSecond * dt,
