@@ -19,7 +19,6 @@ public class AlingToTarget extends Command {
     private final Timer timer = new Timer();
     private boolean automaticSetpoint;
 
-    // PID Constants
     private static final double kP_ROTATION = 0.1;
     private static final double kI_ROTATION = 0.0;
     private static final double kD_ROTATION = 0.0;
@@ -44,10 +43,9 @@ public class AlingToTarget extends Command {
     private double ultimaTx = 0.0;
     private double ultimoTempoMudanca = 0.0;
 
-    // Filtros para suavizar entrada da Limelight
     private double txFiltrado = 0.0;
     private double tyFiltrado = 0.0;
-    private static final double FILTRO_ALPHA = 0.2; // menor = mais suave
+    private static final double FILTRO_ALPHA = 0.2; 
 
     public AlingToTarget(double setpointX, double setpointY) {
         this(setpointX, setpointY, false);
@@ -77,15 +75,14 @@ public class AlingToTarget extends Command {
         ultimaTx = 0.0;
         ultimoTempoMudanca = 0.0;
 
-        // Define setpoints automaticamente, se solicitado
         if (automaticSetpoint) {
             if (limelight.getHasTarget()) {
                 double[] coords = limelight.getAprilTagCordenates();
                 double tx = coords[0];
                 double ty = coords[1];
                 if (!Double.isNaN(tx) && !Double.isNaN(ty)) {
-                    this.setpointX = ty - 0.4; // distância ajustada
-                    this.setpointY = 0.0;      // manter alinhamento central
+                    this.setpointX = ty - 0.4; 
+                    this.setpointY = tx;      
                 } else {
                     System.out.println("Valores inválidos da Limelight, mantendo setpoints existentes.");
                 }
@@ -119,34 +116,27 @@ public class AlingToTarget extends Command {
 
         if (Double.isNaN(tx) || Double.isNaN(ty)) return;
 
-        // Aplica filtro de suavização
         txFiltrado = FILTRO_ALPHA * tx + (1 - FILTRO_ALPHA) * txFiltrado;
         tyFiltrado = FILTRO_ALPHA * ty + (1 - FILTRO_ALPHA) * tyFiltrado;
 
-        // Detecta mudança brusca
         if (Math.abs(txFiltrado - ultimaTx) > 10.0) {
             ultimoTempoMudanca = timer.get();
         }
         ultimaTx = txFiltrado;
 
-        // Só move após estabilizar leitura
         if (timer.get() - ultimoTempoMudanca > TEMPO_MINIMO_ESTAVEL) {
-            // Correções separadas: rotação usa tx, translação usa ty
             double correcaoRot = rotationController.calculate(txFiltrado, 0);
             double correcaoX = xController.calculate(tyFiltrado, setpointX);
             double correcaoY = yController.calculate(0, setpointY);
 
-            // Zona morta
             if (Math.abs(correcaoRot) < ZONA_MORTA) correcaoRot = 0;
             if (Math.abs(correcaoX) < ZONA_MORTA) correcaoX = 0;
             if (Math.abs(correcaoY) < ZONA_MORTA) correcaoY = 0;
 
-            // Saturação
             correcaoRot = Math.min(Math.max(correcaoRot, -MAX_CORRECAO), MAX_CORRECAO);
             correcaoX = Math.min(Math.max(correcaoX, -MAX_CORRECAO), MAX_CORRECAO);
             correcaoY = Math.min(Math.max(correcaoY, -MAX_CORRECAO), MAX_CORRECAO);
 
-            // Mantém inversão proposital
             Translation2d translation2d = new Translation2d(correcaoY, -correcaoX);
             subsystem.drive(translation2d, -correcaoRot, true);
         }
