@@ -106,8 +106,10 @@ public class AlingToTarget extends Command {
 
     @Override
     public void execute() {
+
         if (!limelight.getHasTarget()) {
             subsystem.drive(new Translation2d(), 0, true);
+            System.out.println("limelight não esta detectando april tag");
             return;
         }
 
