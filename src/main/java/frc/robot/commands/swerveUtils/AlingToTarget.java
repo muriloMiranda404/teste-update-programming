@@ -1,10 +1,10 @@
-package frc.robot.commands;
+package frc.robot.commands.swerveUtils;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.vision.LimelightConfig;
+import frc.robot.subsystems.LimelightConfig;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 
 public class AlingToTarget extends Command {

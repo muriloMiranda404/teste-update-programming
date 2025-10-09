@@ -76,7 +76,7 @@ public class RobotContainer {
 
   private void configureDriveBindings() {
     
-    driverController.alingRobotOnReef().whileTrue(new AlingToTarget(true));
+    driverController.alingRobotOnReef().whileTrue(new AlingToTarget());
 
     driverController.a().onTrue(new InstantCommand(() ->{
        new ResetPigeon(); 

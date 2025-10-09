@@ -68,7 +68,7 @@ public class RegisterNamedCommands {
 
         NamedCommands.registerCommand("RESET PIGEON", new ResetPigeon());
 
-        NamedCommands.registerCommand("ALINHAMENTO", new AlingToTarget(true));
+        NamedCommands.registerCommand("ALINHAMENTO", new AlingToTarget());
 
         NamedCommands.registerCommand("TURN ROBOT", new TurnRobot(45));
 
