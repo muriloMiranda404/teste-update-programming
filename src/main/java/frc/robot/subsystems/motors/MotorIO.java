@@ -43,4 +43,6 @@ public interface MotorIO {
     void clearStickyFaults();
 
     void setReferencePosition(double position);
+
+    void setRampRate(double ramp);
 }

@@ -37,7 +37,6 @@ public class RobotContainer {
 
   public RobotContainer() {
 
-    //joystick
     this.driverController = DriverController.getInstance();
     this.mechanismController = MechanismJoystick.getInstance();
     this.mechanismKeyboard = MechanismKeyBoard.getInstance();

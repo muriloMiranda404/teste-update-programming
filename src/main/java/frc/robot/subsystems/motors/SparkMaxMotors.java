@@ -174,4 +174,15 @@ public class SparkMaxMotors implements MotorIO{
         controller.setI(Ki);
         controller.setD(Kd);
     }
+
+    @Override
+    public void setRampRate(double ramp){
+        config.openLoopRampRate(ramp);
+
+        if(DriverStation.isEnabled()){
+            System.out.println("ERRO! a rampa não pode ser mudada como robo ligado");
+            return;
+        }
+        motor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+    }
 }

@@ -39,4 +39,10 @@ public interface SwerveIO {
     double getYaw();
 
     Rotation2d getHeading();
+
+    void setDriveRamp(double value);
+        
+    void setAngleRamp(double value);
+
+    boolean swerveIsMoving();
 }

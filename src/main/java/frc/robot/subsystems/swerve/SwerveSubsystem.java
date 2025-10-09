@@ -20,6 +20,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.Timer;
@@ -95,7 +96,8 @@ public class SwerveSubsystem extends SubsystemBase implements SwerveIO{
         new SparkMaxMotors(5, false, "back right angle motor"),
         new SparkMaxMotors(4, false, "back left angle motor")
       };
-            yPID = new PIDController(1.0, 0.0, 0.1); // Controle de posição Y
+
+      yPID = new PIDController(1.0, 0.0, 0.1); // Controle de posição Y
       profilePid = new ProfiledPIDController(1.0, 0.0, 0.1, new TrapezoidProfile.Constraints(Math.PI, Math.PI)); // Controle de rotação
       
       xPID.setTolerance(0.05); // 5cm de tolerância
@@ -134,8 +136,23 @@ public class SwerveSubsystem extends SubsystemBase implements SwerveIO{
     }
     return mInstance;
   }
+  
+  @Override
+  public void setDriveRamp(double value){
+    for(int i = 0; i < driveMotors.length; i++){
+      driveMotors[i].setRampRate(value);
+    }
+  }
 
-  private boolean swerveIsMoving(){
+  @Override
+  public void setAngleRamp(double value){
+    for(int i = 0; i < angleMotors.length; i++){
+      angleMotors[i].setRampRate(value);
+    }
+  }
+
+  @Override
+  public boolean swerveIsMoving(){
     boolean isMoving = Math.abs(direçãoX) > 0.05 || Math.abs(direçãoY) > 0.05 || Math.abs(rotação) > 0.05;
     this.isMoving = isMoving;
 
