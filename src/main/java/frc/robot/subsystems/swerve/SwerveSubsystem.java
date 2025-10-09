@@ -166,13 +166,13 @@ public class SwerveSubsystem extends SubsystemBase implements SwerveIO{
     if (moving) {
       this.lastMovingTime = Timer.getFPGATimestamp();
       if (this.currentIdleMode != IdleMode.kCoast) {
-        if (swerveDrive != null) swerveDrive.setMotorIdleMode(false); // coast = false?
+        if (swerveDrive != null) swerveDrive.setMotorIdleMode(false); 
         this.currentIdleMode = IdleMode.kCoast;
       }
     } else {
       if (Timer.getFPGATimestamp() - lastMovingTime > 1.0) {
         if (this.currentIdleMode != IdleMode.kBrake) {
-          if (swerveDrive != null) swerveDrive.setMotorIdleMode(true); // brake = true?
+          if (swerveDrive != null) swerveDrive.setMotorIdleMode(true);
           this.currentIdleMode = IdleMode.kBrake;
         }
       }
@@ -233,6 +233,7 @@ public class SwerveSubsystem extends SubsystemBase implements SwerveIO{
     return swerveDrive.getPose();
   }
 
+  @Override
   public ChassisSpeeds getRobotRelativeSpeeds(){
     return swerveDrive.getRobotVelocity();
   }

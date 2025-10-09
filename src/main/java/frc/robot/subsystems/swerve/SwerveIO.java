@@ -45,4 +45,6 @@ public interface SwerveIO {
     void setAngleRamp(double value);
 
     boolean swerveIsMoving();
+
+    ChassisSpeeds getRobotRelativeSpeeds();
 }
