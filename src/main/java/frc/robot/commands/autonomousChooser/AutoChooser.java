@@ -2,9 +2,6 @@ package frc.robot.commands.autonomousChooser;
 
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj2.command.Command;
-
 public class AutoChooser implements AutoChooserIO{
 
     LoggedDashboardChooser<String> autoChooser;
