@@ -97,12 +97,12 @@ public class SwerveSubsystem extends SubsystemBase implements SwerveIO{
         new SparkMaxMotors(4, false, "back left angle motor")
       };
 
-      yPID = new PIDController(1.0, 0.0, 0.1); // Controle de posição Y
-      profilePid = new ProfiledPIDController(1.0, 0.0, 0.1, new TrapezoidProfile.Constraints(Math.PI, Math.PI)); // Controle de rotação
+      yPID = new PIDController(1.0, 0.0, 0.1); 
+      profilePid = new ProfiledPIDController(1.0, 0.0, 0.1, new TrapezoidProfile.Constraints(Math.PI, Math.PI)); 
       
-      xPID.setTolerance(0.05); // 5cm de tolerância
-      yPID.setTolerance(0.05); // 5cm de tolerância
-      profilePid.setTolerance(0.05); // ~3 graus de tolerância
+      xPID.setTolerance(0.05);
+      yPID.setTolerance(0.05);
+      profilePid.setTolerance(0.05);
       
       driveController = new HolonomicDriveController(xPID, yPID, profilePid);
       driveController.setEnabled(true); 
@@ -115,6 +115,9 @@ public class SwerveSubsystem extends SubsystemBase implements SwerveIO{
       this.lastMovingTime = 0;
       this.isMoving = false;
       this.currentIdleMode = IdleMode.kBrake;
+
+      setDriveRamp(swerve.DRIVE_RAMP);
+      setAngleRamp(swerve.ANGLE_RAMP);
     }
   }
 

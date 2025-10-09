@@ -49,6 +49,9 @@ public class Constants{
     public static final double KP_ANGLE = 0.01;
     public static final double KI_ANGLE = 0;
     public static final double KD_ANGLE = 0;
+
+    public static final double DRIVE_RAMP = 0.6;
+    public static final double ANGLE_RAMP = 0.2;
   }
 
   public static final class Intake{
