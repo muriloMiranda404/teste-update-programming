@@ -20,7 +20,6 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.Timer;
@@ -30,6 +29,8 @@ import frc.robot.Constants.swerve;
 import frc.robot.subsystems.LimelightConfig;
 import frc.robot.subsystems.Motors.MotorIO;
 import frc.robot.subsystems.Motors.SparkMaxMotors;
+import frc.robot.subsystems.utils.logger.CustomBooleanLog;
+import frc.robot.subsystems.utils.logger.CustomDoubleLog;
 import swervelib.SwerveDrive;
 import swervelib.SwerveModule;
 import swervelib.parser.SwerveParser;
@@ -60,6 +61,11 @@ public class SwerveSubsystem extends SubsystemBase implements SwerveIO{
   private SlewRateLimiter xLimiter;
   private SlewRateLimiter yLimiter;
   private SlewRateLimiter rotationLimiter;
+
+  private CustomBooleanLog swerveIsMoving;
+  private CustomDoubleLog entradaX;
+  private CustomDoubleLog entradaY;
+  private CustomDoubleLog entradaRot;
 
   public static SwerveSubsystem mInstance = null;
 
@@ -118,6 +124,11 @@ public class SwerveSubsystem extends SubsystemBase implements SwerveIO{
 
       setDriveRamp(swerve.DRIVE_RAMP);
       setAngleRamp(swerve.ANGLE_RAMP);
+
+      this.swerveIsMoving = new CustomBooleanLog("swerve/ isMoving");
+      this.entradaX = new CustomDoubleLog("swerve/X");
+      this.entradaY = new CustomDoubleLog("swerve/Y");
+      this.entradaRot = new CustomDoubleLog("swerve/rotation");
     }
   }
 
@@ -167,12 +178,14 @@ public class SwerveSubsystem extends SubsystemBase implements SwerveIO{
     boolean moving = swerveIsMoving();
 
     if (moving) {
+      swerveIsMoving.append(true);
       this.lastMovingTime = Timer.getFPGATimestamp();
       if (this.currentIdleMode != IdleMode.kCoast) {
         if (swerveDrive != null) swerveDrive.setMotorIdleMode(false); 
         this.currentIdleMode = IdleMode.kCoast;
       }
     } else {
+      swerveIsMoving.append(false);
       if (Timer.getFPGATimestamp() - lastMovingTime > 1.0) {
         if (this.currentIdleMode != IdleMode.kBrake) {
           if (swerveDrive != null) swerveDrive.setMotorIdleMode(true);
@@ -316,6 +329,12 @@ public class SwerveSubsystem extends SubsystemBase implements SwerveIO{
       this.direçãoX = xLimiter.calculate(x.getAsDouble()) * swerveDrive.getMaximumChassisVelocity();
       this.direçãoY = yLimiter.calculate(y.getAsDouble()) * swerveDrive.getMaximumChassisVelocity();
       this.rotação = rotationLimiter.calculate(omega.getAsDouble()) * swerveDrive.getMaximumChassisAngularVelocity();
+
+      if(direçãoX != 0) entradaX.append(direçãoX);
+
+      if(direçãoY != 0) entradaY.append(direçãoY);
+
+      if(rotação != 0) entradaRot.append(rotação);
 
       double td = 0.02;
       ChassisSpeeds speed = fromField == true ? ChassisSpeeds.fromFieldRelativeSpeeds(direçãoX,

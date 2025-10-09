@@ -5,16 +5,16 @@ import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class CustonStringLog extends StringLogEntry{
+public class CustomStringLog extends StringLogEntry{
     
     private static boolean isFms;
     private String loggedValue;
     private String name;
 
-    public CustonStringLog(String name){
+    public CustomStringLog(String name){
         super(DataLogManager.getLog(), name);
         this.name = name;
-        CustonStringLog.isFms = DriverStation.getMatchNumber() > 0;
+        CustomStringLog.isFms = DriverStation.getMatchNumber() > 0;
         this.loggedValue = "";
         this.append("");
     }
@@ -25,7 +25,7 @@ public class CustonStringLog extends StringLogEntry{
             loggedValue = value;
             super.append(value);
         }
-        if(!CustonStringLog.isFms){
+        if(!CustomStringLog.isFms){
             SmartDashboard.putString(this.name, value);
         }
     }

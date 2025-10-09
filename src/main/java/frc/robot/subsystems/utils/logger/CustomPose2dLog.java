@@ -9,7 +9,7 @@ import edu.wpi.first.util.datalog.StructLogEntry;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 
-public class CustonPose2dLog{
+public class CustomPose2dLog{
     
     private static boolean isFms;
 
@@ -19,10 +19,10 @@ public class CustonPose2dLog{
 
     private StructLogEntry<Pose2d> logEntry;
 
-    public CustonPose2dLog(String name){
+    public CustomPose2dLog(String name){
         this.logEntry = StructLogEntry.create(DataLogManager.getLog(), name, Pose2d.struct);
         this.publisher = NetworkTableInstance.getDefault().getStructTopic(name, Pose2d.struct).publish();
-        CustonPose2dLog.isFms = DriverStation.getMatchNumber() > 0;
+        CustomPose2dLog.isFms = DriverStation.getMatchNumber() > 0;
         this.loggedValue = new Pose2d(new Translation2d(100, 100), new Rotation2d());
     }
 
@@ -31,14 +31,14 @@ public class CustonPose2dLog{
             this.loggedValue = pose2d;
             this.logEntry.append(pose2d);
         }
-        if(!CustonPose2dLog.isFms){
+        if(!CustomPose2dLog.isFms){
             publisher.set(pose2d);
         }
     }
 
     public void appendDeegrees(Pose2d pose2d){
         this.logEntry.append(pose2d);
-        if(!CustonPose2dLog.isFms){
+        if(!CustomPose2dLog.isFms){
             publisher.set(pose2d);
         }
     }

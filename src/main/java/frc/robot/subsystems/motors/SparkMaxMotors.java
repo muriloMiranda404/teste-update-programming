@@ -40,6 +40,7 @@ public class SparkMaxMotors implements MotorIO{
         this.constants = new PIDConstants(0, 0, 0);
         this.controller = new PIDController(constants.kP, constants.kI, constants.kD);
         this.motor = new SparkMax(id, SparkMax.MotorType.kBrushless);
+        clearStickyFaults();
     }
 
     private void configureSpark(Supplier<REVLibError> config){
@@ -76,7 +77,7 @@ public class SparkMaxMotors implements MotorIO{
     }
 
     public void updateConfig(SparkMaxConfig config){
-        if(!DriverStation.isEnabled()){
+        if(DriverStation.isEnabled()){
             throw new RuntimeException("o motor não pode ser fazer o update da sua configuração com o robo ligado");
         }
 
