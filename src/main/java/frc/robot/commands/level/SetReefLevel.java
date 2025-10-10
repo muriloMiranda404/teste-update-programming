@@ -5,11 +5,11 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.Positions;
 import frc.robot.Constants.Elevator.ElevatorPositions;
 import frc.robot.Constants.Intake.IntakePositions;
+import frc.robot.FRC9485.controllers.MechanismJoystick;
 import frc.robot.commands.level.elevator.ElevatorPosition;
 import frc.robot.commands.level.intake.IntakePosition;
 import frc.robot.subsystems.Mechanism.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.Mechanism.intake.IntakeSubsystem;
-import frc.robot.subsystems.controllers.MechanismJoystick;
 
 public class SetReefLevel extends Command{
 

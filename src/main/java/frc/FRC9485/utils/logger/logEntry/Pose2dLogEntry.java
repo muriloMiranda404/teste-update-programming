@@ -1,4 +1,4 @@
-package frc.robot.subsystems.utils.logger.logEntry;
+package frc.robot.FRC9485.utils.logger.logEntry;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.util.datalog.DataLog;

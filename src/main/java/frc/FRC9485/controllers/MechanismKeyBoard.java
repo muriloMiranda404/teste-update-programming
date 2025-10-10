@@ -1,4 +1,4 @@
-package frc.robot.subsystems.controllers;
+package frc.robot.FRC9485.controllers;
 
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;

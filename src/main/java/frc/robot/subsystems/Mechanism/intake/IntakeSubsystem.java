@@ -11,10 +11,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Intake;
 import frc.robot.Constants.Intake.IntakePositions;
+import frc.robot.FRC9485.Motors.MotorIO;
+import frc.robot.FRC9485.Motors.SparkMaxMotors;
+import frc.robot.FRC9485.controllers.MechanismJoystick;
 import frc.robot.subsystems.Mechanism.MechanismIO;
-import frc.robot.subsystems.Motors.MotorIO;
-import frc.robot.subsystems.Motors.SparkMaxMotors;
-import frc.robot.subsystems.controllers.MechanismJoystick;
 
 public class IntakeSubsystem extends SubsystemBase implements MechanismIO, LoggableInputs{
     

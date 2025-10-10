@@ -7,9 +7,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Elevator;
+import frc.robot.FRC9485.Motors.MotorIO;
+import frc.robot.FRC9485.Motors.SparkMaxMotors;
 import frc.robot.subsystems.Mechanism.MechanismIO;
-import frc.robot.subsystems.Motors.MotorIO;
-import frc.robot.subsystems.Motors.SparkMaxMotors;
 
 public class ElevatorSubsystem extends SubsystemBase implements MechanismIO{
     

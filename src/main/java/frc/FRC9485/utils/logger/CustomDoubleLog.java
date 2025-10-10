@@ -1,4 +1,4 @@
-package frc.robot.subsystems.utils.logger;
+package frc.robot.FRC9485.utils.logger;
 
 import edu.wpi.first.util.datalog.DoubleLogEntry;
 import edu.wpi.first.wpilibj.DataLogManager;

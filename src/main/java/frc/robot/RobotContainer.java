@@ -3,6 +3,11 @@ package frc.robot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import frc.FRC9485.controllers.DriverController;
+import frc.FRC9485.controllers.MechanismJoystick;
+import frc.FRC9485.controllers.MechanismKeyBoard;
+import frc.FRC9485.utils.RegisterNamedCommands;
+import frc.FRC9485.utils.JoystickChooser.JoystickChooser;
 import frc.robot.commands.autonomousChooser.AutoChooser;
 import frc.robot.commands.level.intake.SetIntakeSpeed;
 import frc.robot.commands.swerveUtils.AlingToTarget;
@@ -11,12 +16,7 @@ import frc.robot.commands.swerveUtils.TurnRobot;
 import frc.robot.subsystems.Mechanism.SuperStructure;
 import frc.robot.subsystems.Mechanism.SuperStructure.StatesToScore;
 import frc.robot.subsystems.Mechanism.intake.IntakeSubsystem;
-import frc.robot.subsystems.controllers.DriverController;
-import frc.robot.subsystems.controllers.MechanismJoystick;
-import frc.robot.subsystems.controllers.MechanismKeyBoard;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
-import frc.robot.subsystems.utils.RegisterNamedCommands;
-import frc.robot.subsystems.utils.JoystickChooser.JoystickChooser;
 
 public class RobotContainer {
 

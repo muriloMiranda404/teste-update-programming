@@ -1,4 +1,4 @@
-package frc.robot.subsystems.Motors;
+package frc.robot.FRC9485.Motors;
 
 import static edu.wpi.first.units.Units.Milliseconds;
 import static edu.wpi.first.units.Units.Seconds;
@@ -178,7 +178,8 @@ public class SparkMaxMotors implements MotorIO{
 
     @Override
     public void setRampRate(double ramp){
-        config.openLoopRampRate(ramp);
+        config.openLoopRampRate(ramp)
+        .closedLoopRampRate(ramp);
 
         if(DriverStation.isEnabled()){
             System.out.println("ERRO! a rampa não pode ser mudada como robo ligado");
