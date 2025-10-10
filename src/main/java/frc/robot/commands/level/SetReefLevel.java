@@ -2,10 +2,10 @@ package frc.robot.commands.level;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.FRC9485.controllers.MechanismJoystick;
 import frc.robot.Constants.Positions;
 import frc.robot.Constants.Elevator.ElevatorPositions;
 import frc.robot.Constants.Intake.IntakePositions;
-import frc.robot.FRC9485.controllers.MechanismJoystick;
 import frc.robot.commands.level.elevator.ElevatorPosition;
 import frc.robot.commands.level.intake.IntakePosition;
 import frc.robot.subsystems.Mechanism.elevator.ElevatorSubsystem;

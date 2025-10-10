@@ -1,4 +1,4 @@
-package frc.robot.FRC9485.Motors;
+package frc.FRC9485.Motors;
 
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.RelativeEncoder;

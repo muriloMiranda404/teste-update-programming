@@ -1,4 +1,4 @@
-package frc.robot.FRC9485.controllers;
+package frc.FRC9485.controllers;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -7,8 +7,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.FRC9485.utils.Util;
 import frc.robot.Constants.Controllers;
-import frc.robot.FRC9485.utils.Util;
 
 public class DriverController implements IDDriverController{
 

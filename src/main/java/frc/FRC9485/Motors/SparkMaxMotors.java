@@ -1,4 +1,4 @@
-package frc.robot.FRC9485.Motors;
+package frc.FRC9485.Motors;
 
 import static edu.wpi.first.units.Units.Milliseconds;
 import static edu.wpi.first.units.Units.Seconds;

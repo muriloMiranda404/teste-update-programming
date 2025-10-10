@@ -1,4 +1,4 @@
-package frc.robot.FRC9485.PIDs;
+package frc.FRC9485.PIDs;
 
 public class PIDConfig {
     
