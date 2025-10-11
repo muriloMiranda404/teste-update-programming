@@ -1,4 +1,4 @@
-package frc.robot.commands.autonomousChooser;
+package frc.FRC9485.Autonomous.autonomousChooser;
 
 public interface AutoChooserIO {
     String getPathName();

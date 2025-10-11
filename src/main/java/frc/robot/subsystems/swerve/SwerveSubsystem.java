@@ -72,7 +72,6 @@ public class SwerveSubsystem extends SubsystemBase implements SwerveIO{
   private SwerveSubsystem(File directory){
     try{      
       this.swerveDrive = new SwerveParser(directory).createSwerveDrive(swerve.MAX_SPEED);
-      
     } catch(Exception e){
       System.out.println("erro ao criar o swervedrive");
     }finally{

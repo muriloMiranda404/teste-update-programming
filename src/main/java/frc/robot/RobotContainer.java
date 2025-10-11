@@ -3,12 +3,12 @@ package frc.robot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import frc.FRC9485.Autonomous.autonomousChooser.AutoChooser;
 import frc.FRC9485.controllers.DriverController;
 import frc.FRC9485.controllers.MechanismJoystick;
 import frc.FRC9485.controllers.MechanismKeyBoard;
 import frc.FRC9485.utils.RegisterNamedCommands;
 import frc.FRC9485.utils.JoystickChooser.JoystickChooser;
-import frc.robot.commands.autonomousChooser.AutoChooser;
 import frc.robot.commands.level.intake.SetIntakeSpeed;
 import frc.robot.commands.swerveUtils.AlingToTarget;
 import frc.robot.commands.swerveUtils.ResetPigeon;
@@ -122,9 +122,9 @@ public class RobotContainer {
     mechanismController.L3Button().onTrue(superStructure.scorePieceOnLevel(StatesToScore.L3));
     mechanismController.L4Button().onTrue(superStructure.scorePieceOnLevel(StatesToScore.L4));    
 
-    mechanismController.ProcessorButton().onTrue(superStructure.scorePieceOnLevel(StatesToScore.PROCESSOR));
     mechanismController.L2Algae().onTrue(superStructure.scorePieceOnLevel(StatesToScore.ALGAE_L2));
     mechanismController.L3Algae().onTrue(superStructure.scorePieceOnLevel(StatesToScore.ALGAE_L3));
+    mechanismController.ProcessorButton().onTrue(superStructure.scorePieceOnLevel(StatesToScore.PROCESSOR));
   }
 
   public Command getAutonomousCommand() {

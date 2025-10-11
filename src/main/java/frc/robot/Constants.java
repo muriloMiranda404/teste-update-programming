@@ -3,8 +3,8 @@ package frc.robot;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import frc.robot.subsystems.swerve.SwerveModulesConstants;
-import frc.robot.subsystems.swerve.SwerveModulesConstants.ModuleId;
+import frc.FRC9485.swerve.SwerveModulesConstants;
+import frc.FRC9485.swerve.SwerveModulesConstants.ModuleId;
 
 public class Constants{
 

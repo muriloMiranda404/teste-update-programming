@@ -1,4 +1,4 @@
-package frc.robot.commands.autonomousChooser;
+package frc.FRC9485.Autonomous.autonomousChooser;
 
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
