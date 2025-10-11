@@ -42,10 +42,6 @@ public interface SwerveIO {
 
     Rotation2d getHeading();
 
-    void setDriveRamp(double value);
-        
-    void setAngleRamp(double value);
-
     boolean swerveIsMoving();
 
     ChassisSpeeds getRobotRelativeSpeeds();

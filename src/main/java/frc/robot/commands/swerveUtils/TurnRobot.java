@@ -1,7 +1,10 @@
 package frc.robot.commands.swerveUtils;
 
+import java.io.File;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 
@@ -16,7 +19,7 @@ public class TurnRobot extends Command{
     private double output;
 
     public TurnRobot(double angulo){
-        this.swerve = SwerveSubsystem.getInstance();
+        this.swerve = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
         this.angulo = angulo;
         this.controller = new PIDController(0.01, 0, 0);
         addRequirements(swerve);

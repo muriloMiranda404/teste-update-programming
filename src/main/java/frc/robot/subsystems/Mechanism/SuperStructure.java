@@ -88,6 +88,14 @@ public class SuperStructure extends SubsystemBase{
         }
     }
 
+    public enum intakePositions{
+        DEFAULT,
+        CONTROL_BALL,
+        SIMPLE_OPEN,
+        PUT_CORAL,
+        PUT_L4
+    }
+
     private void alternLedColor(Color color){
     if(DriverStation.isTeleopEnabled()){    
             if(intakeSubsystem.IsTouched()){
@@ -98,6 +106,32 @@ public class SuperStructure extends SubsystemBase{
                     ledSubsystem.setSolidColor(color);
             }
         }
+    }
+
+    public Command setIntakePosition(intakePositions position){
+        return run(() ->{
+            switch (position) {
+                case DEFAULT:
+                    this.intakeInput = IntakePositions.DEFAULT_POSITION;
+                    break;
+            
+                case CONTROL_BALL:
+                    this.intakeInput = IntakePositions.CONTROL_BALL;
+                    break;
+
+                case PUT_CORAL:
+                    this.intakeInput = IntakePositions.PUT_CORAL;
+                    break;
+
+                case SIMPLE_OPEN:
+                    this.intakeInput = IntakePositions.ABERTURA_COMUMM;
+                    break;
+
+                case PUT_L4:
+                    this.intakeInput = IntakePositions.OPEN_L4;
+                    break;
+            }
+        });
     }
 
     public Command scorePieceOnLevel(StatesToScore state){

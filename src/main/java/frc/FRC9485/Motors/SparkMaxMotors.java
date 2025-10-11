@@ -40,7 +40,6 @@ public class SparkMaxMotors implements MotorIO{
         this.constants = new PIDConstants(0, 0, 0);
         this.controller = new PIDController(constants.kP, constants.kI, constants.kD);
         this.motor = new SparkMax(id, SparkMax.MotorType.kBrushless);
-        clearStickyFaults();
     }
 
     private void configureSpark(Supplier<REVLibError> config){

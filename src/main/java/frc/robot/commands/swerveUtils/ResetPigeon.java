@@ -1,8 +1,11 @@
 package frc.robot.commands.swerveUtils;
 
+import java.io.File;
+
 import com.ctre.phoenix6.hardware.Pigeon2;
 
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 
@@ -12,7 +15,7 @@ public class ResetPigeon extends Command{
     private SwerveSubsystem subsystem;
 
     public ResetPigeon(){
-        this.subsystem = SwerveSubsystem.getInstance();
+        this.subsystem = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
         this.pigeon2 = new Pigeon2(9);
         addRequirements(subsystem);
     }

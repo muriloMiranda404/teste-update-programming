@@ -1,5 +1,7 @@
 package frc.robot;
 
+import java.io.File;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -41,7 +43,7 @@ public class RobotContainer {
     this.mechanismController = MechanismJoystick.getInstance();
     this.mechanismKeyboard = MechanismKeyBoard.getInstance();
 
-    this.swerve = SwerveSubsystem.getInstance();
+    this.swerve = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
     this.intakeSubsystem = IntakeSubsystem.getInstance();
     this.registerNamedCommands = RegisterNamedCommands.getInstance();
     this.configureNamedCommands();
@@ -98,7 +100,7 @@ public class RobotContainer {
 
     mechanismKeyboard.L1Button().onTrue(new ParallelCommandGroup(
       superStructure.scorePieceOnLevel(StatesToScore.L1),
-      new SetIntakeSpeed(true)
+      new SetIntakeSpeed()
     ));
     mechanismKeyboard.L2Button().onTrue(superStructure.scorePieceOnLevel(StatesToScore.L2));    
     mechanismKeyboard.L3Button().onTrue(superStructure.scorePieceOnLevel(StatesToScore.L3));
@@ -116,7 +118,7 @@ public class RobotContainer {
     
     mechanismController.L1Button().onTrue(new ParallelCommandGroup(
       superStructure.scorePieceOnLevel(StatesToScore.L1),
-      new SetIntakeSpeed(true)
+      new SetIntakeSpeed()
     ));
     mechanismController.L2Button().onTrue(superStructure.scorePieceOnLevel(StatesToScore.L2));
     mechanismController.L3Button().onTrue(superStructure.scorePieceOnLevel(StatesToScore.L3));

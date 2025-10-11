@@ -49,12 +49,9 @@ public class SwerveSubsystem extends SubsystemBase implements SwerveIO{
   private SwerveModuleState[] state;
   private SwerveModule[] module;
 
-  private MotorIO[] driveMotors;
-  private MotorIO[] angleMotors;
-
-  private double direçãoX;
-  private double direçãoY;
-  private double rotação;
+  private double direcaoX;
+  private double direcaoY;
+  private double rotacao;
   private double lastMovingTime;
   private boolean isMoving;
   private IdleMode currentIdleMode;
@@ -66,107 +63,70 @@ public class SwerveSubsystem extends SubsystemBase implements SwerveIO{
   private CustomDoubleLog entradaX;
   private CustomDoubleLog entradaY;
   private CustomDoubleLog entradaRot;
+  private SwerveDriveKinematics kinematics;
 
-  public static SwerveSubsystem mInstance = null;
-
-  private SwerveSubsystem(File directory){
+  public SwerveSubsystem(File directory){
     try{      
       this.swerveDrive = new SwerveParser(directory).createSwerveDrive(swerve.MAX_SPEED);
-    } catch(Exception e){
-      System.out.println("erro ao criar o swervedrive");
-    }finally{
-
-      this.xLimiter = new SlewRateLimiter(3);
-      this.yLimiter = new SlewRateLimiter(3);
-      this.rotationLimiter = new SlewRateLimiter(3);
-      
-      pigeon = new Pigeon2(9);
-      
       this.swerveDrivePoseEstimator = new SwerveDrivePoseEstimator(
-        swerveDrive.kinematics, 
-        pigeon.getRotation2d(), 
-        swerveDrive.getModulePositions(), 
+        this.swerveDrive.kinematics, 
+        this.pigeon.getRotation2d(), 
+        this.swerveDrive.getModulePositions(), 
         new Pose2d());
 
-      this.driveMotors = new SparkMaxMotors[]{
-        new SparkMaxMotors(1, false, "front right drive motor"),
-        new SparkMaxMotors(8, false, "front left drive motor"),
-        new SparkMaxMotors(6, false, "back left drive motor"),
-        new SparkMaxMotors(3, false, "back right drive motor")
-      };
+    } catch(Exception e){
+      System.out.println("erro ao criar o swervedrive");
+    }      
+    this.xLimiter = new SlewRateLimiter(3);
+    this.yLimiter = new SlewRateLimiter(3);
+    this.rotationLimiter = new SlewRateLimiter(3);
+    
+    this.pigeon = new Pigeon2(9);
+    
+    xPID = new PIDController(1.0, 0, 0);
+    yPID = new PIDController(1.0, 0.0, 0.1); 
+    profilePid = new ProfiledPIDController(1.0, 0.0, 0.1, new TrapezoidProfile.Constraints(Math.PI, Math.PI)); 
+    
+    xPID.setTolerance(0.05);
+    yPID.setTolerance(0.05);
+    profilePid.setTolerance(0.05);
+    
+    driveController = new HolonomicDriveController(xPID, yPID, profilePid);
+    driveController.setEnabled(true); 
+    
+    this.setupPathPlanner();
 
-      this.angleMotors = new SparkMaxMotors[]{
-        new SparkMaxMotors(2, false, "front right angle motor"),
-        new SparkMaxMotors(7, false, "front left angle motor"),
-        new SparkMaxMotors(5, false, "back right angle motor"),
-        new SparkMaxMotors(4, false, "back left angle motor")
-      };
+    this.direcaoX = 0;
+    this.direcaoY = 0;
+    this.rotacao = 0;
+    this.lastMovingTime = 0;
+    this.isMoving = false;
+    this.currentIdleMode = IdleMode.kBrake;
 
-      yPID = new PIDController(1.0, 0.0, 0.1); 
-      profilePid = new ProfiledPIDController(1.0, 0.0, 0.1, new TrapezoidProfile.Constraints(Math.PI, Math.PI)); 
-      
-      xPID.setTolerance(0.05);
-      yPID.setTolerance(0.05);
-      profilePid.setTolerance(0.05);
-      
-      driveController = new HolonomicDriveController(xPID, yPID, profilePid);
-      driveController.setEnabled(true); 
-      
-      this.setupPathPlanner();
-
-      this.direçãoX = 0;
-      this.direçãoY = 0;
-      this.rotação = 0;
-      this.lastMovingTime = 0;
-      this.isMoving = false;
-      this.currentIdleMode = IdleMode.kBrake;
-
-      setDriveRamp(swerve.DRIVE_RAMP);
-      setAngleRamp(swerve.ANGLE_RAMP);
-
-      this.swerveIsMoving = new CustomBooleanLog("swerve/ isMoving");
-      this.entradaX = new CustomDoubleLog("swerve/X");
-      this.entradaY = new CustomDoubleLog("swerve/Y");
-      this.entradaRot = new CustomDoubleLog("swerve/rotation");
-    }
+    this.swerveIsMoving = new CustomBooleanLog("swerve/ isMoving");
+    this.entradaX = new CustomDoubleLog("swerve/X");
+    this.entradaY = new CustomDoubleLog("swerve/Y");
+    this.entradaRot = new CustomDoubleLog("swerve/rotation");
   }
 
   @Override
   public void periodic() {
-    this.swerveDrivePoseEstimator.update(pigeon.getRotation2d(), swerveDrive.getModulePositions());  
-    this.swerveDrive.updateOdometry();
+    if(swerveDrive != null){
+      this.swerveDrive.updateOdometry();
+    }
+    if(swerveDrivePoseEstimator != null){
+      this.swerveDrivePoseEstimator.update(pigeon.getRotation2d(), swerveDrive.getModulePositions());  
+      if(limelightConfig.getHasTarget()){
+        Pose2d poseEstimated = limelightConfig.getEstimatedGlobalPose();
+        swerveDrivePoseEstimator.addVisionMeasurement(poseEstimated, Timer.getFPGATimestamp());
+      }
+    }
     this.automaticSwerveMode();
-
-    if(limelightConfig.getHasTarget()){
-      Pose2d poseEstimated = limelightConfig.getEstimatedGlobalPose();
-      swerveDrivePoseEstimator.addVisionMeasurement(poseEstimated, Timer.getFPGATimestamp());
-    }
-  }
-
-  public static SwerveSubsystem getInstance(){
-    if(mInstance == null){
-      mInstance = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
-    }
-    return mInstance;
-  }
-  
-  @Override
-  public void setDriveRamp(double value){
-    for(int i = 0; i < driveMotors.length; i++){
-      driveMotors[i].setRampRate(value);
-    }
-  }
-
-  @Override
-  public void setAngleRamp(double value){
-    for(int i = 0; i < angleMotors.length; i++){
-      angleMotors[i].setRampRate(value);
-    }
   }
 
   @Override
   public boolean swerveIsMoving(){
-    boolean isMoving = Math.abs(direçãoX) > 0.05 || Math.abs(direçãoY) > 0.05 || Math.abs(rotação) > 0.05;
+    boolean isMoving = Math.abs(direcaoX) > 0.05 || Math.abs(direcaoY) > 0.05 || Math.abs(rotacao) > 0.05;
     this.isMoving = isMoving;
 
     return isMoving;
@@ -259,7 +219,7 @@ public class SwerveSubsystem extends SubsystemBase implements SwerveIO{
    * Comando de direção com controle de malha fechada ativado por padrão
    * @param X Fornecedor de velocidade no eixo X
    * @param Y Fornecedor de velocidade no eixo Y
-   * @param rotation Fornecedor de velocidade de rotação
+   * @param rotation Fornecedor de velocidade de rotacao
    * @return Comando para dirigir o robô
    */
   public Command alternDriveCommand(DoubleSupplier X, DoubleSupplier Y, DoubleSupplier rotation) {
@@ -270,7 +230,7 @@ public class SwerveSubsystem extends SubsystemBase implements SwerveIO{
    * Comando de direção com opção de escolher entre malha aberta ou fechada
    * @param X Fornecedor de velocidade no eixo X
    * @param Y Fornecedor de velocidade no eixo Y
-   * @param rotation Fornecedor de velocidade de rotação
+   * @param rotation Fornecedor de velocidade de rotacao
    * @param useClosedLoop Se true, usa controle de malha fechada; se false, usa malha aberta
    * @return Comando para dirigir o robô
    */
@@ -325,25 +285,25 @@ public class SwerveSubsystem extends SubsystemBase implements SwerveIO{
   public Command driveRobot(DoubleSupplier x, DoubleSupplier y, DoubleSupplier omega, boolean fromField){
     return run(() ->{
 
-      this.direçãoX = xLimiter.calculate(x.getAsDouble()) * swerveDrive.getMaximumChassisVelocity();
-      this.direçãoY = yLimiter.calculate(y.getAsDouble()) * swerveDrive.getMaximumChassisVelocity();
-      this.rotação = rotationLimiter.calculate(omega.getAsDouble()) * swerveDrive.getMaximumChassisAngularVelocity();
+      this.direcaoX = xLimiter.calculate(x.getAsDouble()) * swerveDrive.getMaximumChassisVelocity();
+      this.direcaoY = yLimiter.calculate(y.getAsDouble()) * swerveDrive.getMaximumChassisVelocity();
+      this.rotacao = rotationLimiter.calculate(omega.getAsDouble()) * swerveDrive.getMaximumChassisAngularVelocity();
 
-      if(direçãoX != 0) entradaX.append(direçãoX);
+      if(direcaoX != 0) entradaX.append(direcaoX);
 
-      if(direçãoY != 0) entradaY.append(direçãoY);
+      if(direcaoY != 0) entradaY.append(direcaoY);
 
-      if(rotação != 0) entradaRot.append(rotação);
+      if(rotacao != 0) entradaRot.append(rotacao);
 
       double td = 0.02;
-      ChassisSpeeds speed = fromField == true ? ChassisSpeeds.fromFieldRelativeSpeeds(direçãoX,
-                                                                                      direçãoY,
-                                                                                      rotação,
+      ChassisSpeeds speed = fromField == true ? ChassisSpeeds.fromFieldRelativeSpeeds(direcaoX,
+                                                                                      direcaoY,
+                                                                                      rotacao,
                                                                                       pigeon.getRotation2d()) 
                                                                                       : new ChassisSpeeds(
-                                                                                      direçãoX, 
-                                                                                      direçãoY,
-                                                                                      rotação);
+                                                                                      direcaoX, 
+                                                                                      direcaoY,
+                                                                                      rotacao);
 
       ChassisSpeeds discretize = ChassisSpeeds.discretize(speed, td);
       state = swerveDrive.kinematics.toSwerveModuleStates(discretize);
@@ -424,9 +384,9 @@ public class SwerveSubsystem extends SubsystemBase implements SwerveIO{
    * @param yKp Ganho proporcional para o controlador Y
    * @param yKi Ganho integral para o controlador Y
    * @param yKd Ganho derivativo para o controlador Y
-   * @param rotKp Ganho proporcional para o controlador de rotação
-   * @param rotKi Ganho integral para o controlador de rotação
-   * @param rotKd Ganho derivativo para o controlador de rotação
+   * @param rotKp Ganho proporcional para o controlador de rotacao
+   * @param rotKi Ganho integral para o controlador de rotacao
+   * @param rotKd Ganho derivativo para o controlador de rotacao
    */
   public void configurePIDGains(double xKp, double xKi, double xKd,
                                double yKp, double yKi, double yKd,

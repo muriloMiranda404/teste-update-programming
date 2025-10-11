@@ -1,10 +1,15 @@
 package frc.FRC9485.utils;
 
+import java.io.File;
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import frc.FRC9485.Autonomous.sequentialCommands.PutCoralOnL2;
+import frc.FRC9485.Autonomous.sequentialCommands.PutCoralOnL3;
+import frc.FRC9485.Autonomous.sequentialCommands.PutCoralOnL4;
 import frc.robot.commands.level.intake.SetIntakeSpeed;
 import frc.robot.commands.swerveUtils.AlingToTarget;
 import frc.robot.commands.swerveUtils.ResetPigeon;
@@ -28,7 +33,7 @@ public class RegisterNamedCommands {
     public static RegisterNamedCommands mInstance = null;
 
     private RegisterNamedCommands(){
-        this.swerve = SwerveSubsystem.getInstance();
+        this.swerve = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
         this.elevator = ElevatorSubsystem.getInstance();
         this.intake = IntakeSubsystem.getInstance();
         this.limelightConfig = LimelightConfig.getInstance();
@@ -46,6 +51,13 @@ public class RegisterNamedCommands {
         configurePositionsToAutonomous(struct);
         configureSubsystemsUtils(intake);
         configureSwerveAutoCommands(swerve, limelightConfig, elevator);
+        configureScoreCommands(intake, struct);
+    }
+
+    private void configureScoreCommands(IntakeSubsystem intakeSubsystem, SuperStructure superStructure){
+        NamedCommands.registerCommand("L2", new PutCoralOnL2(intakeSubsystem, superStructure));
+        NamedCommands.registerCommand("L3", new PutCoralOnL3(intakeSubsystem, superStructure)); 
+        NamedCommands.registerCommand("L4", new PutCoralOnL4(superStructure, intakeSubsystem));
     }
 
     private void configurePositionsToAutonomous(SuperStructure struct){
@@ -53,7 +65,7 @@ public class RegisterNamedCommands {
         NamedCommands.registerCommand("SCORE ON L1", struct.scorePieceOnLevel(StatesToScore.L1));
         NamedCommands.registerCommand("GO TO HOME POSITION", new ParallelCommandGroup(
             struct.scorePieceOnLevel(StatesToScore.L1),
-            new SetIntakeSpeed(true)
+            new SetIntakeSpeed()
         ));
         NamedCommands.registerCommand("SCORE ON L2", struct.scorePieceOnLevel(StatesToScore.L2));
         NamedCommands.registerCommand("SCORE ON L3", struct.scorePieceOnLevel(StatesToScore.L3));
@@ -83,6 +95,6 @@ public class RegisterNamedCommands {
 
         NamedCommands.registerCommand("THROW CORAL", new SetIntakeSpeed(0.8));
 
-        NamedCommands.registerCommand("GET CORAL", new SetIntakeSpeed(true));
+        NamedCommands.registerCommand("GET CORAL", new SetIntakeSpeed());
     }
 }

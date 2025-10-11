@@ -13,7 +13,7 @@ public class SetIntakeSpeed extends Command{
         this(speed, false);
     }
 
-    public SetIntakeSpeed(boolean getCoralBoolean){
+    public SetIntakeSpeed(){
         this(0.2, true);
     }
 
