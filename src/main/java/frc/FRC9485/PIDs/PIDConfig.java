@@ -5,15 +5,19 @@ public class PIDConfig {
     private double Kp;
     private double Ki;
     private double Kd;
-    private double iZone;
     private double Kf;
+    private double iZone;
 
-    private PIDConfig(double Kp, double Ki, double Kd, double Kf, double iZone){
+    public record PIDConfiguration(double kp, double ki, double kd, double kf, double iZone) {}
+    private PIDConfiguration configuration;
+
+    public PIDConfig(double Kp, double Ki, double Kd, double Kf, double iZone){
         this.Kd = Kd;
         this.Ki = Ki;
         this.Kd = Kd;
         this.Kf = Kf;
         this.iZone = iZone;
+        this.configuration = new PIDConfiguration(Kp, Ki, Kd, Kf, iZone);
     }
 
     public PIDConfig(double Kp, double Ki, double Kd, double Kf){

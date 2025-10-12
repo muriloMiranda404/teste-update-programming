@@ -1,6 +1,9 @@
 package frc.robot.subsystems.Mechanism.elevator;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -18,14 +21,14 @@ public class ElevatorSubsystem extends SubsystemBase implements MechanismIO{
     private DigitalInput downSwitch;
     private DigitalInput upSwitch;
 
-    private PIDController controller;
-
     private Encoder encoder;
 
     public static ElevatorSubsystem mInstance = null;
 
     public double setpoint;
 
+    public TrapezoidProfile.Constraints constraint;
+    public ProfiledPIDController elevatorController;
     
     private ElevatorSubsystem(){
         
@@ -36,8 +39,12 @@ public class ElevatorSubsystem extends SubsystemBase implements MechanismIO{
         this.upSwitch = new DigitalInput(Elevator.UP_SWITCH);
 
         this.encoder = new Encoder(Elevator.ENCODER_ELEV_A, Elevator.ENCODER_ELEV_B);
-        
-        this.controller = Elevator.ELEVATOR_PID;
+
+        this.constraint = new Constraints(Elevator.VELOCITY, Elevator.ACELERATION);
+        this.elevatorController = new ProfiledPIDController(Elevator.ELEVATOR_CONSTANTS.kP,
+                                                            Elevator.ELEVATOR_CONSTANTS.kI,
+                                                            Elevator.ELEVATOR_CONSTANTS.kD,
+                                                            constraint);
 
         this.configureElevator();
     }
@@ -52,7 +59,7 @@ public class ElevatorSubsystem extends SubsystemBase implements MechanismIO{
     public void configureElevator(){
         this.encoder.setDistancePerPulse(360.0/2048.0);
 
-        this.controller.setTolerance(Elevator.ELEVATOR_TOLERANCE);
+        this.elevatorController.setTolerance(Elevator.ELEVATOR_TOLERANCE);
     
         this.setpoint = 0;
     }
@@ -87,7 +94,7 @@ public class ElevatorSubsystem extends SubsystemBase implements MechanismIO{
             setpoint = 1480.0;
         }
 
-        double output = controller.calculate(ang, setpoint) * -1.0;
+        double output = elevatorController.calculate(ang, setpoint) * -1.0;
         
         if(upSwitch.get()){
             if(output > 0){
@@ -117,7 +124,7 @@ public class ElevatorSubsystem extends SubsystemBase implements MechanismIO{
 
     @Override
     public boolean atSetpoint(){
-        return controller.atSetpoint();
+        return elevatorController.atSetpoint();
     }
 
     public void stopElevator(){
@@ -147,7 +154,7 @@ public class ElevatorSubsystem extends SubsystemBase implements MechanismIO{
     }
 
     public double getErroOnElevatorOutput(){
-        return this.controller.getError();
+        return this.elevatorController.getAccumulatedError();
     }
 
     public Command resetElevator(){

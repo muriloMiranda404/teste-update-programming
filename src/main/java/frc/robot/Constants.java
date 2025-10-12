@@ -1,5 +1,7 @@
 package frc.robot;
 
+import com.pathplanner.lib.config.PIDConstants;
+
 import edu.wpi.first.math.controller.PIDController;
 
 public class Constants{
@@ -92,7 +94,10 @@ public class Constants{
     public static final int ENCODER_ELEV_A = 6;
     public static final int ENCODER_ELEV_B = 8;
 
-    public static final PIDController ELEVATOR_PID = new PIDController(0.01, 0, 0);
+    public static final PIDConstants ELEVATOR_CONSTANTS = new PIDConstants(0.01, 0, 0);
+
+    public static final double ACELERATION = 2;
+    public static final double VELOCITY = 1;
 
     public static final double ELEVATOR_TOLERANCE = 30.0;
 
