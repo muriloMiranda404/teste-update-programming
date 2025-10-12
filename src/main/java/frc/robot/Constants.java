@@ -1,8 +1,6 @@
 package frc.robot;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 
 public class Constants{
 
@@ -46,16 +44,31 @@ public class Constants{
   }
 
   public static final class Intake{
+
+    public record IntakeController(double Kp, double Ki, double Kd, double tolerance) {
+      public PIDController getController(){
+        PIDController controller = new PIDController(Kp, Ki, Kd);
+        controller.setTolerance(tolerance);
+
+        return controller;
+      }
+    }
+
+    public static final double KP = 0.01;
+    public static final double Ki = 0.0;
+    public static final double KD = 0.0;
+    public static final double INTAKE_TOLERANCE = 4.0;
+
+    public static final IntakeController INTAKE_CONTROLLER = new IntakeController(KP, Ki, KD, INTAKE_TOLERANCE);
+
     public static final int INTAKE_MOTOR = 17;
     public static final int CORAL_MOTOR = 18;
 
     public static final int INTAKE_ENCODER = 1;
 
-    public static final PIDController INTAKE_PID = new PIDController(0.01, 0, 0);
+    public static final PIDController INTAKE_PID = INTAKE_CONTROLLER.getController();
 
     public static final int CORAL_SWITCH = 0;
-
-    public static final double INTAKE_TOLERANCE = 4.0;
 
     public static final double GET_CORAL_SPEED = 0.3;
 
