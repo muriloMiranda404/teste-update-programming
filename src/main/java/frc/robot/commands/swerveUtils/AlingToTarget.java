@@ -89,7 +89,10 @@ public class AlingToTarget extends Command {
         double tx = limelight.getTx();
         double ty = limelight.getTy();
 
-        if (Double.isNaN(tx) || Double.isNaN(ty)) return;
+        if (Double.isNaN(tx) || Double.isNaN(ty)) {
+            System.out.println("valores invalidos!!!");
+            return;
+        }
 
         txFiltrado = FILTRO_ALPHA * tx + (1 - FILTRO_ALPHA) * txFiltrado;
         tyFiltrado = FILTRO_ALPHA * ty + (1 - FILTRO_ALPHA) * tyFiltrado;

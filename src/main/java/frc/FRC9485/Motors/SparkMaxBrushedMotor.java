@@ -17,7 +17,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 
-public class SparkMaxMotors implements MotorIO{
+public class SparkMaxBrushedMotor implements MotorIO{
     
     private int id;
     private boolean usingInternalEncoder;
@@ -32,14 +32,14 @@ public class SparkMaxMotors implements MotorIO{
 
     private double percentOutput = 0;
 
-    public SparkMaxMotors(int id, boolean usingInternalEncoder, String name){
+    public SparkMaxBrushedMotor(int id, boolean usingInternalEncoder, String name){
         this.name = name;
         this.id = id;
         this.usingInternalEncoder = usingInternalEncoder;
         this.config = new SparkMaxConfig();
         this.constants = new PIDConstants(0, 0, 0);
         this.controller = new PIDController(constants.kP, constants.kI, constants.kD);
-        this.motor = new SparkMax(id, SparkMax.MotorType.kBrushless);
+        this.motor = new SparkMax(id, SparkMax.MotorType.kBrushed);
         clearStickyFaults();
     }
 

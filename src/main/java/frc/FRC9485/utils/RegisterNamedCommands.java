@@ -1,10 +1,8 @@
 package frc.FRC9485.utils;
 
-import java.io.File;
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.FRC9485.Autonomous.sequentialCommands.PutCoralOnL2;
@@ -84,7 +82,7 @@ public class RegisterNamedCommands {
 
         NamedCommands.registerCommand("TURN ROBOT", new TurnRobot(45));
 
-        NamedCommands.registerCommand("RESET ELEVATOR", elevatorSubsystem.resetElevator());
+        NamedCommands.registerCommand("RESET ELEVATOR", elevatorSubsystem.resetElevator().until(() -> elevatorSubsystem.getDistance() >= 0.0001));
 
         NamedCommands.registerCommand("RESET ODOMETRY CENTER AUTO", new InstantCommand(() ->{
             swerve.resetOdometry(new Pose2d(0, 0, new Rotation2d(0)));
