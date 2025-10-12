@@ -1,10 +1,7 @@
 package frc.robot.commands.swerveUtils;
 
-import java.io.File;
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 
@@ -19,7 +16,7 @@ public class TurnRobot extends Command{
     private double output;
 
     public TurnRobot(double angulo){
-        this.swerve = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
+        this.swerve = SwerveSubsystem.getInstance();
         this.angulo = angulo;
         this.controller = new PIDController(0.01, 0, 0);
         addRequirements(swerve);
@@ -27,7 +24,6 @@ public class TurnRobot extends Command{
 
     @Override
     public void initialize() {
-        System.out.println("mudando posição para: " +  angulo);
         controller.enableContinuousInput(-180, 180);
         controller.setTolerance(1.0);
     }

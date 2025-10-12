@@ -33,7 +33,7 @@ public class RegisterNamedCommands {
     public static RegisterNamedCommands mInstance = null;
 
     private RegisterNamedCommands(){
-        this.swerve = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
+        this.swerve = SwerveSubsystem.getInstance();
         this.elevator = ElevatorSubsystem.getInstance();
         this.intake = IntakeSubsystem.getInstance();
         this.limelightConfig = LimelightConfig.getInstance();

@@ -25,8 +25,6 @@ import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.FRC9485.Motors.MotorIO;
-import frc.FRC9485.Motors.SparkMaxMotors;
 import frc.FRC9485.utils.logger.CustomBooleanLog;
 import frc.FRC9485.utils.logger.CustomDoubleLog;
 import frc.robot.Constants.swerve;
@@ -63,11 +61,15 @@ public class SwerveSubsystem extends SubsystemBase implements SwerveIO{
   private CustomDoubleLog entradaX;
   private CustomDoubleLog entradaY;
   private CustomDoubleLog entradaRot;
-  private SwerveDriveKinematics kinematics;
 
-  public SwerveSubsystem(File directory){
+  public static SwerveSubsystem mInstance = null;
+
+  public record SwerveState(double XInput, double YInput, double rotation, boolean isMoving) {}
+  private SwerveState swerveState;
+  private SwerveSubsystem(File directory){
     try{      
       this.swerveDrive = new SwerveParser(directory).createSwerveDrive(swerve.MAX_SPEED);
+      
       this.swerveDrivePoseEstimator = new SwerveDrivePoseEstimator(
         this.swerveDrive.kinematics, 
         this.pigeon.getRotation2d(), 
@@ -107,6 +109,21 @@ public class SwerveSubsystem extends SubsystemBase implements SwerveIO{
     this.entradaX = new CustomDoubleLog("swerve/X");
     this.entradaY = new CustomDoubleLog("swerve/Y");
     this.entradaRot = new CustomDoubleLog("swerve/rotation");
+
+    this.swerveState = new SwerveState(direcaoX, direcaoY, rotacao, isMoving);
+  }
+
+  
+  public static SwerveSubsystem getInstance(){
+    if(mInstance == null){
+      mInstance = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
+    }
+    return mInstance;
+  }
+  
+  @Override
+  public SwerveState getState(){
+    return swerveState;
   }
 
   @Override
@@ -290,6 +307,7 @@ public class SwerveSubsystem extends SubsystemBase implements SwerveIO{
       this.rotacao = rotationLimiter.calculate(omega.getAsDouble()) * swerveDrive.getMaximumChassisAngularVelocity();
 
       if(direcaoX != 0) entradaX.append(direcaoX);
+        
 
       if(direcaoY != 0) entradaY.append(direcaoY);
 
@@ -308,7 +326,7 @@ public class SwerveSubsystem extends SubsystemBase implements SwerveIO{
       ChassisSpeeds discretize = ChassisSpeeds.discretize(speed, td);
       state = swerveDrive.kinematics.toSwerveModuleStates(discretize);
       SwerveDriveKinematics.desaturateWheelSpeeds(state, swerve.MAX_SPEED);
-
+      
       module = swerveDrive.getModules();
       for(int i = 0; i < state.length; i++){
         module[i].setDesiredState(state[i], true, true);

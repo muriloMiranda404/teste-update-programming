@@ -1,10 +1,7 @@
 package frc.robot.commands.swerveUtils;
 
-import java.io.File;
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
@@ -60,7 +57,7 @@ public class AlingToTarget extends Command {
 
     private AlingToTarget(double setpointX, double setpointY, boolean automaticSetpoint) {
         this.limelight = LimelightConfig.getInstance();
-        this.subsystem = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
+        this.subsystem = SwerveSubsystem.getInstance();
         this.setpointX = setpointX;
         this.setpointY = setpointY;
         this.automaticSetpoint = automaticSetpoint;

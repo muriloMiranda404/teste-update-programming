@@ -43,7 +43,7 @@ public class RobotContainer {
     this.mechanismController = MechanismJoystick.getInstance();
     this.mechanismKeyboard = MechanismKeyBoard.getInstance();
 
-    this.swerve = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
+    this.swerve = SwerveSubsystem.getInstance();
     this.intakeSubsystem = IntakeSubsystem.getInstance();
     this.registerNamedCommands = RegisterNamedCommands.getInstance();
     this.configureNamedCommands();

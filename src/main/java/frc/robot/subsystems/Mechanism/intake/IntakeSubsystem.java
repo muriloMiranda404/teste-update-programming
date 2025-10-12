@@ -2,11 +2,9 @@ package frc.robot.subsystems.Mechanism.intake;
 
 import org.littletonrobotics.junction.LogTable;
 import org.littletonrobotics.junction.inputs.LoggableInputs;
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.FRC9485.Motors.MotorIO;
@@ -167,10 +165,7 @@ public class IntakeSubsystem extends SubsystemBase implements MechanismIO, Logga
     }
 
     @Override
-    public void periodic() {
-        SmartDashboard.putNumber("angulo", getDistance());
-        SmartDashboard.putBoolean("fim de curos do coral", IsTouched());
-    }
+    public void periodic() {}
 
     @Override
     public void toLog(LogTable table) {

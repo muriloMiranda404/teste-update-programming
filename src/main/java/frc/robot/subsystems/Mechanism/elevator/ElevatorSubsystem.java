@@ -3,7 +3,6 @@ package frc.robot.subsystems.Mechanism.elevator;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.FRC9485.Motors.MotorIO;
@@ -112,7 +111,6 @@ public class ElevatorSubsystem extends SubsystemBase implements MechanismIO{
 
         }
 
-        System.out.println("output: " + output);
         rightMotor.setSpeed(output);
         leftMotor.setSpeed(-output);
     }
@@ -170,12 +168,5 @@ public class ElevatorSubsystem extends SubsystemBase implements MechanismIO{
     }
 
     @Override
-    public void periodic() {
-        SmartDashboard.putNumber("elevador", getDistance());
-        SmartDashboard.putNumberArray("velocidade nos motores", getRateOnMotor());
-        SmartDashboard.putBoolean("fim de curso de cima", upSwitch.get());
-        SmartDashboard.putBoolean("fim de curso de baixo", downSwitch.get());
-        SmartDashboard.putNumber("erro do elevador", getErroOnElevatorOutput());
-        SmartDashboard.putNumberArray("output inserida ao elevador", getOutputInElevatorMotors());
-    }
+    public void periodic() {}
 }
