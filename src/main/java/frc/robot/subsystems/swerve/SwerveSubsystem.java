@@ -66,36 +66,51 @@ public class SwerveSubsystem extends SubsystemBase implements SwerveIO{
 
   public record SwerveState(double XInput, double YInput, double rotation, boolean isMoving) {}
   private SwerveState swerveState;
-  private SwerveSubsystem(File directory){
-    try{      
-      this.swerveDrive = new SwerveParser(directory).createSwerveDrive(swerve.MAX_SPEED);
-      
-      this.swerveDrivePoseEstimator = new SwerveDrivePoseEstimator(
-        this.swerveDrive.kinematics, 
-        this.pigeon.getRotation2d(), 
-        this.swerveDrive.getModulePositions(), 
-        new Pose2d());
 
-    } catch(Exception e){
-      System.out.println("erro ao criar o swervedrive");
-    }      
+  private SwerveSubsystem(File directory){
     this.xLimiter = new SlewRateLimiter(3);
     this.yLimiter = new SlewRateLimiter(3);
     this.rotationLimiter = new SlewRateLimiter(3);
-    
-    this.pigeon = new Pigeon2(9);
-    
+
+    try {
+      this.pigeon = new Pigeon2(9);
+    } catch (Exception e) {
+      e.printStackTrace();
+      DriverStation.reportError("Falha ao inicializar Pigeon2: " + e.getMessage(), false);
+      this.pigeon = null;
+    }
+
+    try {
+      this.swerveDrive = new SwerveParser(directory).createSwerveDrive(swerve.MAX_SPEED);
+
+      if (this.swerveDrive != null && this.pigeon != null) {
+        this.swerveDrivePoseEstimator = new SwerveDrivePoseEstimator(
+            this.swerveDrive.kinematics,
+            this.pigeon.getRotation2d(),
+            this.swerveDrive.getModulePositions(),
+            new Pose2d());
+
+      } else {
+        DriverStation.reportWarning("swerveDrive ou pigeon não inicializado — poseEstimator não criado", false);
+        this.swerveDrivePoseEstimator = null;
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+      DriverStation.reportError("Erro criando SwerveDrive: " + e.getMessage(), false);
+      this.swerveDrive = null;
+      this.swerveDrivePoseEstimator = null;
+    }
+
     xPID = new PIDController(1.0, 0, 0);
-    yPID = new PIDController(1.0, 0.0, 0.1); 
-    profilePid = new ProfiledPIDController(1.0, 0.0, 0.1, new TrapezoidProfile.Constraints(Math.PI, Math.PI)); 
-    
+    yPID = new PIDController(1.0, 0.0, 0.1);
+    profilePid = new ProfiledPIDController(1.0, 0.0, 0.1,
+        new TrapezoidProfile.Constraints(Math.PI, Math.PI));
     xPID.setTolerance(0.05);
     yPID.setTolerance(0.05);
     profilePid.setTolerance(0.05);
-    
     driveController = new HolonomicDriveController(xPID, yPID, profilePid);
-    driveController.setEnabled(true); 
-    
+    driveController.setEnabled(true);
+
     this.setupPathPlanner();
 
     this.direcaoX = 0;
@@ -113,7 +128,6 @@ public class SwerveSubsystem extends SubsystemBase implements SwerveIO{
     this.swerveState = new SwerveState(direcaoX, direcaoY, rotacao, isMoving);
   }
 
-  
   public static SwerveSubsystem getInstance(){
     if(mInstance == null){
       mInstance = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
@@ -128,19 +142,33 @@ public class SwerveSubsystem extends SubsystemBase implements SwerveIO{
 
   @Override
   public void periodic() {
-    if(swerveDrive != null){
-      this.swerveDrive.updateOdometry();
+    if (swerveDrive != null) {
+      try {
+        swerveDrive.updateOdometry();
+      } catch (Exception e) {
+        e.printStackTrace();
+        DriverStation.reportError("Erro em updateOdometry(): " + e.getMessage(), false);
+      }
+    } else {
+      DriverStation.reportWarning("swerveDrive == null em periodic()", false);
     }
-    if(swerveDrivePoseEstimator != null){
-      this.swerveDrivePoseEstimator.update(pigeon.getRotation2d(), swerveDrive.getModulePositions());  
-      if(limelightConfig.getHasTarget()){
-        Pose2d poseEstimated = limelightConfig.getEstimatedGlobalPose();
-        swerveDrivePoseEstimator.addVisionMeasurement(poseEstimated, Timer.getFPGATimestamp());
+  
+    if (swerveDrivePoseEstimator != null && pigeon != null && swerveDrive != null) {
+      try {
+        swerveDrivePoseEstimator.update(pigeon.getRotation2d(), swerveDrive.getModulePositions());
+        if (limelightConfig != null && limelightConfig.getHasTarget()) {
+          Pose2d poseEstimated = limelightConfig.getEstimatedGlobalPose();
+          swerveDrivePoseEstimator.addVisionMeasurement(poseEstimated, Timer.getFPGATimestamp());
+        }
+      } catch (Exception e) {
+        e.printStackTrace();
+        DriverStation.reportError("Erro ao atualizar poseEstimator: " + e.getMessage(), false);
       }
     }
+  
     this.automaticSwerveMode();
   }
-
+  
   @Override
   public boolean swerveIsMoving(){
     boolean isMoving = Math.abs(direcaoX) > 0.05 || Math.abs(direcaoY) > 0.05 || Math.abs(rotacao) > 0.05;
@@ -257,8 +285,11 @@ public class SwerveSubsystem extends SubsystemBase implements SwerveIO{
       double xController = Math.pow(xLimiter.calculate(X.getAsDouble()), 3);
       double yController = Math.pow(yLimiter.calculate(Y.getAsDouble()), 3);
       double rotationValue = rotationLimiter.calculate(rotation.getAsDouble());
-      Rotation2d rotation2d = swerveDrivePoseEstimator.getEstimatedPosition().getRotation();
-
+      Rotation2d rotation2d = Rotation2d.fromDegrees(0.0);
+      if (swerveDrivePoseEstimator != null) {
+        rotation2d = swerveDrivePoseEstimator.getEstimatedPosition().getRotation();
+      }
+      
       ChassisSpeeds targetSpeeds = swerveDrive.swerveController.getTargetSpeeds(
           xController, 
           yController, 
