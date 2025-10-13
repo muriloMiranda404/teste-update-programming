@@ -1,5 +1,7 @@
 package frc.robot.commands.swerveUtils;
 
+import com.ctre.phoenix6.hardware.Pigeon2;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -36,6 +38,11 @@ public class TurnRobot extends Command{
 
         swerve.drive(new Translation2d(0, 0), output, true);
 
+        if(swerve.getYaw() == angulo){
+            swerve.drive(new Translation2d(0, 0), 0, true);
+            return;
+        }
+        
     } catch(Exception e){
         System.out.println("erro o mudar angulação: " + e.getMessage());
     }

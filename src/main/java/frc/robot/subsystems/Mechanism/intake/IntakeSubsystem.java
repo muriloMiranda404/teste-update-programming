@@ -5,6 +5,7 @@ import org.littletonrobotics.junction.inputs.LoggableInputs;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.FRC9485.Motors.MotorIO;
@@ -165,7 +166,9 @@ public class IntakeSubsystem extends SubsystemBase implements MechanismIO, Logga
     }
 
     @Override
-    public void periodic() {}
+    public void periodic() {
+        SmartDashboard.putNumber("distance", getDistance());
+    }
 
     @Override
     public void toLog(LogTable table) {

@@ -85,7 +85,7 @@ public class ElevatorSubsystem extends SubsystemBase implements MechanismIO{
 
     @Override
     public void setPosition(double setpoint){
-        double ang = getDistance();
+        double ang = getDistance() * -1.0;
         this.setpoint = setpoint;
 
         if(setpoint < 0){
@@ -94,7 +94,7 @@ public class ElevatorSubsystem extends SubsystemBase implements MechanismIO{
             setpoint = 1480.0;
         }
 
-        double output = elevatorController.calculate(ang, setpoint) * -1.0;
+        double output = elevatorController.calculate(ang, setpoint);
         
         if(upSwitch.get()){
             if(output > 0){
