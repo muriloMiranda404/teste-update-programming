@@ -62,7 +62,7 @@ public class SuperStructure extends SubsystemBase{
     }
 
     public boolean scoreIsFinised(){
-        return isFinished;
+        return elevatorSubsystem.atSetpoint() && intakeSubsystem.atSetpoint();
     }
     
     public enum StatesToScore{
@@ -97,7 +97,7 @@ public class SuperStructure extends SubsystemBase{
     if(DriverStation.isTeleopEnabled()){    
             if(intakeSubsystem.IsTouched()){
                     ledSubsystem.setPattern(LEDPattern.gradient(GradientType.kDiscontinuous, Color.kRed, color));
-                } else if(elevatorSubsystem.getOutputInElevatorMotors()[0] != 0){
+                } else if(Math.abs(elevatorSubsystem.getOutputInElevatorMotors()[0]) >= 0.01){
                     ledSubsystem.setPattern(LEDPattern.gradient(GradientType.kDiscontinuous, Color.kWhite, color));
                 } else {
                     ledSubsystem.setSolidColor(color);

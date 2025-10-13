@@ -19,12 +19,7 @@ public class PutCoralOnL4 extends SequentialCommandGroup{
 
         addCommands(
             superStructure.scorePieceOnLevel(StatesToScore.L4).until(() -> superStructure.scoreIsFinised()),
-            new SetIntakeSpeed(0.5).onlyWhile(() -> intakeSubsystem.IsTouched()),
-            superStructure.setIntakePosition(intakePositions.PUT_CORAL),
-            new ParallelCommandGroup(
-                new SetIntakeSpeed(),
-                superStructure.scorePieceOnLevel(StatesToScore.L1)
-            )
+            new ThrowCoralAndGet(intakeSubsystem, superStructure)
         );
     }
 }
