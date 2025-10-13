@@ -74,7 +74,7 @@ public class IntakeSubsystem extends SubsystemBase implements MechanismIO, Logga
     }
 
     public boolean IsTouched(){
-        return hasCoral;
+        return !coralswitch.get();
     }
 
     public void stopCoralMotor(){
