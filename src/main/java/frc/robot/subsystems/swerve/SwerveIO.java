@@ -41,6 +41,10 @@ public interface SwerveIO {
 
     double getYaw();
 
+    double getRoll();
+
+    double getPicth();
+
     Rotation2d getHeading();
 
     boolean swerveIsMoving();

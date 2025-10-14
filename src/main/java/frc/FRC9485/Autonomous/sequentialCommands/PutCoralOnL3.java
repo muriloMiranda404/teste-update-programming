@@ -20,5 +20,7 @@ public class PutCoralOnL3 extends SequentialCommandGroup{
             superStructure.scorePieceOnLevel(StatesToScore.L3).onlyIf(() -> !superStructure.scoreIsFinised()),
             new ThrowCoralAndGet(intakeSubsystem, superStructure)
         );
+
+        addRequirements(intakeSubsystem, superStructure);
     }
 }

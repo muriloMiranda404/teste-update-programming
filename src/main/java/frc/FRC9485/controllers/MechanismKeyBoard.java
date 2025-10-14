@@ -42,26 +42,26 @@ public class MechanismKeyBoard implements KeyBoardIO{
 
     @Override
     public Trigger algae_L2() {
-        return controller.rightBumper();
+        return controller.button(8);
     }
 
     @Override
     public Trigger algae_L3() {
-        return controller.leftBumper();
-    }
-
-    @Override
-    public Trigger Processador() {
-        return controller.start();
-    }
-
-    @Override
-    public Trigger throwCoral(){
         return controller.button(9);
     }
 
     @Override
+    public Trigger Processador() {
+        return controller.button(7);
+    }
+
+    @Override
+    public Trigger throwCoral(){
+        return controller.button(6);
+    }
+
+    @Override
     public Trigger getAlgae(){
-        return controller.button(10);
+        return controller.button(5);
     }
 }

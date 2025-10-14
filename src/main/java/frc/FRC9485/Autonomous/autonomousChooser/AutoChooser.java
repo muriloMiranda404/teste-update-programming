@@ -2,7 +2,7 @@ package frc.FRC9485.Autonomous.autonomousChooser;
 
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
-public class AutoChooser implements AutoChooserIO{
+public class AutoChooser implements ChooserIO{
 
     LoggedDashboardChooser<String> autoChooser;
     public static AutoChooser mInstance = null;
@@ -22,12 +22,12 @@ public class AutoChooser implements AutoChooserIO{
     }
 
     @Override
-    public String getPathName() {
+    public String getChoosed() {
         return this.autoChooser.get();
     }
 
     @Override
-    public void addAutoNameCommand(String name, String pathName) {
-        this.autoChooser.addOption(name, pathName);
+    public void addCommand(String name, String value) {
+        this.autoChooser.addOption(name, value);
     }
 }

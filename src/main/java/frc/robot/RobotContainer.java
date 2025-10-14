@@ -48,9 +48,9 @@ public class RobotContainer {
 
     this.superStructure = SuperStructure.getInstance();
 
-    this.joystickChooser = new JoystickChooser();
+    this.joystickChooser = JoystickChooser.getInstance();
     this.autoChooser = AutoChooser.getInstance();
-    this.mechanismSelected = joystickChooser.getSelected();
+    this.mechanismSelected = joystickChooser.getChoosed();
 
     swerve.setDefaultCommand(swerve.driveRobot(
       () -> driverController.getLeftY(),
@@ -108,7 +108,7 @@ public class RobotContainer {
     mechanismKeyboard.algae_L3().onTrue(superStructure.scorePieceOnLevel(StatesToScore.ALGAE_L3));
     mechanismKeyboard.Processador().onTrue(superStructure.scorePieceOnLevel(StatesToScore.PROCESSOR));
 
-    mechanismController.throwCoralOnIntake().whileTrue(new SetIntakeSpeed(0.8));
+    mechanismKeyboard.throwCoral().whileTrue(new SetIntakeSpeed(0.8));
     mechanismKeyboard.getAlgae().whileTrue(new SetIntakeSpeed(-0.1));
   }
   
@@ -128,7 +128,7 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    return swerve.getAutonomousCommand(autoChooser.getPathName(), true);
+    return swerve.getAutonomousCommand(autoChooser.getChoosed(), true);
   }
 
   public void setMotorBrake(boolean brake) {

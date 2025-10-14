@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.FRC9485.Motors.MotorIO;
 import frc.FRC9485.utils.logger.CustomBooleanLog;
 import frc.FRC9485.utils.logger.CustomDoubleLog;
 import frc.robot.Constants.swerve;
@@ -175,6 +176,16 @@ public class SwerveSubsystem extends SubsystemBase implements SwerveIO{
     this.isMoving = isMoving;
 
     return isMoving;
+  }
+
+  @Override
+  public double getRoll(){
+    return pigeon.getRoll(true).getValueAsDouble();
+  }
+
+  @Override
+  public double getPicth(){
+    return pigeon.getPitch().getValueAsDouble();
   }
 
   @Override
