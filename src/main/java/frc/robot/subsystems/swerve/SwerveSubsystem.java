@@ -25,7 +25,6 @@ import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.FRC9485.Motors.MotorIO;
 import frc.FRC9485.utils.logger.CustomBooleanLog;
 import frc.FRC9485.utils.logger.CustomDoubleLog;
 import frc.robot.Constants.swerve;
@@ -59,9 +58,6 @@ public class SwerveSubsystem extends SubsystemBase implements SwerveIO{
   private SlewRateLimiter rotationLimiter;
 
   private CustomBooleanLog swerveIsMoving;
-  private CustomDoubleLog entradaX;
-  private CustomDoubleLog entradaY;
-  private CustomDoubleLog entradaRot;
 
   public static SwerveSubsystem mInstance = null;
 
@@ -122,9 +118,6 @@ public class SwerveSubsystem extends SubsystemBase implements SwerveIO{
     this.currentIdleMode = IdleMode.kBrake;
 
     this.swerveIsMoving = new CustomBooleanLog("swerve/ isMoving");
-    this.entradaX = new CustomDoubleLog("swerve/X");
-    this.entradaY = new CustomDoubleLog("swerve/Y");
-    this.entradaRot = new CustomDoubleLog("swerve/rotation");
 
     this.swerveState = new SwerveState(direcaoX, direcaoY, rotacao, isMoving);
   }
@@ -297,6 +290,7 @@ public class SwerveSubsystem extends SubsystemBase implements SwerveIO{
       double yController = Math.pow(yLimiter.calculate(Y.getAsDouble()), 3);
       double rotationValue = rotationLimiter.calculate(rotation.getAsDouble());
       Rotation2d rotation2d = Rotation2d.fromDegrees(0.0);
+
       if (swerveDrivePoseEstimator != null) {
         rotation2d = swerveDrivePoseEstimator.getEstimatedPosition().getRotation();
       }
@@ -344,16 +338,9 @@ public class SwerveSubsystem extends SubsystemBase implements SwerveIO{
   public Command driveRobot(DoubleSupplier x, DoubleSupplier y, DoubleSupplier omega, boolean fromField){
     return run(() ->{
 
-      this.direcaoX = xLimiter.calculate(x.getAsDouble()) * swerveDrive.getMaximumChassisVelocity();
-      this.direcaoY = yLimiter.calculate(y.getAsDouble()) * swerveDrive.getMaximumChassisVelocity();
-      this.rotacao = rotationLimiter.calculate(omega.getAsDouble()) * swerveDrive.getMaximumChassisAngularVelocity();
-
-      if(direcaoX != 0) entradaX.append(direcaoX);
-        
-
-      if(direcaoY != 0) entradaY.append(direcaoY);
-
-      if(rotacao != 0) entradaRot.append(rotacao);
+      this.direcaoX = x.getAsDouble() * swerveDrive.getMaximumChassisVelocity();
+      this.direcaoY = y.getAsDouble() * swerveDrive.getMaximumChassisVelocity();
+      this.rotacao = omega.getAsDouble() * swerveDrive.getMaximumChassisAngularVelocity();
 
       double td = 0.02;
       ChassisSpeeds speed = fromField == true ? ChassisSpeeds.fromFieldRelativeSpeeds(direcaoX,
@@ -386,6 +373,11 @@ public class SwerveSubsystem extends SubsystemBase implements SwerveIO{
     return Rotation2d.fromDegrees(scope0To360(pigeon.getYaw().getValueAsDouble()));
   }
 
+  /**
+   *  @param name
+   *  @param altern
+   *  @return
+   */
   @Override
   public Command getAutonomousCommand(String name, boolean altern){
     if(altern){
@@ -396,7 +388,7 @@ public class SwerveSubsystem extends SubsystemBase implements SwerveIO{
   
   @Override
   public void stopSwerve(){
-    this.driveFieldOriented(new ChassisSpeeds());
+    this.driveFieldOriented(new ChassisSpeeds(0, 0, 0));
   }
 
   public Rotation2d getGyroAccum(){

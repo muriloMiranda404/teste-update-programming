@@ -77,17 +77,11 @@ public class RobotContainer {
     
     driverController.alingRobotOnReef().whileTrue(new AlingToTarget());
 
-    driverController.a().onTrue(new InstantCommand(() ->{
-       new ResetPigeon(); 
-      }));
+    driverController.a().onTrue(new ResetPigeon()); 
 
-    driverController.rightBumper().onTrue(new InstantCommand(() ->{
-       new TurnRobot(45);
-      }));
+    driverController.rightBumper().onTrue(new TurnRobot(45));
 
-    driverController.leftBumper().onTrue(new InstantCommand(() ->{
-        new TurnRobot(-45);
-      }));
+    driverController.leftBumper().onTrue(new TurnRobot(-45));
 
     driverController.emergencyInvert().onTrue(new InstantCommand(() ->{
         driverController.Invert();
@@ -95,7 +89,6 @@ public class RobotContainer {
   }
 
   private void configureKeyBoardMechanismBindings(){
-
     mechanismKeyboard.L1Button().onTrue(new ParallelCommandGroup(
       superStructure.scorePieceOnLevel(StatesToScore.L1),
       new SetIntakeSpeed()
@@ -113,7 +106,6 @@ public class RobotContainer {
   }
   
   private void configureJoystickMechanismBindings(){ 
-    
     mechanismController.L1Button().onTrue(new ParallelCommandGroup(
       superStructure.scorePieceOnLevel(StatesToScore.L1),
       new SetIntakeSpeed()

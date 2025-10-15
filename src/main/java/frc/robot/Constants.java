@@ -5,7 +5,7 @@ import com.pathplanner.lib.config.PIDConstants;
 import edu.wpi.first.math.controller.PIDController;
 
 public class Constants{
-  
+
   public static final class Controllers{
     //IDs de controles
     public static final int DRIVE_CONTROLLER = 0;
@@ -46,7 +46,7 @@ public class Constants{
   }
 
   public static final class Intake{
-
+  
     public record IntakeController(double Kp, double Ki, double Kd, double tolerance) {
       public PIDController getController(){
         PIDController controller = new PIDController(Kp, Ki, Kd);
