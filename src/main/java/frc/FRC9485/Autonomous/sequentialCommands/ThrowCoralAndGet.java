@@ -23,7 +23,5 @@ public class ThrowCoralAndGet extends SequentialCommandGroup{
                 new SetIntakeSpeed().onlyIf(() -> !intakeSubsystem.IsTouched())
             )
         );
-
-        addRequirements(intakeSubsystem, superStructure);
     }
 }
