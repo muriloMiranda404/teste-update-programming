@@ -3,6 +3,8 @@ package frc.robot;
 import com.pathplanner.lib.config.PIDConstants;
 
 import edu.wpi.first.math.controller.PIDController;
+import frc.FRC9485.Motors.SparkMaxMotors;
+import frc.robot.subsystems.swerve.SwerveModule;
 
 public class Constants{
 
