@@ -1,5 +1,6 @@
 package frc.robot.subsystems.swerve;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
@@ -15,7 +16,7 @@ public interface SwerveIO {
     
     void drive(Translation2d translation, double rotation, boolean fieldOriented);
 
-    Command driveRobot(DoubleSupplier x, DoubleSupplier y, DoubleSupplier rotation, boolean fieldOriented);
+    Command driveRobot(DoubleSupplier x, DoubleSupplier y, DoubleSupplier rotation, BooleanSupplier fieldOriented);
 
     void resetOdometry(Pose2d pose2d);
 
@@ -56,4 +57,6 @@ public interface SwerveIO {
     SwerveDrivePoseEstimator getPoseEstimator();
 
     SwerveState getState();
+
+    void configureSwerveUtils();
 }

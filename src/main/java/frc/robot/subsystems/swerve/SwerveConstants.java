@@ -1,0 +1,65 @@
+package frc.robot.subsystems.swerve;
+
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
+
+public class SwerveConstants {
+    
+    public static final double MAX_SPEED = 7.0;
+    public static final boolean IS_INVERTED_DRIVE = false;
+    public static final boolean IS_INVERTED_ANGLE = false;
+
+    public static final boolean CANCODER_INVERTED = false;
+    
+    public static final double ROTATION_PER_METER = 0.0472867872006997;
+    public static final double TRACK_WIDTH = 0.551942;
+    public static final double WHEEL_BASE = 0.551942;
+
+    public static final boolean FIELD_ORIENTED = true;
+
+    public static final double KP_DRIVE = 0.01;
+    public static final double KI_DRIVE = 0;
+    public static final double KD_DRIVE = 0;
+
+    public static final double KP_ANGLE = 0.01;
+    public static final double KI_ANGLE = 0;
+    public static final double KD_ANGLE = 0;
+
+    public static final double DRIVE_RAMP = 0.6;
+    public static final double ANGLE_RAMP = 0.2;
+    
+    public static final SwerveModule FRONT_RIGHT = new SwerveModule(1, 2, 13, "front right");
+    public static final SwerveModule FRONT_LEFT = new SwerveModule(8, 7, 12, "front left");
+    public static final SwerveModule BACK_RIGHT = new SwerveModule(3, 4, 10, "back right");
+    public static final SwerveModule BACK_LEFT = new SwerveModule(6, 5, 11, "back left");
+
+    public static final SwerveDriveKinematics KINEMATICS = new SwerveDriveKinematics(
+      new Translation2d(0.3556, 0.3556),
+      new Translation2d(0.3556, -0.3556),
+      new Translation2d(-0.3556, 0.3556),
+      new Translation2d(-0.3556, -0.3556)
+    );
+
+    public static SwerveModule[] getModules(){
+        SwerveModule[] modules = new SwerveModule[]{
+            FRONT_RIGHT,
+            FRONT_LEFT,
+            BACK_LEFT, 
+            BACK_RIGHT
+        };
+
+        return modules;
+    }
+
+    public static SwerveModulePosition[] getModulesPosition(){
+        SwerveModulePosition[] positions = new SwerveModulePosition[]{
+            FRONT_RIGHT.getPosition(),
+            FRONT_LEFT.getPosition(),
+            BACK_RIGHT.getPosition(),
+            BACK_LEFT.getPosition()
+        };
+
+        return positions;
+    }
+}

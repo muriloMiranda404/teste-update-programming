@@ -13,9 +13,9 @@ public class SwerveModule {
     private CANcoder CANcoder;
     private String module;
 
-    public SwerveModule(SparkMaxMotors Drive, SparkMaxMotors Angle, int CANcoder, String module){
-        this.Drive = Drive;
-        this.Angle = Angle;
+    public SwerveModule(int Drive, int Angle, int CANcoder, String module){
+        this.Drive = new SparkMaxMotors(Drive, false, null);
+        this.Angle = new SparkMaxMotors(Angle, false, null);
         this.CANcoder = new CANcoder(CANcoder);
         this.module = module;
     }

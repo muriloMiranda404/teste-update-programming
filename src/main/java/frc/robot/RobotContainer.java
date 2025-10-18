@@ -18,6 +18,7 @@ import frc.robot.commands.swerveUtils.TurnRobot;
 import frc.robot.subsystems.Mechanism.SuperStructure;
 import frc.robot.subsystems.Mechanism.SuperStructure.StatesToScore;
 import frc.robot.subsystems.Mechanism.intake.IntakeSubsystem;
+import frc.robot.subsystems.swerve.SwerveConstants;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 
 public class RobotContainer {
@@ -25,8 +26,6 @@ public class RobotContainer {
   private final DriverController driverController;
   private final MechanismJoystick mechanismController;
   private final MechanismKeyBoard mechanismKeyboard;
-
-  private final XboxController controller = new XboxController(0); 
 
   private final SwerveSubsystem swerve;
   private final IntakeSubsystem intakeSubsystem;
@@ -57,10 +56,10 @@ public class RobotContainer {
     this.mechanismSelected = joystickChooser.getChoosed();
 
     swerve.setDefaultCommand(swerve.driveRobot(
-      () -> controller.getLeftY(),
-      () -> controller.getLeftX(),
-      () -> controller.getRightX(),
-      frc.robot.Constants.swerve.FIELD_ORIENTED
+      () -> driverController.getLeftY(),
+      () -> driverController.getLeftX(),
+      () -> driverController.getRightX(),
+      () -> SwerveConstants.FIELD_ORIENTED
     ));
 
     if(mechanismSelected == "joystick"){
