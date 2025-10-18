@@ -1,0 +1,7 @@
+{
+  "NetworkTables Settings": {
+    "mode": "Client (NT4)",
+    "port4": 9485,
+    "serverTeam": "127.0.0.1"
+  }
+}
