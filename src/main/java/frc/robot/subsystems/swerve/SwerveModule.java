@@ -24,15 +24,20 @@ public class SwerveModule {
         return new SwerveModulePosition(Drive.getPosition(), Rotation2d.fromRadians(Angle.getPosition()));
     }
 
-    public void setDesiredSpeed(SwerveModuleState state, boolean isPID){
-        Drive.setSpeed(state.speedMetersPerSecond);
+    public void setDesiredState(SwerveModuleState state, boolean isPID){
     
-        double targetAngle = state.angle.getRadians();
-        double atual = Angle.getPosition();
-        double erro = targetAngle - atual;
-        erro = Math.IEEEremainder(erro, 2 * Math.PI);
+        Rotation2d atual = getPosition().angle;
 
-        double Kp = 1.0;
-        Angle.setSpeed(erro * Kp);
+        state.optimize(atual);
+    
+        Drive.setSpeed(state.speedMetersPerSecond);
+
+        double anguloOutput = state.angle.getRadians();
+        double current = atual.getRadians();
+        double erro = anguloOutput - current;
+
+        double entrada = Math.IEEEremainder(erro, 2 * Math.PI);
+
+        Angle.setSpeed(entrada);
     }
 }

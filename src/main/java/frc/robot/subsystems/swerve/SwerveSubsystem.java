@@ -29,7 +29,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.FRC9485.utils.logger.CustomBooleanLog;
 import frc.robot.subsystems.vision.LimelightConfig;
 import swervelib.SwerveDrive;
-import swervelib.SwerveModule;
 import swervelib.parser.SwerveParser;
 import edu.wpi.first.math.trajectory.Trajectory;
 
@@ -44,7 +43,7 @@ public class SwerveSubsystem extends SubsystemBase implements SwerveIO{
   private LimelightConfig limelightConfig;
   private SwerveDrivePoseEstimator swerveDrivePoseEstimator;
   private SwerveModuleState[] state;
-  private SwerveModule[] module;
+  private SwerveModule[] modules;
   private SwerveDriveOdometry odometry;
   private SwerveDriveKinematics kinematics;
 
@@ -357,12 +356,12 @@ public class SwerveSubsystem extends SubsystemBase implements SwerveIO{
                                                                                       rotacao);
 
       ChassisSpeeds discretize = ChassisSpeeds.discretize(speed, td);
-      state = swerveDrive.kinematics.toSwerveModuleStates(discretize);
+      state = kinematics.toSwerveModuleStates(discretize);
       SwerveDriveKinematics.desaturateWheelSpeeds(state, SwerveConstants.MAX_SPEED);
       
-      module = swerveDrive.getModules();
+      modules = SwerveConstants.getModules();
       for(int i = 0; i < state.length; i++){
-        module[i].setDesiredState(state[i], true, true);
+        modules[i].setDesiredState(state[i], true);
       }
       });
   }
