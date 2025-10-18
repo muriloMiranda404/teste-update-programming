@@ -47,6 +47,7 @@ public class SwerveSubsystem extends SubsystemBase implements SwerveIO{
   private SwerveModuleState[] state;
   private SwerveModule[] module;
   private SwerveDriveOdometry odometry;
+  private SwerveDriveKinematics kinematics;
 
   private double direcaoX;
   private double direcaoY;
@@ -116,8 +117,15 @@ public class SwerveSubsystem extends SubsystemBase implements SwerveIO{
     this.swerveIsMoving = new CustomBooleanLog("swerve/ isMoving");
 
     this.swerveState = new SwerveState(direcaoX, direcaoY, rotacao, isMoving);
-    
-    this.odometry = new SwerveDriveOdometry(swerveDrive.kinematics, pigeon.getRotation2d(), swerveDrive.getModulePositions());
+        
+    this.kinematics = new SwerveDriveKinematics(
+      new Translation2d(0.3556, 0.3556),
+      new Translation2d(0.3556, -0.3556),
+      new Translation2d(-0.3556, 0.3556),
+      new Translation2d(-0.3556, -0.3556)
+      );
+      
+    this.odometry = new SwerveDriveOdometry(kinematics, pigeon.getRotation2d(), swerveDrive.getModulePositions());
     this.currentPose = odometry.update(pigeon.getRotation2d(), swerveDrive.getModulePositions());
   }
 

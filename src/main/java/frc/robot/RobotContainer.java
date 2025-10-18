@@ -1,6 +1,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -24,6 +25,8 @@ public class RobotContainer {
   private final DriverController driverController;
   private final MechanismJoystick mechanismController;
   private final MechanismKeyBoard mechanismKeyboard;
+
+  private final XboxController controller = new XboxController(0); 
 
   private final SwerveSubsystem swerve;
   private final IntakeSubsystem intakeSubsystem;
@@ -54,9 +57,9 @@ public class RobotContainer {
     this.mechanismSelected = joystickChooser.getChoosed();
 
     swerve.setDefaultCommand(swerve.driveRobot(
-      () -> driverController.getLeftY(),
-      () -> driverController.getLeftX(),
-      () -> driverController.getRightX(),
+      () -> controller.getLeftY(),
+      () -> controller.getLeftX(),
+      () -> controller.getRightX(),
       frc.robot.Constants.swerve.FIELD_ORIENTED
     ));
 
