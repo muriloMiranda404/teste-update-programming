@@ -19,11 +19,14 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.FRC9485.utils.logger.CustomBooleanLog;
@@ -46,6 +49,7 @@ public class SwerveSubsystem extends SubsystemBase implements SwerveIO{
   private SwerveModule[] modules;
   private SwerveDriveOdometry odometry;
   private SwerveDriveKinematics kinematics;
+  private SwerveModulePosition[] position;
 
   private double direcaoX;
   private double direcaoY;
@@ -106,8 +110,22 @@ public class SwerveSubsystem extends SubsystemBase implements SwerveIO{
     this.swerveState = new SwerveState(direcaoX, direcaoY, rotacao, isMoving);
         
     this.kinematics = SwerveConstants.KINEMATICS;
+    
+    this.modules = new SwerveModule[]{
+      new SwerveModule(1, 2, 13, "front right"),
+      new SwerveModule(8, 7, 12, "front left"),
+      new SwerveModule(3, 4, 10, "back right"),
+      new SwerveModule(6, 5, 11, "back left")
+    };
 
-    this.odometry = new SwerveDriveOdometry(kinematics, pigeon.getRotation2d(), SwerveConstants.getModulesPosition());
+    position = new SwerveModulePosition[]{
+      modules[0].getPosition(),
+      modules[1].getPosition(),
+      modules[2].getPosition(),
+      modules[3].getPosition(),
+    };
+    
+    this.odometry = new SwerveDriveOdometry(kinematics, pigeon.getRotation2d(), position);
   }
 
   public static SwerveSubsystem getInstance(){
@@ -162,7 +180,8 @@ public class SwerveSubsystem extends SubsystemBase implements SwerveIO{
         DriverStation.reportError("Erro ao atualizar poseEstimator: " + e.getMessage(), false);
       }
     }
-  
+    
+    odometry.update(pigeon.getRotation2d(), position);
     this.automaticSwerveMode();
   }
   
@@ -341,12 +360,12 @@ public class SwerveSubsystem extends SubsystemBase implements SwerveIO{
   public Command driveRobot(DoubleSupplier x, DoubleSupplier y, DoubleSupplier omega, BooleanSupplier fromField){
     return run(() ->{
 
-      this.direcaoX = x.getAsDouble() * swerveDrive.getMaximumChassisVelocity();
-      this.direcaoY = y.getAsDouble() * swerveDrive.getMaximumChassisVelocity();
-      this.rotacao = omega.getAsDouble() * swerveDrive.getMaximumChassisAngularVelocity();
+      this.direcaoX = x.getAsDouble();
+      this.direcaoY = y.getAsDouble();
+      this.rotacao = omega.getAsDouble();
 
       double td = 0.02;
-      ChassisSpeeds speed = fromField.getAsBoolean() == true ? ChassisSpeeds.fromFieldRelativeSpeeds(direcaoX,
+      ChassisSpeeds speed = fromField.getAsBoolean() ? ChassisSpeeds.fromFieldRelativeSpeeds(direcaoX,
                                                                                       direcaoY,
                                                                                       rotacao,
                                                                                       pigeon.getRotation2d()) 
@@ -359,7 +378,6 @@ public class SwerveSubsystem extends SubsystemBase implements SwerveIO{
       state = kinematics.toSwerveModuleStates(discretize);
       SwerveDriveKinematics.desaturateWheelSpeeds(state, SwerveConstants.MAX_SPEED);
       
-      modules = SwerveConstants.getModules();
       for(int i = 0; i < state.length; i++){
         modules[i].setDesiredState(state[i], true);
       }

@@ -29,11 +29,6 @@ public class SwerveConstants {
     public static final double DRIVE_RAMP = 0.6;
     public static final double ANGLE_RAMP = 0.2;
     
-    public static final SwerveModule FRONT_RIGHT = new SwerveModule(1, 2, 13, "front right");
-    public static final SwerveModule FRONT_LEFT = new SwerveModule(8, 7, 12, "front left");
-    public static final SwerveModule BACK_RIGHT = new SwerveModule(3, 4, 10, "back right");
-    public static final SwerveModule BACK_LEFT = new SwerveModule(6, 5, 11, "back left");
-
     public static final SwerveDriveKinematics KINEMATICS = new SwerveDriveKinematics(
       new Translation2d(0.3556, 0.3556),
       new Translation2d(0.3556, -0.3556),
@@ -41,25 +36,4 @@ public class SwerveConstants {
       new Translation2d(-0.3556, -0.3556)
     );
 
-    public static SwerveModule[] getModules(){
-        SwerveModule[] modules = new SwerveModule[]{
-            FRONT_RIGHT,
-            FRONT_LEFT,
-            BACK_LEFT, 
-            BACK_RIGHT
-        };
-
-        return modules;
-    }
-
-    public static SwerveModulePosition[] getModulesPosition(){
-        SwerveModulePosition[] positions = new SwerveModulePosition[]{
-            FRONT_RIGHT.getPosition(),
-            FRONT_LEFT.getPosition(),
-            BACK_RIGHT.getPosition(),
-            BACK_LEFT.getPosition()
-        };
-
-        return positions;
-    }
 }
