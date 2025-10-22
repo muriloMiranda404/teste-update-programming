@@ -6,7 +6,9 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.FRC9485.vision.LimelightHelpers;
 import frc.robot.Constants.Components;
+import frc.robot.Constants.vision;
 
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
@@ -23,6 +25,7 @@ public class Robot extends TimedRobot {
     m_robotContainer = new RobotContainer();
     pigeon2.reset();
 
+    LimelightHelpers.SetFiducialIDFiltersOverride("", vision.ALL_TAGS);
   }
 
   @Override

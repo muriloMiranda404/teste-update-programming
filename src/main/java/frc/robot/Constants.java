@@ -3,12 +3,12 @@ package frc.robot;
 import com.pathplanner.lib.config.PIDConstants;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import frc.FRC9485.Motors.SparkMaxMotors;
-import frc.robot.subsystems.swerve.SwerveModule;
 
 public class Constants{
+
+  public static final class vision{
+    public static final int[] ALL_TAGS = new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22};
+  }
 
   public static final class Controllers{
     //IDs de controles
