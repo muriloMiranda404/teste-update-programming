@@ -3,6 +3,7 @@ package frc.robot.subsystems.swerve;
 import java.io.File;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
@@ -32,6 +33,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.FRC9485.utils.logger.CustomBooleanLog;
 import frc.robot.subsystems.vision.LimelightConfig;
 import swervelib.SwerveDrive;
+import swervelib.SwerveModule;
 import swervelib.parser.SwerveParser;
 import edu.wpi.first.math.trajectory.Trajectory;
 
@@ -58,6 +60,10 @@ public class SwerveSubsystem extends SubsystemBase implements SwerveIO{
   private boolean isMoving;
   private IdleMode currentIdleMode;
   private CustomBooleanLog swerveIsMoving;
+
+  private CANcoder[] modulesEncoder;
+
+  private Field2d field2d;
 
   public static SwerveSubsystem mInstance = null;
 
@@ -95,6 +101,7 @@ public class SwerveSubsystem extends SubsystemBase implements SwerveIO{
       this.swerveDrivePoseEstimator = null;
     }
 
+    this.field2d = new Field2d();
     xPID = new PIDController(1.0, 0, 0);
     yPID = new PIDController(1.0, 0.0, 0.1);
     profilePid = new ProfiledPIDController(1.0, 0.0, 0.1,
@@ -111,21 +118,23 @@ public class SwerveSubsystem extends SubsystemBase implements SwerveIO{
         
     this.kinematics = SwerveConstants.KINEMATICS;
     
-    this.modules = new SwerveModule[]{
-      new SwerveModule(1, 2, 13, "front right"),
-      new SwerveModule(8, 7, 12, "front left"),
-      new SwerveModule(3, 4, 10, "back right"),
-      new SwerveModule(6, 5, 11, "back left")
-    };
-
     position = new SwerveModulePosition[]{
       modules[0].getPosition(),
       modules[1].getPosition(),
       modules[2].getPosition(),
       modules[3].getPosition(),
     };
+
+    this.modules = swerveDrive.getModules();
     
     this.odometry = new SwerveDriveOdometry(kinematics, pigeon.getRotation2d(), position);
+
+    this.modulesEncoder = new CANcoder[]{
+      new CANcoder(10),
+      new CANcoder(11),
+      new CANcoder(12),
+      new CANcoder(13)
+    };
   }
 
   public static SwerveSubsystem getInstance(){
@@ -149,7 +158,15 @@ public class SwerveSubsystem extends SubsystemBase implements SwerveIO{
     this.profilePid.setTolerance(0.05);
     this.driveController.setEnabled(true);
   }
-  
+
+  @Override
+  public boolean swerveIsStoped() {
+    return modulesEncoder[0].getVelocity().getValueAsDouble() == 0 &&
+    modulesEncoder[1].getVelocity().getValueAsDouble() == 0 &&
+    modulesEncoder[2].getVelocity().getValueAsDouble() == 0 &&
+    modulesEncoder[3].getVelocity().getValueAsDouble() == 0;    
+  }  
+
   @Override
   public SwerveState getState(){
     return swerveState;
@@ -182,6 +199,7 @@ public class SwerveSubsystem extends SubsystemBase implements SwerveIO{
     }
     
     odometry.update(pigeon.getRotation2d(), position);
+    SmartDashboard.putData(field2d);
     this.automaticSwerveMode();
   }
   
@@ -379,9 +397,30 @@ public class SwerveSubsystem extends SubsystemBase implements SwerveIO{
       SwerveDriveKinematics.desaturateWheelSpeeds(state, SwerveConstants.MAX_SPEED);
       
       for(int i = 0; i < state.length; i++){
-        modules[i].setDesiredState(state[i], true);
+        modules[i].setDesiredState(state[i], true, true);
       }
       });
+  }
+
+  @Override
+  public void setModuleState(SwerveModuleState[] state) {
+    for(int i =0; i < state.length; i++){
+      modules[i].setDesiredState(state[i], true, true);
+    }
+  }
+
+  @Override
+  public void zeroSwerve() {
+    double speed = 0.01;
+
+    SwerveModuleState[] zero = new SwerveModuleState[]{
+        new SwerveModuleState(speed, new Rotation2d(0)),
+        new SwerveModuleState(speed, new Rotation2d(0)),
+        new SwerveModuleState(speed, new Rotation2d(0)),
+        new SwerveModuleState(speed, new Rotation2d(0))
+      };
+
+      this.setModuleState(zero);
   }
 
   @Override
