@@ -6,6 +6,8 @@ import edu.wpi.first.wpilibj.LEDPattern.GradientType;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.FRC9485.utils.logger.CustomDoubleLog;
+import frc.FRC9485.utils.logger.CustomStringLog;
 import frc.robot.Constants.Elevator.ElevatorPositions;
 import frc.robot.Constants.Intake.IntakePositions;
 import frc.robot.subsystems.Led.LedSubsystem;
@@ -23,7 +25,10 @@ public class SuperStructure extends SubsystemBase{
 
     private String state;
     private Color color;
-    private boolean isFinished;
+
+    private CustomStringLog superStructureState;
+    private CustomDoubleLog elevator;
+    private CustomDoubleLog intake;
 
     public static SuperStructure mInstance = null;
 
@@ -35,9 +40,12 @@ public class SuperStructure extends SubsystemBase{
         this.elevatorInput = ElevatorPositions.HOME;
         this.intakeInput = IntakePositions.DEFAULT_POSITION;
 
+        this.superStructureState = new CustomStringLog("structure state");
+        this.elevator = new CustomDoubleLog("elevator input");
+        this.intake = new CustomDoubleLog("intake input");
+
         this.color = Color.kBlack;
         this.state = "INITIAL STATE";
-        this.isFinished = intakeSubsystem.atSetpoint() && elevatorSubsystem.atSetpoint();
     }
 
     public static SuperStructure getInstance(){
@@ -59,6 +67,10 @@ public class SuperStructure extends SubsystemBase{
         this.elevatorSubsystem.periodic();
         this.intakeSubsystem.periodic();
         alternLedColor(color);
+
+        superStructureState.append(state);
+        elevator.append(elevatorInput);
+        intake.append(intakeInput);
     }
 
     public boolean scoreIsFinised(){
@@ -97,17 +109,21 @@ public class SuperStructure extends SubsystemBase{
     if(DriverStation.isTeleopEnabled()){    
             if(intakeSubsystem.IsTouched()){
                     ledSubsystem.setPattern(LEDPattern.gradient(GradientType.kDiscontinuous, Color.kRed, color));
-                } else if(Math.abs(elevatorSubsystem.getOutputInElevatorMotors()[0]) >= 0.01){
-                    ledSubsystem.setPattern(LEDPattern.gradient(GradientType.kDiscontinuous, Color.kWhite, color));
+                } else if(Math.abs(elevatorSubsystem.getOutputInElevatorMotors()[0]) >= 1){
+                    ledSubsystem.setPattern(LEDPattern.gradient(GradientType.kDiscontinuous, Color.kCyan, color));
                 } else {
                     ledSubsystem.setSolidColor(color);
             }
+        } else if(DriverStation.isAutonomousEnabled()){
+            ledSubsystem.setSolidColor(Color.kWhite);
+        } else{
+            ledSubsystem.setSolidColor(Color.kBlack);
         }
     }
 
     public Command setIntakePosition(intakePositions position){
         return run(() ->{
-            switch (position) {
+            switch (position){
                 case DEFAULT:
                     this.intakeInput = IntakePositions.DEFAULT_POSITION;
                     break;
@@ -199,7 +215,7 @@ public class SuperStructure extends SubsystemBase{
     }
 
     public boolean HasGamePieceOnIntake(){
-        return intakeSubsystem.hasCoralOnIntake();
+        return intakeSubsystem.IsTouched();
     }
 
     public boolean seguranceSystem(){

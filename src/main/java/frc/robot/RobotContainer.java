@@ -12,7 +12,6 @@ import frc.FRC9485.utils.JoystickChooser.JoystickChooser;
 import frc.robot.commands.level.intake.SetIntakeSpeed;
 import frc.robot.commands.swerveUtils.AlingToTarget;
 import frc.robot.commands.swerveUtils.ResetPigeon;
-import frc.robot.commands.swerveUtils.TurnRobot;
 import frc.robot.subsystems.Mechanism.SuperStructure;
 import frc.robot.subsystems.Mechanism.SuperStructure.StatesToScore;
 import frc.robot.subsystems.Mechanism.intake.IntakeSubsystem;
@@ -46,6 +45,7 @@ public class RobotContainer {
     this.intakeSubsystem = IntakeSubsystem.getInstance();
     this.registerNamedCommands = RegisterNamedCommands.getInstance();
     this.configureNamedCommands();
+    this.swerve.zeroGyro();
 
     this.superStructure = SuperStructure.getInstance();
 
