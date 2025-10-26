@@ -127,7 +127,7 @@ public class SwerveSubsystem extends SubsystemBase implements SwerveIO{
 
     this.modules = swerveDrive.getModules();
     
-    this.odometry = new SwerveDriveOdometry(kinematics, pigeon.getRotation2d(), position);
+    this.odometry = new SwerveDriveOdometry(kinematics, pigeon.getRotation2d(), swerveDrive.getModulePositions());
 
     this.modulesEncoder = new CANcoder[]{
       new CANcoder(10),
@@ -198,7 +198,17 @@ public class SwerveSubsystem extends SubsystemBase implements SwerveIO{
       }
     }
     
-    odometry.update(pigeon.getRotation2d(), position);
+    if(odometry != null && pigeon != null){
+      try{
+        odometry.update(pigeon.getRotation2d(), position);
+      } catch(Exception e){
+        e.printStackTrace();
+        DriverStation.reportError("erro ao atualizar odometria" + e.getMessage(), false);
+      }
+    } else {
+      DriverStation.reportError("a odometria ou o pigeon estão nulos", false);
+    }
+
     SmartDashboard.putData(field2d);
     this.automaticSwerveMode();
   }
@@ -399,7 +409,7 @@ public class SwerveSubsystem extends SubsystemBase implements SwerveIO{
       for(int i = 0; i < state.length; i++){
         modules[i].setDesiredState(state[i], true, true);
       }
-      });
+    });
   }
 
   @Override

@@ -2,7 +2,6 @@ package frc.robot.subsystems.swerve;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.kinematics.SwerveModulePosition;
 
 public class SwerveConstants {
     
