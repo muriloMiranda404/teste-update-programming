@@ -21,14 +21,12 @@ public class SetIntakeSpeed extends Command{
         this.intake = IntakeSubsystem.getInstance();
         this.speed = speed;
         this.getCoralBoolean = getCoralBoolean;
+
         addRequirements(intake);
     }
 
     @Override
-    public void initialize() {
-        System.out.println("velocidade do motor: " + speed);
-        System.out.println("incializando mudança de velocidade");
-    }
+    public void initialize() {}
 
     @Override
     public void execute() {

@@ -44,4 +44,6 @@ public interface IDDriverController {
     double getPerformByAlliance(double value);
 
     boolean joystickIsNothingUsingDrive();
+
+    Trigger resetPigeon();
 }

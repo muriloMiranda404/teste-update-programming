@@ -201,4 +201,9 @@ public class DriverController implements IDDriverController{
         return Util.inRange(getLeftY(), -Controllers.DEADBAND, Controllers.DEADBAND)
         && Util.inRange(getLeftX(), -Controllers.DEADBAND, Controllers.DEADBAND);
     }
+
+    @Override
+    public Trigger resetPigeon() {
+        return controller.button(10);
+    }
 }

@@ -11,6 +11,7 @@ import frc.FRC9485.Autonomous.sequentialCommands.PutCoralOnL4;
 import frc.robot.commands.level.intake.SetIntakeSpeed;
 import frc.robot.commands.swerveUtils.AlingToTarget;
 import frc.robot.commands.swerveUtils.ResetPigeon;
+import frc.robot.commands.swerveUtils.StopSwerve;
 import frc.robot.commands.swerveUtils.TurnRobot;
 import frc.robot.subsystems.Mechanism.SuperStructure;
 import frc.robot.subsystems.Mechanism.SuperStructure.StatesToScore;
@@ -56,6 +57,7 @@ public class RegisterNamedCommands {
         NamedCommands.registerCommand("L2", new PutCoralOnL2(intakeSubsystem, superStructure));
         NamedCommands.registerCommand("L3", new PutCoralOnL3(intakeSubsystem, superStructure)); 
         NamedCommands.registerCommand("L4", new PutCoralOnL4(superStructure, intakeSubsystem));
+        NamedCommands.registerCommand("STOP SWERVE", new StopSwerve());
     }
 
     private void configurePositionsToAutonomous(SuperStructure struct){

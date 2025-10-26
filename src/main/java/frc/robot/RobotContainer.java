@@ -78,15 +78,11 @@ public class RobotContainer {
     
     driverController.alingRobotOnReef().whileTrue(new AlingToTarget());
 
-    driverController.a().onTrue(new ResetPigeon()); 
-
-    driverController.rightBumper().onTrue(new TurnRobot(45));
-
-    driverController.leftBumper().onTrue(new TurnRobot(-45));
+    driverController.resetPigeon().onTrue(new ResetPigeon()); 
 
     driverController.emergencyInvert().onTrue(new InstantCommand(() ->{
         driverController.Invert();
-      }));
+    }));
   }
 
   private void configureKeyBoardMechanismBindings(){
