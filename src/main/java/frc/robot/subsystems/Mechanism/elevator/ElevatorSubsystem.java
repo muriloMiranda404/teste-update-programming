@@ -1,9 +1,6 @@
 package frc.robot.subsystems.Mechanism.elevator;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -27,8 +24,7 @@ public class ElevatorSubsystem extends SubsystemBase implements MechanismIO{
 
     public double setpoint;
 
-    public TrapezoidProfile.Constraints constraint;
-    public ProfiledPIDController elevatorController;
+    public PIDController elevatorController;
     
     private ElevatorSubsystem(){
         
@@ -40,11 +36,9 @@ public class ElevatorSubsystem extends SubsystemBase implements MechanismIO{
 
         this.encoder = new Encoder(Elevator.ENCODER_ELEV_A, Elevator.ENCODER_ELEV_B);
 
-        this.constraint = new Constraints(Elevator.VELOCITY, Elevator.ACELERATION);
-        this.elevatorController = new ProfiledPIDController(Elevator.ELEVATOR_CONSTANTS.kP,
+        this.elevatorController = new PIDController(Elevator.ELEVATOR_CONSTANTS.kP,
                                                             Elevator.ELEVATOR_CONSTANTS.kI,
-                                                            Elevator.ELEVATOR_CONSTANTS.kD,
-                                                            constraint);
+                                                            Elevator.ELEVATOR_CONSTANTS.kD);
 
         this.configureElevator();
     }

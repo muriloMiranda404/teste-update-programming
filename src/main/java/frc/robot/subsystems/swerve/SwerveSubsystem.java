@@ -31,6 +31,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.FRC9485.utils.logger.CustomBooleanLog;
+import frc.FRC9485.vision.LimelightHelpers;
 import frc.robot.subsystems.vision.LimelightConfig;
 import swervelib.SwerveDrive;
 import swervelib.SwerveModule;
@@ -189,7 +190,7 @@ public class SwerveSubsystem extends SubsystemBase implements SwerveIO{
       try {
         swerveDrivePoseEstimator.update(pigeon.getRotation2d(), swerveDrive.getModulePositions());
         if (limelightConfig != null && limelightConfig.getHasTarget()) {
-          Pose2d poseEstimated = limelightConfig.getEstimatedGlobalPose();
+          Pose2d poseEstimated = LimelightHelpers.getBotPose2d("");
           swerveDrivePoseEstimator.addVisionMeasurement(poseEstimated, Timer.getFPGATimestamp());
         }
       } catch (Exception e) {

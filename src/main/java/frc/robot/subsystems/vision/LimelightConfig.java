@@ -4,6 +4,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import frc.FRC9485.vision.LimelightHelpers;
 import frc.robot.Constants.Components;
 
 public class LimelightConfig{
@@ -24,7 +25,7 @@ public class LimelightConfig{
     }
 
     public boolean getHasTarget(){
-        return limelight.getEntry("tv").getDouble(0)==1;
+        return LimelightHelpers.getTV("");
     }
 
     public double getTagId(){
@@ -32,15 +33,15 @@ public class LimelightConfig{
     }
 
     public double getTx(){
-        return limelight.getEntry("tx").getDouble(0.0);
+        return LimelightHelpers.getTX("");
     }
 
     public double getTy(){
-        return limelight.getEntry("ty").getDouble(0.0);
+        return LimelightHelpers.getTY("");
     }
 
     public double getTa(){
-        return limelight.getEntry("ta").getDouble(0.0);
+        return LimelightHelpers.getTA("");
     }
 
     public boolean setLedMode(int mode){
