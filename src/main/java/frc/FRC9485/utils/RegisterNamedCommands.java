@@ -17,13 +17,12 @@ import frc.robot.subsystems.Mechanism.SuperStructure;
 import frc.robot.subsystems.Mechanism.SuperStructure.StatesToScore;
 import frc.robot.subsystems.Mechanism.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.Mechanism.intake.IntakeSubsystem;
-import frc.robot.subsystems.swerve.SwerveIO;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 import frc.robot.subsystems.vision.LimelightConfig;
 
 public class RegisterNamedCommands {
 
-    private SwerveIO swerve;
+    private SwerveSubsystem swerve;
     private ElevatorSubsystem elevator;
     private IntakeSubsystem intake;
     private LimelightConfig limelightConfig;
@@ -58,6 +57,7 @@ public class RegisterNamedCommands {
         NamedCommands.registerCommand("L3", new PutCoralOnL3(intakeSubsystem, superStructure)); 
         NamedCommands.registerCommand("L4", new PutCoralOnL4(superStructure, intakeSubsystem));
         NamedCommands.registerCommand("STOP SWERVE", new StopSwerve());
+        NamedCommands.registerCommand("TURN WHEELS ON 0", swerve.readSwerveForAuto());
     }
 
     private void configurePositionsToAutonomous(SuperStructure struct){
@@ -76,7 +76,7 @@ public class RegisterNamedCommands {
         NamedCommands.registerCommand("SCORE ON PROCESSOR", struct.scorePieceOnLevel(StatesToScore.PROCESSOR));
     }
 
-    private void configureSwerveAutoCommands(SwerveIO swerve, LimelightConfig limelightConfig, ElevatorSubsystem elevatorSubsystem){
+    private void configureSwerveAutoCommands(SwerveSubsystem swerve, LimelightConfig limelightConfig, ElevatorSubsystem elevatorSubsystem){
 
         NamedCommands.registerCommand("RESET PIGEON", new ResetPigeon());
 

@@ -423,6 +423,12 @@ public class SwerveSubsystem extends SubsystemBase implements SwerveIO{
       this.setModuleState(zero);
   }
 
+  public Command readSwerveForAuto(){
+    return run(() -> {
+      this.zeroSwerve();
+    });
+  }
+
   @Override
   public void driveFieldOriented(ChassisSpeeds speed){
     swerveDrive.driveFieldOriented(speed);

@@ -45,7 +45,7 @@ public class RobotContainer {
     this.intakeSubsystem = IntakeSubsystem.getInstance();
     this.registerNamedCommands = RegisterNamedCommands.getInstance();
     this.configureNamedCommands();
-    this.swerve.zeroGyro();
+    this.swerve.zeroSwerve();
 
     this.superStructure = SuperStructure.getInstance();
 
