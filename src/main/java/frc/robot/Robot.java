@@ -1,12 +1,15 @@
 package frc.robot;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
+
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.FRC9485.vision.LimelightHelpers;
 import frc.robot.Constants.Components;
 import frc.robot.Constants.vision;
+import frc.robot.subsystems.swerve.SwerveSubsystem;
 
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
@@ -46,6 +49,13 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
+
+    System.out.println("Alliance: " + DriverStation.getAlliance());
+    System.out.println("Auto mirror active: " + (
+    DriverStation.getAlliance().isPresent() &&
+    DriverStation.getAlliance().get() == DriverStation.Alliance.Red
+    ));
+    System.out.println("Starting pose: " + SwerveSubsystem.getInstance().getPose());
 
   }
 

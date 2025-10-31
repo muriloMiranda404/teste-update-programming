@@ -270,7 +270,7 @@ public class SwerveSubsystem extends SubsystemBase implements SwerveIO{
     try{
       config = RobotConfig.fromGUISettings();
       
-      boolean feedforwards = true;
+      boolean feedforwards = false;
       
       AutoBuilder.configure(
             this::getPose,
