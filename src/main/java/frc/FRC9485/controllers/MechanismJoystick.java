@@ -99,4 +99,8 @@ public class MechanismJoystick implements IDMechanism{
     public double getLeftTrigger(){
         return controller.getLeftTriggerAxis();
     }
+
+    public double getRightY(){
+        return controller.getRightY();
+    }
 }

@@ -12,6 +12,7 @@ import frc.FRC9485.utils.JoystickChooser.JoystickChooser;
 import frc.robot.commands.level.intake.SetIntakeSpeed;
 import frc.robot.commands.swerveUtils.AlingToTarget;
 import frc.robot.commands.swerveUtils.ResetPigeon;
+import frc.robot.commands.swerveUtils.TeleopSwerveDrive;
 import frc.robot.subsystems.Mechanism.SuperStructure;
 import frc.robot.subsystems.Mechanism.SuperStructure.StatesToScore;
 import frc.robot.subsystems.Mechanism.intake.IntakeSubsystem;
@@ -46,7 +47,6 @@ public class RobotContainer {
     this.registerNamedCommands = RegisterNamedCommands.getInstance();
 
     this.configureNamedCommands();
-    this.swerve.zeroSwerve();
 
     this.superStructure = SuperStructure.getInstance();
 
@@ -54,12 +54,10 @@ public class RobotContainer {
     this.autoChooser = AutoChooser.getInstance();
     this.mechanismSelected = joystickChooser.getChoosed();
 
-    swerve.setDefaultCommand(swerve.driveRobot(
-      () -> driverController.getLeftY(),
-      () -> driverController.getLeftX(),
-      () -> driverController.getRightX(),
+    swerve.setDefaultCommand(new TeleopSwerveDrive(
+      driverController, 
       () -> SwerveConstants.FIELD_ORIENTED
-    ));
+      ));
 
     if(mechanismSelected == "joystick"){
       configureJoystickMechanismBindings();
