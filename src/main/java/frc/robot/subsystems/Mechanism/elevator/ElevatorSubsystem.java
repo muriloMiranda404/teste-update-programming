@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.FRC9485.Motors.MotorIO;
 import frc.FRC9485.Motors.SparkMaxMotors;
-import frc.robot.Constants.Elevator;
+import frc.FRC9485.constants.ElevatorConstants;
 import frc.robot.subsystems.Mechanism.MechanismIO;
 
 public class ElevatorSubsystem extends SubsystemBase implements MechanismIO{
@@ -28,17 +28,17 @@ public class ElevatorSubsystem extends SubsystemBase implements MechanismIO{
     
     private ElevatorSubsystem(){
         
-        this.rightMotor = new SparkMaxMotors(Elevator.RIGHT_ELEVATOR_MOTOR, true, "right elevator motor");
-        this.leftMotor = new SparkMaxMotors(Elevator.LEFT_ELEVATOR_MOTOR, false, "left elevator motor");
+        this.rightMotor = new SparkMaxMotors(ElevatorConstants.RIGHT_ELEVATOR_MOTOR, true, "right elevator motor");
+        this.leftMotor = new SparkMaxMotors(ElevatorConstants.LEFT_ELEVATOR_MOTOR, false, "left elevator motor");
 
-        this.downSwitch = new DigitalInput(Elevator.DOWN_SWITCH);
-        this.upSwitch = new DigitalInput(Elevator.UP_SWITCH);
+        this.downSwitch = new DigitalInput(ElevatorConstants.DOWN_SWITCH);
+        this.upSwitch = new DigitalInput(ElevatorConstants.UP_SWITCH);
 
-        this.encoder = new Encoder(Elevator.ENCODER_ELEV_A, Elevator.ENCODER_ELEV_B);
+        this.encoder = new Encoder(ElevatorConstants.ENCODER_ELEV_A, ElevatorConstants.ENCODER_ELEV_B);
 
-        this.elevatorController = new PIDController(Elevator.ELEVATOR_CONSTANTS.kP,
-                                                            Elevator.ELEVATOR_CONSTANTS.kI,
-                                                            Elevator.ELEVATOR_CONSTANTS.kD);
+        this.elevatorController = new PIDController(ElevatorConstants.ELEVATOR_CONSTANTS.kP,
+                                                            ElevatorConstants.ELEVATOR_CONSTANTS.kI,
+                                                            ElevatorConstants.ELEVATOR_CONSTANTS.kD);
 
         this.configureElevator();
     }
@@ -53,7 +53,7 @@ public class ElevatorSubsystem extends SubsystemBase implements MechanismIO{
     public void configureElevator(){
         this.encoder.setDistancePerPulse(360.0/2048.0);
 
-        this.elevatorController.setTolerance(Elevator.ELEVATOR_TOLERANCE);
+        this.elevatorController.setTolerance(ElevatorConstants.ELEVATOR_TOLERANCE);
     
         this.setpoint = 0;
     }
@@ -158,8 +158,8 @@ public class ElevatorSubsystem extends SubsystemBase implements MechanismIO{
     }
 
     public boolean elevatorIsInCorrectRange(double range){
-        return encoder.getDistance() >= range - Elevator.ELEVATOR_TOLERANCE &&
-        encoder.getDistance() <= range + Elevator.ELEVATOR_TOLERANCE;
+        return encoder.getDistance() >= range - ElevatorConstants.ELEVATOR_TOLERANCE &&
+        encoder.getDistance() <= range + ElevatorConstants.ELEVATOR_TOLERANCE;
     }
 
     @Override

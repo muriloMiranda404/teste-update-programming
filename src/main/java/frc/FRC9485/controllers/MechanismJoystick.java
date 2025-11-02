@@ -4,8 +4,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.FRC9485.utils.Util;
-import frc.robot.Constants.Controllers;
-import frc.robot.Constants.Positions;
+import frc.FRC9485.constants.JoystickConstants;
 
 public class MechanismJoystick implements IDMechanism{
     
@@ -15,7 +14,7 @@ public class MechanismJoystick implements IDMechanism{
     public static MechanismJoystick mInstance = null;
 
     private MechanismJoystick(){
-        this.controller = new CommandXboxController(Controllers.INTAKE_CONTROLLER);
+        this.controller = new CommandXboxController(JoystickConstants.INTAKE_CONTROLLER);
     }
     
     public static MechanismJoystick getInstance(){
@@ -42,25 +41,21 @@ public class MechanismJoystick implements IDMechanism{
 
     @Override
     public Trigger L1Button(){
-        this.setpoint = Positions.L1_POSITION;
         return controller.a();
     }
 
     @Override
     public Trigger L2Button(){
-        this.setpoint = Positions.L2_POSITION;
         return controller.b();
     }
 
     @Override
     public Trigger L3Button(){
-        this.setpoint = Positions.L3_POSITION;
         return controller.y();
     }
 
     @Override
     public Trigger L4Button(){
-        this.setpoint = Positions.L4_POSITION;
         return controller.x();
     }
 
@@ -71,13 +66,11 @@ public class MechanismJoystick implements IDMechanism{
 
     @Override
     public Trigger L2Algae(){
-        this.setpoint = Positions.ALGAE_L2;
         return controller.rightBumper();
     }
 
     @Override
     public Trigger L3Algae(){
-        this.setpoint = Positions.ALGAE_L3;
         return controller.leftBumper();
     }
 
@@ -93,8 +86,8 @@ public class MechanismJoystick implements IDMechanism{
 
     @Override
     public boolean joystickIsNothingUsingMechanism() {
-        return Util.inRange(controller.getRightY(), -Controllers.DEADBAND, Controllers.DEADBAND) 
-        && Util.inRange(controller.getRightX(), -Controllers.DEADBAND, Controllers.DEADBAND);
+        return Util.inRange(controller.getRightY(), -JoystickConstants.DEADBAND, JoystickConstants.DEADBAND) 
+        && Util.inRange(controller.getRightX(), -JoystickConstants.DEADBAND, JoystickConstants.DEADBAND);
     }
 
     @Override

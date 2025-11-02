@@ -10,9 +10,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.FRC9485.Motors.MotorIO;
 import frc.FRC9485.Motors.SparkMaxMotors;
+import frc.FRC9485.constants.IntakeConstants;
+import frc.FRC9485.constants.IntakeConstants.IntakePositions;
 import frc.FRC9485.controllers.MechanismJoystick;
-import frc.robot.Constants.Intake;
-import frc.robot.Constants.Intake.IntakePositions;
 import frc.robot.subsystems.Mechanism.MechanismIO;
 
 public class IntakeSubsystem extends SubsystemBase implements MechanismIO, LoggableInputs{
@@ -39,14 +39,14 @@ public class IntakeSubsystem extends SubsystemBase implements MechanismIO, Logga
 
     private IntakeSubsystem(){
 
-        this.turnIntake = new SparkMaxMotors(Intake.INTAKE_MOTOR, false, "Turn intake motor");
-        this.getCoral = new SparkMaxMotors(Intake.CORAL_MOTOR, true, "get game piece motor");
+        this.turnIntake = new SparkMaxMotors(IntakeConstants.INTAKE_MOTOR, false, "Turn intake motor");
+        this.getCoral = new SparkMaxMotors(IntakeConstants.CORAL_MOTOR, true, "get game piece motor");
 
-        this.encoder = new DutyCycleEncoder(Intake.INTAKE_ENCODER);
+        this.encoder = new DutyCycleEncoder(IntakeConstants.INTAKE_ENCODER);
         
-        this.controller = Intake.INTAKE_PID;
+        this.controller = IntakeConstants.INTAKE_PID;
         
-        this.coralswitch = new DigitalInput(Intake.CORAL_SWITCH);
+        this.coralswitch = new DigitalInput(IntakeConstants.CORAL_SWITCH);
         
         this.mechanismJoystick = MechanismJoystick.getInstance();
         
@@ -63,7 +63,7 @@ public class IntakeSubsystem extends SubsystemBase implements MechanismIO, Logga
     private void configureIntake(){
         this.encoder.setDutyCycleRange(0, 360);
         
-        this.controller.setTolerance(Intake.INTAKE_TOLERANCE);
+        this.controller.setTolerance(IntakeConstants.INTAKE_TOLERANCE);
         
         this.setpoint = 0;
         this.speed = 0;
@@ -146,7 +146,7 @@ public class IntakeSubsystem extends SubsystemBase implements MechanismIO, Logga
 
     public void getCoral(){
         if(!hasCoral){
-            getCoral.setSpeed(Intake.GET_CORAL_SPEED);
+            getCoral.setSpeed(IntakeConstants.GET_CORAL_SPEED);
         }
         getCoral.setSpeed(0);
     }

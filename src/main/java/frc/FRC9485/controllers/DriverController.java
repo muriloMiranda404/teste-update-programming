@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.FRC9485.utils.Util;
-import frc.robot.Constants.Controllers;
+import frc.FRC9485.constants.JoystickConstants;
 
 public class DriverController implements IDDriverController{
 
@@ -17,7 +17,7 @@ public class DriverController implements IDDriverController{
     private double invert;
 
     private DriverController(){
-        this.controller = new CommandXboxController(Controllers.DRIVE_CONTROLLER);
+        this.controller = new CommandXboxController(JoystickConstants.DRIVE_CONTROLLER);
         invert = 1;
     }
     
@@ -197,8 +197,8 @@ public class DriverController implements IDDriverController{
 
     @Override
     public boolean joystickIsNothingUsingDrive() {
-        return Util.inRange(getLeftY(), -Controllers.DEADBAND, Controllers.DEADBAND)
-        && Util.inRange(getLeftX(), -Controllers.DEADBAND, Controllers.DEADBAND);
+        return Util.inRange(getLeftY(), -JoystickConstants.DEADBAND, JoystickConstants.DEADBAND)
+        && Util.inRange(getLeftX(), -JoystickConstants.DEADBAND, JoystickConstants.DEADBAND);
     }
 
     @Override
