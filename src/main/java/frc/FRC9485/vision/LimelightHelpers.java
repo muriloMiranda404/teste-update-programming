@@ -22,7 +22,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.TimestampedDoubleArray;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Constants.Components;
+import frc.robot.GeralConstants.Components;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;

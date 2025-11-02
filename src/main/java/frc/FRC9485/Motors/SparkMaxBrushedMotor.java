@@ -187,4 +187,25 @@ public class SparkMaxBrushedMotor implements MotorIO{
         }
         motor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
     }
+
+    @Override
+    public void setMotorInvert(boolean invert) {
+        config.inverted(invert);
+
+        motor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+    }
+
+    @Override
+    public boolean motorIsInverted() {
+        return motor.configAccessor.getInverted();
+    }
+
+    @Override
+    public void updateInputs(MotorIOInputs input){
+        input.position = getPosition();
+        input.speed = getSpeed();
+        input.temperature = getMotorTemperature();
+        input.isInverted = motorIsInverted();
+        input.voltage = getVoltage();
+    }
 }

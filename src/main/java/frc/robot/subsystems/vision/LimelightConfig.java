@@ -5,7 +5,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import frc.FRC9485.vision.LimelightHelpers;
-import frc.robot.Constants.Components;
+import frc.robot.GeralConstants.Components;
 
 public class LimelightConfig{
     

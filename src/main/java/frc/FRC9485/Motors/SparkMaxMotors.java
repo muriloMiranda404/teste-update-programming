@@ -76,6 +76,7 @@ public class SparkMaxMotors implements MotorIO{
         configureSpark(motor::clearFaults);
     }
 
+    @Override
     public void updateConfig(SparkMaxConfig config){
         if(DriverStation.isEnabled()){
             throw new RuntimeException("o motor não pode ser fazer o update da sua configuração com o robo ligado");
@@ -186,5 +187,26 @@ public class SparkMaxMotors implements MotorIO{
             return;
         }
         motor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+    }
+
+    @Override
+    public void setMotorInvert(boolean invert) {
+        config.inverted(invert);
+
+        motor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+    }
+
+    @Override
+    public boolean motorIsInverted() {
+        return motor.configAccessor.getInverted();
+    }
+
+    @Override
+    public void updateInputs(MotorIOInputs input){
+        input.position = getPosition();
+        input.speed = getSpeed();
+        input.temperature = getMotorTemperature();
+        input.isInverted = motorIsInverted();
+        input.voltage = getVoltage();
     }
 }

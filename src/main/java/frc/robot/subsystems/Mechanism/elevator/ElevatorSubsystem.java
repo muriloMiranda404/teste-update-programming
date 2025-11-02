@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.FRC9485.Motors.MotorIO;
 import frc.FRC9485.Motors.SparkMaxMotors;
+import frc.FRC9485.Motors.MotorIO.MotorIOInputs;
 import frc.FRC9485.constants.ElevatorConstants;
 import frc.robot.subsystems.Mechanism.MechanismIO;
 
@@ -25,6 +26,8 @@ public class ElevatorSubsystem extends SubsystemBase implements MechanismIO{
     public double setpoint;
 
     public PIDController elevatorController;
+
+    private MotorIOInputs leadElevatorInput;
     
     private ElevatorSubsystem(){
         
@@ -39,6 +42,8 @@ public class ElevatorSubsystem extends SubsystemBase implements MechanismIO{
         this.elevatorController = new PIDController(ElevatorConstants.ELEVATOR_CONSTANTS.kP,
                                                             ElevatorConstants.ELEVATOR_CONSTANTS.kI,
                                                             ElevatorConstants.ELEVATOR_CONSTANTS.kD);
+
+        this.leadElevatorInput = new MotorIOInputs();
 
         this.configureElevator();
     }
@@ -169,5 +174,7 @@ public class ElevatorSubsystem extends SubsystemBase implements MechanismIO{
     }
 
     @Override
-    public void periodic() {}
+    public void periodic() {
+        leftMotor.updateInputs(leadElevatorInput);
+    }
 }

@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.FRC9485.Motors.MotorIO;
 import frc.FRC9485.Motors.SparkMaxMotors;
+import frc.FRC9485.Motors.MotorIO.MotorIOInputs;
 import frc.FRC9485.constants.IntakeConstants;
 import frc.FRC9485.constants.IntakeConstants.IntakePositions;
 import frc.FRC9485.controllers.MechanismJoystick;
@@ -28,6 +29,9 @@ public class IntakeSubsystem extends SubsystemBase implements MechanismIO, Logga
 
     private double setpoint;
     private double speed;
+
+    private MotorIOInputs throwAndCatchCoralInput;
+    private MotorIOInputs turnIntakeIOInput;
     
     public static IntakeSubsystem mInstance = null;
 
@@ -50,6 +54,9 @@ public class IntakeSubsystem extends SubsystemBase implements MechanismIO, Logga
         
         this.mechanismJoystick = MechanismJoystick.getInstance();
         
+        this.throwAndCatchCoralInput = new MotorIOInputs();
+        this.turnIntakeIOInput = new MotorIOInputs();
+
         configureIntake();
     }
 
@@ -168,6 +175,8 @@ public class IntakeSubsystem extends SubsystemBase implements MechanismIO, Logga
     @Override
     public void periodic() {
         SmartDashboard.putNumber("distance", getDistance());
+        getCoral.updateInputs(throwAndCatchCoralInput);
+        turnIntake.updateInputs(turnIntakeIOInput);
     }
 
     @Override
