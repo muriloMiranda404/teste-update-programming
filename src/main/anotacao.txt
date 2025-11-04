@@ -1,0 +1,35 @@
+Front Right swerve module{
+    offset: 1.8
+
+    drive: not inverted
+    angle: inverted
+
+    encoder: not inverted
+}
+
+Front Left swerve module{
+    offset: 70.62
+
+    drive: not inverted
+    angle: inverted
+
+    encoder: not inverted
+}
+
+Back Left swerve module{
+    offset: 251.64
+
+    drive: not inverted
+    angle: inverted
+
+    encoder: not inverted
+}
+
+Back Right swerve module{
+    offset: 228.96
+
+    drive: not inverted
+    angle: inverted
+
+    encoder: not inverted
+}
