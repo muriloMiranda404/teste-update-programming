@@ -9,9 +9,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.FRC9485.utils.logger.CustomDoubleLog;
 import frc.FRC9485.utils.logger.CustomStringLog;
 import frc.FRC9485.constants.ElevatorConstants.ElevatorPositions;
-import frc.FRC9485.constants.IntakeConstants;
 import frc.FRC9485.constants.IntakeConstants.IntakePositions;
 import frc.robot.subsystems.Led.LedSubsystem;
+import frc.robot.subsystems.Mechanism.MechanismIO.SuperStructureInput;
 import frc.robot.subsystems.Mechanism.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.Mechanism.intake.IntakeSubsystem;
 
@@ -30,6 +30,8 @@ public class SuperStructure extends SubsystemBase{
     private CustomStringLog superStructureState;
     private CustomDoubleLog elevator;
     private CustomDoubleLog intake;
+
+    private SuperStructureInput input;
 
     public static SuperStructure mInstance = null;
 
@@ -72,6 +74,13 @@ public class SuperStructure extends SubsystemBase{
         superStructureState.append(state);
         elevator.append(elevatorInput);
         intake.append(intakeInput);
+    
+        if(input != null){
+            updateInput(input);
+        } else {
+            DriverStation.reportWarning("objeto de input do superstructure esta sendo null", null);
+            input = null;
+        }
     }
 
     public boolean scoreIsFinised(){
@@ -221,5 +230,12 @@ public class SuperStructure extends SubsystemBase{
 
     public boolean seguranceSystem(){
         return intakeInput > IntakePositions.DEFAULT_POSITION;
+    }
+
+    private void updateInput(SuperStructureInput input){
+        input.color = color;
+        input.elevatorInput = elevatorInput;
+        input.intakeInput = intakeInput;
+        input.state = state;
     }
 }

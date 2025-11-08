@@ -1,17 +1,16 @@
 package frc.robot.commands.swerveUtils;
 
 import java.util.function.BooleanSupplier;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.FRC9485.controllers.DriverController;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 
 public class TeleopSwerveDrive extends Command{
     
-    DriverController driverController;
-    SwerveSubsystem swerveSubsystem;
+    private DriverController driverController;
+    private SwerveSubsystem swerveSubsystem;
 
-    BooleanSupplier fieldOriented;
+    private BooleanSupplier fieldOriented;
 
     public TeleopSwerveDrive(DriverController driverController, BooleanSupplier fieldOriented){
         this.driverController = driverController;
@@ -22,7 +21,7 @@ public class TeleopSwerveDrive extends Command{
     }
 
     @Override
-    public void initialize() {}
+    public void initialize() { }
 
     @Override
     public void execute() {
@@ -39,5 +38,5 @@ public class TeleopSwerveDrive extends Command{
     }
 
     @Override
-    public void end(boolean interrupted) {}
+    public void end(boolean interrupted) { }
 }

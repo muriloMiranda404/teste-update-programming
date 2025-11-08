@@ -3,6 +3,8 @@ package frc.robot.subsystems.swerve;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -14,6 +16,17 @@ import frc.robot.subsystems.swerve.SwerveSubsystem.SwerveState;
 import swervelib.SwerveDrive;
 
 public interface SwerveIO {
+
+    public class swerveInputs {
+        public Pose2d pose = new Pose2d();
+        public double yaw = 0;
+        public IdleMode idleMode = IdleMode.kBrake;
+        public Rotation2d heading = new Rotation2d(0);
+        public boolean swerveIsMoving = false;
+        public SwerveModuleState state = new SwerveModuleState();
+        public double pitch = 0;
+        public double roll = 0;
+    }
     
     void drive(Translation2d translation, double rotation, boolean fieldOriented);
 
@@ -66,4 +79,12 @@ public interface SwerveIO {
     void setModuleState(SwerveModuleState[] state);
 
     void zeroSwerve();
+
+    Pose2d getAutoPose();
+
+    void resetOdometryAuto(Pose2d pose2d);
+
+    IdleMode getIdleMode();
+
+    void updateInput(swerveInputs input);
 }

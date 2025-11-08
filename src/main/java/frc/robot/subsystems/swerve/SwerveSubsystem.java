@@ -63,6 +63,7 @@ public class SwerveSubsystem extends SubsystemBase implements SwerveIO{
   private CustomBooleanLog swerveIsMoving;
 
   private CANcoder[] modulesEncoder;
+  private swerveInputs inputs;
 
   private Field2d field2d;
 
@@ -136,6 +137,8 @@ public class SwerveSubsystem extends SubsystemBase implements SwerveIO{
       new CANcoder(12),
       new CANcoder(13)
     };
+
+    this.inputs = new swerveInputs();
   }
 
   public static SwerveSubsystem getInstance(){
@@ -212,6 +215,13 @@ public class SwerveSubsystem extends SubsystemBase implements SwerveIO{
 
     SmartDashboard.putData(field2d);
     this.automaticSwerveMode();
+
+    if(inputs != null){
+      this.updateInput(inputs);
+    } else{
+      DriverStation.reportWarning("inputs do swerve não podem ser atualizados devido o objeto ser nulo", null);
+      inputs = null;
+    }
   }
   
   @Override
@@ -446,13 +456,13 @@ public class SwerveSubsystem extends SubsystemBase implements SwerveIO{
   }
 
   @Override
-  public Rotation2d getHeading(){
-    return Rotation2d.fromDegrees(scope0To360(pigeon.getYaw().getValueAsDouble()));
-  }
+public Rotation2d getHeading(){
+  return Rotation2d.fromDegrees(scope0To360(pigeon.getYaw().getValueAsDouble()));
+}
 
-  /**
-   *  @param name
-   *  @param altern
+/**
+ *  @param name
+ *  @param altern
    *  @return
    */
   @Override
@@ -543,5 +553,32 @@ public class SwerveSubsystem extends SubsystemBase implements SwerveIO{
   
   public boolean atReference() {
     return xPID.atSetpoint() && yPID.atSetpoint() && profilePid.atGoal();
+  }
+
+  @Override
+  public Pose2d getAutoPose() {
+      return odometry.getPoseMeters();
+  }
+
+  @Override
+  public void resetOdometryAuto(Pose2d pose2d) {
+    pigeon.setYaw(pose2d.getRotation().getDegrees());
+    odometry.resetPosition(pose2d.getRotation(), swerveDrive.getModulePositions(), pose2d);
+  }
+
+  @Override
+  public IdleMode getIdleMode() {
+      return currentIdleMode;
+  }
+
+  @Override
+  public void updateInput(swerveInputs input) {
+      input.heading = getHeading();
+      input.idleMode = getIdleMode();
+      input.pose = getPose();
+      input.swerveIsMoving = swerveIsMoving();
+      input.yaw = getYaw();
+      input.pitch = getPicth();
+      input.roll = getRoll();
   }
 }
