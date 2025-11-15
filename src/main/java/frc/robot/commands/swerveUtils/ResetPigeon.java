@@ -2,6 +2,8 @@ package frc.robot.commands.swerveUtils;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 
@@ -23,10 +25,10 @@ public class ResetPigeon extends Command{
     @Override
     public void execute() {
         try{
-
-            pigeon2.reset();
-            subsystem.zeroGyro();
-            
+            if(DriverStation.getAlliance().get() == Alliance.Blue){
+                pigeon2.reset();
+                subsystem.zeroGyro();
+            } 
         } catch(Exception e){
             System.out.println("erro ao resetar o pigeon");
         }

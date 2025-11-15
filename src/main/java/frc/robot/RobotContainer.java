@@ -1,5 +1,6 @@
 package frc.robot;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -53,6 +54,8 @@ public class RobotContainer {
     this.joystickChooser = JoystickChooser.getInstance();
     this.autoChooser = AutoChooser.getInstance();
     this.mechanismSelected = joystickChooser.getChoosed();
+
+    DriverStation.silenceJoystickConnectionWarning(true);
 
     swerve.setDefaultCommand(new TeleopSwerveDrive(
       driverController, 

@@ -26,6 +26,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -104,6 +105,7 @@ public class SwerveSubsystem extends SubsystemBase implements SwerveIO{
     }
 
     this.field2d = new Field2d();
+    
     xPID = new PIDController(1.0, 0, 0);
     yPID = new PIDController(1.0, 0.0, 0.1);
     profilePid = new ProfiledPIDController(1.0, 0.0, 0.1,
@@ -120,13 +122,6 @@ public class SwerveSubsystem extends SubsystemBase implements SwerveIO{
         
     this.kinematics = SwerveConstants.KINEMATICS;
     
-    position = new SwerveModulePosition[]{
-      modules[0].getPosition(),
-      modules[1].getPosition(),
-      modules[2].getPosition(),
-      modules[3].getPosition(),
-    };
-
     this.modules = swerveDrive.getModules();
     
     this.odometry = new SwerveDriveOdometry(kinematics, pigeon.getRotation2d(), swerveDrive.getModulePositions());
@@ -279,29 +274,15 @@ public class SwerveSubsystem extends SubsystemBase implements SwerveIO{
     RobotConfig config;
     try{
       config = RobotConfig.fromGUISettings();
-      
-      boolean feedforwards = false;
-      
+            
       AutoBuilder.configure(
             this::getPose,
             this::resetOdometry, 
             this::getRobotRelativeSpeeds, 
-            (speeds, feedforward) -> {
-              if (feedforwards)
-              {
-                swerveDrive.drive(
-                    speeds,
-                    swerveDrive.kinematics.toSwerveModuleStates(speeds),
-                    feedforward.linearForces()
-                                 );
-              } else
-              {
-                swerveDrive.setChassisSpeeds(speeds);
-              }}, 
+            (speeds, feedforward) -> driveFieldOriented(speeds), 
               new PPLTVController(0.05),
               config, 
               () -> {
-                
               var alliance = DriverStation.getAlliance();
               if (alliance.isPresent()) {
                 return alliance.get() == DriverStation.Alliance.Red;
@@ -317,7 +298,7 @@ public class SwerveSubsystem extends SubsystemBase implements SwerveIO{
 
   @Override
   public Pose2d getPose(){
-    return swerveDrive.getPose();
+    return swerveDrivePoseEstimator.getEstimatedPosition();
   }
 
   @Override
@@ -502,7 +483,13 @@ public Rotation2d getHeading(){
 
   @Override
   public void resetOdometry(Pose2d pose){
-   swerveDrive.resetOdometry(pose);
+    if(DriverStation.getAlliance().get() == Alliance.Red){
+      pigeon.setYaw(180);
+      swerveDrivePoseEstimator.update(pose.getRotation().plus(Rotation2d.k180deg), swerveDrive.getModulePositions());
+    } else {
+      pigeon.setYaw(pose.getRotation().getDegrees());
+      swerveDrivePoseEstimator.update(pose.getRotation(), swerveDrive.getModulePositions());
+    }
   }
 
   @Override
