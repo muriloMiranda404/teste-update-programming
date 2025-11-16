@@ -62,6 +62,20 @@ public class SuperStructure extends SubsystemBase{
         return state;
     }
 
+    public enum RobotMode{
+        TELEOP, 
+        AUTONOMOUS,
+        DISABLE
+    }
+
+    public RobotMode getRobotMode(){
+        if(DriverStation.isTeleop()) return RobotMode.TELEOP;
+
+        if(DriverStation.isAutonomous()) return RobotMode.AUTONOMOUS;
+
+        else return RobotMode.DISABLE;
+    }
+
     @Override
     public void periodic() {
         this.elevatorSubsystem.setPosition(elevatorInput);
@@ -69,7 +83,7 @@ public class SuperStructure extends SubsystemBase{
 
         this.elevatorSubsystem.periodic();
         this.intakeSubsystem.periodic();
-        alternLedColor(color);
+        alternLedColor(getRobotMode(), color);
 
         superStructureState.append(state);
         elevator.append(elevatorInput);
@@ -115,19 +129,19 @@ public class SuperStructure extends SubsystemBase{
         PUT_L4
     }
 
-    private void alternLedColor(Color color){
-    if(DriverStation.isTeleopEnabled()){    
-            if(intakeSubsystem.IsTouched()){
-                    ledSubsystem.setPattern(LEDPattern.gradient(GradientType.kDiscontinuous, Color.kRed, color));
-                } else if(Math.abs(elevatorSubsystem.getOutputInElevatorMotors()[0]) >= 1){
-                    ledSubsystem.setPattern(LEDPattern.gradient(GradientType.kDiscontinuous, Color.kCyan, color));
-                } else {
-                    ledSubsystem.setSolidColor(color);
-            }
-        } else if(DriverStation.isAutonomousEnabled()){
-            ledSubsystem.setSolidColor(Color.kWhite);
-        } else{
-            ledSubsystem.setSolidColor(Color.kBlack);
+    private void alternLedColor(RobotMode robotMode, Color color){
+        switch (robotMode) {
+            case TELEOP:
+                if(intakeSubsystem.IsTouched()) ledSubsystem.setPattern(LEDPattern.gradient(GradientType.kContinuous, Color.kRed, color));
+                else ledSubsystem.setSolidColor(color);
+
+                break;
+            case AUTONOMOUS:
+                ledSubsystem.setSolidColor(Color.kPink);
+                break;
+
+            case DISABLE: 
+                ledSubsystem.setRainbow();
         }
     }
 

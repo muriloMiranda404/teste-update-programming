@@ -1,7 +1,14 @@
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Seconds;
+import org.ironmaple.simulation.SimulatedArena;
+import org.ironmaple.simulation.seasonspecific.reefscape2025.ReefscapeCoralOnField;
+
 import com.ctre.phoenix6.hardware.Pigeon2;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -18,7 +25,11 @@ public class Robot extends TimedRobot {
   private RobotContainer m_robotContainer;
   private Pigeon2 pigeon2;
 
+  private SimulatedArena simulatedArena = SimulatedArena.getInstance();
+
   public Robot(){
+    SimulatedArena.overrideInstance(simulatedArena);
+
     pigeon2 = new Pigeon2(Components.PIGEON);
   }
 
@@ -91,5 +102,9 @@ public class Robot extends TimedRobot {
 
   @Override
   public void simulationPeriodic() {
+    simulatedArena.simulationPeriodic();
+    SimulatedArena.overrideSimulationTimings(Time.ofRelativeUnits(0.01, Seconds), 3);
+
+    simulatedArena.addGamePiece(new ReefscapeCoralOnField(new Pose2d(3, 3, new Rotation2d(0))));
   }
 }
