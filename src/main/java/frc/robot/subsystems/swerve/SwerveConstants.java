@@ -2,6 +2,9 @@ package frc.robot.subsystems.swerve;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
+import swervelib.SwerveModule;
+import swervelib.telemetry.SwerveDriveTelemetry;
 
 public class SwerveConstants {
     
@@ -35,4 +38,5 @@ public class SwerveConstants {
       new Translation2d(-0.3556, -0.3556)
     );
 
+    public static record swerveUtils(SwerveDriveKinematics kinematics, SwerveDriveOdometry odometry, SwerveDriveTelemetry telemetry) {}
 }

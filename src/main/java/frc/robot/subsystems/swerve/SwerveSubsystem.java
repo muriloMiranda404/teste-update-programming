@@ -3,6 +3,10 @@ package frc.robot.subsystems.swerve;
 import java.io.File;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
+
+import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
+import org.ironmaple.simulation.drivesims.configs.DriveTrainSimulationConfig;
+
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -33,21 +37,26 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.FRC9485.utils.logger.CustomBooleanLog;
 import frc.FRC9485.vision.LimelightHelpers;
+import frc.robot.GeralConstants.Components;
+import frc.robot.subsystems.swerve.SwerveConstants.swerveUtils;
 import frc.robot.subsystems.vision.LimelightConfig;
 import swervelib.SwerveDrive;
 import swervelib.SwerveModule;
 import swervelib.parser.SwerveParser;
+import swervelib.telemetry.SwerveDriveTelemetry;
+import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 import edu.wpi.first.math.trajectory.Trajectory;
 
 public class SwerveSubsystem extends SubsystemBase implements SwerveIO{
 
-  private SwerveDrive swerveDrive;
   private Pigeon2 pigeon;
   private PIDController xPID;
   private PIDController yPID;
   private ProfiledPIDController profilePid;
   private HolonomicDriveController driveController;
   private LimelightConfig limelightConfig;
+  
+  private SwerveDrive swerveDrive;
   private SwerveDrivePoseEstimator swerveDrivePoseEstimator;
   private SwerveModuleState[] state;
   private SwerveModule[] modules;
@@ -58,6 +67,7 @@ public class SwerveSubsystem extends SubsystemBase implements SwerveIO{
   private double direcaoX;
   private double direcaoY;
   private double rotacao;
+
   private double lastMovingTime;
   private boolean isMoving;
   private IdleMode currentIdleMode;
@@ -76,7 +86,7 @@ public class SwerveSubsystem extends SubsystemBase implements SwerveIO{
   private SwerveSubsystem(File directory){
 
     try {
-      this.pigeon = new Pigeon2(9);
+      this.pigeon = new Pigeon2(Components.PIGEON);
     } catch (Exception e) {
       e.printStackTrace();
       DriverStation.reportError("Falha ao inicializar Pigeon2: " + e.getMessage(), false);
@@ -103,8 +113,6 @@ public class SwerveSubsystem extends SubsystemBase implements SwerveIO{
       this.swerveDrive = null;
       this.swerveDrivePoseEstimator = null;
     }
-
-    this.field2d = new Field2d();
     
     xPID = new PIDController(1.0, 0, 0);
     yPID = new PIDController(1.0, 0.0, 0.1);
@@ -175,10 +183,12 @@ public class SwerveSubsystem extends SubsystemBase implements SwerveIO{
   public void periodic() {
     if (swerveDrive != null) {
       try {
+        SwerveDriveTelemetry.updateData();
+
         swerveDrive.updateOdometry();
       } catch (Exception e) {
         e.printStackTrace();
-        DriverStation.reportError("Erro em updateOdometry(): " + e.getMessage(), false);
+        DriverStation.reportError("Erro em updateOdometry() e updateData(): " + e.getMessage(), false);
       }
     } else {
       DriverStation.reportWarning("swerveDrive == null em periodic()", false);
@@ -567,5 +577,6 @@ public Rotation2d getHeading(){
       input.yaw = getYaw();
       input.pitch = getPicth();
       input.roll = getRoll();
+      input.isTeleopered = DriverStation.isTeleopEnabled();
   }
 }

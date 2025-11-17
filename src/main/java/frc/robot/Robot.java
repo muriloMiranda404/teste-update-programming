@@ -3,9 +3,7 @@ package frc.robot;
 import static edu.wpi.first.units.Units.Seconds;
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.seasonspecific.reefscape2025.ReefscapeCoralOnField;
-
 import com.ctre.phoenix6.hardware.Pigeon2;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Time;
@@ -18,8 +16,11 @@ import frc.FRC9485.vision.LimelightHelpers;
 import frc.robot.GeralConstants.Components;
 import frc.robot.GeralConstants.vision;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
+import swervelib.telemetry.SwerveDriveTelemetry;
+import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 
 public class Robot extends TimedRobot {
+
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;

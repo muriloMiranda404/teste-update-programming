@@ -6,6 +6,7 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import frc.FRC9485.vision.LimelightHelpers;
 import frc.robot.GeralConstants.Components;
+import frc.robot.GeralConstants.vision;
 
 public class LimelightConfig{
     
@@ -19,7 +20,7 @@ public class LimelightConfig{
 
     public static LimelightConfig getInstance(){
         if(mInstance ==  null){
-            mInstance = new LimelightConfig(Components.LIMELIGHT);
+            mInstance = new LimelightConfig(vision.LIMELIGHT);
         }
         return mInstance;
     }

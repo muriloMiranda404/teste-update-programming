@@ -23,6 +23,7 @@ import edu.wpi.first.networktables.TimestampedDoubleArray;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.GeralConstants.Components;
+import frc.robot.GeralConstants.vision;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -624,7 +625,7 @@ public class LimelightHelpers {
 
 	static final String sanitizeName(String name) {
 		if (name == "" || name == null) {
-			return Components.LIMELIGHT;
+			return vision.LIMELIGHT;
 		}
 		return name;
 	}

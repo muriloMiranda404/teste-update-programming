@@ -26,6 +26,7 @@ public interface SwerveIO {
         public SwerveModuleState state = new SwerveModuleState();
         public double pitch = 0;
         public double roll = 0;
+        public Boolean isTeleopered = false;
     }
     
     void drive(Translation2d translation, double rotation, boolean fieldOriented);
