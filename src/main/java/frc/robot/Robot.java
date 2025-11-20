@@ -16,8 +16,6 @@ import frc.FRC9485.vision.LimelightHelpers;
 import frc.robot.GeralConstants.Components;
 import frc.robot.GeralConstants.vision;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
-import swervelib.telemetry.SwerveDriveTelemetry;
-import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 
 public class Robot extends TimedRobot {
 

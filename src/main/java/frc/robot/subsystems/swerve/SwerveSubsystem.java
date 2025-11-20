@@ -13,6 +13,8 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPLTVController;
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.trajectory.PathPlannerTrajectory;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
@@ -128,7 +130,12 @@ public class SwerveSubsystem extends SubsystemBase implements SwerveIO{
 
     this.swerveState = new SwerveState(direcaoX, direcaoY, rotacao, isMoving);
         
-    this.kinematics = SwerveConstants.KINEMATICS;
+    this.kinematics = new SwerveDriveKinematics(new Translation2d[]{
+      new Translation2d(0.0365, 0.356), //Fl
+      new Translation2d(-0.356, 0.356), //FR
+      new Translation2d(0.356, -0.356), //BL
+      new Translation2d(-0.356, -0.356) //BR
+    });
     
     this.modules = swerveDrive.getModules();
     
@@ -491,15 +498,15 @@ public Rotation2d getHeading(){
     swerveDrive.setMotorIdleMode(brake);
   }
 
+  //teste no robo real
   @Override
   public void resetOdometry(Pose2d pose){
-    if(DriverStation.getAlliance().get() == Alliance.Red){
-      pigeon.setYaw(180);
-      swerveDrivePoseEstimator.update(pose.getRotation().plus(Rotation2d.k180deg), swerveDrive.getModulePositions());
-    } else {
-      pigeon.setYaw(pose.getRotation().getDegrees());
-      swerveDrivePoseEstimator.update(pose.getRotation(), swerveDrive.getModulePositions());
-    }
+      try {
+          pigeon.setYaw(pose.getRotation().getDegrees());
+          odometry.resetPosition(pose.getRotation(), swerveDrive.getModulePositions(), pose);
+      } catch (Exception e){
+          DriverStation.reportWarning("Falha ao resetar odometria: " + e.getMessage(), false);
+      }
   }
 
   @Override

@@ -1,113 +1,88 @@
 package frc.robot.commands.swerveUtils;
 
-import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.math.geometry.Translation2d;
 import frc.FRC9485.vision.LimelightHelpers;
+import frc.robot.GeralConstants.vision;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
-import frc.robot.subsystems.vision.LimelightConfig;
 
-public class AlingToTarget extends Command {
+public class AlingToTarget extends Command{
 
-    private final LimelightConfig limelight;
-    private final SwerveSubsystem swerve;
-    private final HolonomicDriveController controller;
-    private final Timer timer;
+    private SwerveSubsystem swerveSubsystem;
+    
+    private Timer dontSeeTag, maxAling;
 
-    private static final double FILTRO_ALPHA = 0.2;
-    private static final double MAX_SPEED = 0.7;
-    private static final double TIMEOUT = 7.0;
+    private double tagid;
 
-    private double txFiltrado = 0.0;
-    private double tyFiltrado = 0.0;
+    PIDController xController, yController, rotationController;
 
-    public AlingToTarget() {
-        this.limelight = LimelightConfig.getInstance();
-        this.swerve = SwerveSubsystem.getInstance();
-
-        PIDController xPID = new PIDController(0.35, 0.0, 0.002);
-        PIDController yPID = new PIDController(0.35, 0.0, 0.002);
-        ProfiledPIDController rotPID = new ProfiledPIDController(
-            0.1, 0.0, 0.002, 
-            new Constraints(Math.PI, Math.PI)
-        );
-
-        xPID.setTolerance(0.02);
-        yPID.setTolerance(0.02);
-        rotPID.setTolerance(Math.toRadians(2));
-
-        this.controller = new HolonomicDriveController(xPID, yPID, rotPID);
-        this.timer = new Timer();
-
-        addRequirements(swerve);
+    public AlingToTarget(){
+        this.swerveSubsystem = SwerveSubsystem.getInstance();
+        this.xController = new PIDController(0.01, 0, 0);
+        this.yController = new PIDController(0.01, 0, 0);
+        this.rotationController = new PIDController(0.01, 0, 0);
     }
 
     @Override
     public void initialize() {
-        timer.reset();
-        timer.start();
-        txFiltrado = 0.0;
-        tyFiltrado = 0.0;
+        this.dontSeeTag = new Timer();
+        dontSeeTag.start();
+
+        this.maxAling = new Timer();
+        maxAling.start();
+
+        xController.setSetpoint(0);
+        yController.setSetpoint(0);
+        rotationController.setSetpoint(0);
+
+        xController.setTolerance(vision.X_TOLERANCE);
+        yController.setTolerance(vision.Y_TOLERANCE);
+        rotationController.setTolerance(vision.ROTATION_TOLERANCE);
+
+        if(LimelightHelpers.getTV("")){
+            this.tagid = LimelightHelpers.getFiducialID("");
+        }
     }
 
     @Override
     public void execute() {
-        if (!limelight.getHasTarget()) {
-            swerve.drive(new Translation2d(), 0, true);
-            return;
+        if(LimelightHelpers.getTV("") && tagid == LimelightHelpers.getFiducialID("")){
+            dontSeeTag.reset();
+
+            double[] position = LimelightHelpers.getBotPose_TargetSpace("");
+
+            double pidx = xController.calculate(position[2]);
+            double pidy = yController.calculate(position[0]);
+            double rotation = rotationController.calculate(position[4]); 
+
+            swerveSubsystem.drive(new Translation2d(pidx, pidy), rotation, true);
+        } else{
+            swerveSubsystem.drive(new Translation2d(0, 0), 0, true);
         }
-
-        double tx = LimelightHelpers.getTX("");
-        double ty = LimelightHelpers.getTY("");
-
-        if (Double.isNaN(tx) || Double.isNaN(ty)) {
-            System.out.println("Valores inválidos da Limelight!");
-            return;
-        }
-
-        txFiltrado = FILTRO_ALPHA * tx + (1 - FILTRO_ALPHA) * txFiltrado;
-        tyFiltrado = FILTRO_ALPHA * ty + (1 - FILTRO_ALPHA) * tyFiltrado;
-
-        Pose2d currentPose = swerve.getPose();
-        Pose2d targetPose = new Pose2d(
-            currentPose.getX() + tyFiltrado * 0.05, 
-            currentPose.getY() + txFiltrado * 0.05, 
-            Rotation2d.fromDegrees(0)
-        );
-
-        // Calcula velocidades desejadas
-        Trajectory.State targetState = new Trajectory.State();
-        targetState.poseMeters = targetPose;
-        targetState.velocityMetersPerSecond = 0.0;
-        targetState.accelerationMetersPerSecondSq = 0.0;
-        
-        ChassisSpeeds speeds = controller.calculate(currentPose, targetState, Rotation2d.fromDegrees(0));
-        
-        double vx = Math.max(-MAX_SPEED, Math.min(MAX_SPEED, speeds.vxMetersPerSecond));
-        double vy = Math.max(-MAX_SPEED, Math.min(MAX_SPEED, speeds.vyMetersPerSecond));
-        double omega = Math.max(-MAX_SPEED, Math.min(MAX_SPEED, speeds.omegaRadiansPerSecond));
-
-        swerve.drive(new Translation2d(vx, vy), omega, true);
     }
 
     @Override
     public boolean isFinished() {
-        return controller.atReference() || timer.hasElapsed(TIMEOUT);
+    return !LimelightHelpers.getTV("") || dontSeeTag.hasElapsed(vision.DONT_SEE_TAG) ||
+            maxAling.hasElapsed(vision.MAX_ALINGMENT_TIME) || xController.atSetpoint() && yController.atSetpoint() 
+            && rotationController.atSetpoint();
     }
 
     @Override
     public void end(boolean interrupted) {
-        swerve.drive(new Translation2d(), 0, true);
-        timer.stop();
-        if (interrupted) System.out.println("Alinhamento interrompido!");
-        else System.out.println("Alinhamento concluído!");
+        if(!LimelightHelpers.getTV("")){
+            System.out.println("Tag não foi identificada");
+            swerveSubsystem.drive(new Translation2d(0, 0), 0, true);
+        } else if(dontSeeTag.hasElapsed(vision.DONT_SEE_TAG)){
+            System.out.println("Tempo maximo sem ver a tag foi atingido");
+            swerveSubsystem.drive(new Translation2d(0, 0), 0, true);
+        } else if(maxAling.hasElapsed(vision.MAX_ALINGMENT_TIME)){
+            swerveSubsystem.drive(new Translation2d(0, 0), 0, true);
+            System.out.println("tempo maximo ultrapassado");
+        } else {
+            System.out.println("comando bem executado");
+        }
     }
 }
