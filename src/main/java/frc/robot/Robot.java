@@ -12,9 +12,9 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.FRC9485.constants.AlingConstants;
 import frc.FRC9485.vision.LimelightHelpers;
 import frc.robot.GeralConstants.Components;
-import frc.robot.GeralConstants.vision;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 
 public class Robot extends TimedRobot {
@@ -38,7 +38,7 @@ public class Robot extends TimedRobot {
 
     if(DriverStation.getAlliance().get() == Alliance.Blue) pigeon2.reset();
 
-    LimelightHelpers.SetFiducialIDFiltersOverride("", vision.ALL_TAGS);
+    LimelightHelpers.SetFiducialIDFiltersOverride("", AlingConstants.ALL_TAGS);
   }
 
   @Override

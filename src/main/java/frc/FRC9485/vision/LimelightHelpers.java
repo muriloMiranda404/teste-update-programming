@@ -22,9 +22,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.TimestampedDoubleArray;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.GeralConstants.Components;
-import frc.robot.GeralConstants.vision;
-
+import frc.FRC9485.constants.AlingConstants;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -625,7 +623,7 @@ public class LimelightHelpers {
 
 	static final String sanitizeName(String name) {
 		if (name == "" || name == null) {
-			return vision.LIMELIGHT;
+			return AlingConstants.LIMELIGHT;
 		}
 		return name;
 	}

@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.GeralConstants.LedConstants;
 
 public class LedSubsystem extends SubsystemBase{
 
@@ -20,8 +21,8 @@ public class LedSubsystem extends SubsystemBase{
     public static LedSubsystem mInstance = null;
 
     private LedSubsystem(){
-        this.addressableLED = new AddressableLED(9);
-        this.buffer = new AddressableLEDBuffer(60);
+        this.addressableLED = new AddressableLED(LedConstants.LED_ID);
+        this.buffer = new AddressableLEDBuffer(LedConstants.LENGTH);
         this.pattern = LEDPattern.solid(Color.kBlack);
 
         this.addressableLED.setLength(this.buffer.getLength());

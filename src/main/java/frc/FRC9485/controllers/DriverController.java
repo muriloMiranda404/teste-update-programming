@@ -108,7 +108,7 @@ public class DriverController implements IDDriverController{
     
     @Override
     public Trigger TurboMode(){
-        return controller.rightTrigger(0.8);
+        return controller.rightTrigger();
     }
 
     @Override
@@ -126,16 +126,12 @@ public class DriverController implements IDDriverController{
     }
 
     @Override
-    public Trigger alingRobotOnReef() {
-        return controller.pov(0);
-    }
-
-    @Override
     public double getLeftX(){
         if(TurboMode().getAsBoolean()){
-            return controller.getLeftX() * 1;
+            return controller.getLeftX() + controller.getRightTriggerAxis();
         } else if(slowMode().getAsBoolean()){
-            return controller.getLeftX() * 0.2;
+            double lento = controller.getLeftTriggerAxis() * 0.5;
+            return controller.getLeftX() - lento;
         } else{
             return controller.getLeftX() * 0.7;
         }
@@ -144,9 +140,10 @@ public class DriverController implements IDDriverController{
     @Override
     public double getLeftY(){
         if(TurboMode().getAsBoolean()){
-            return controller.getLeftY() * 1.0;
+            return controller.getLeftY() + controller.getRightTriggerAxis();
         } else if(slowMode().getAsBoolean()){
-            return controller.getLeftY() * 0.2;
+            double lento = controller.getLeftTriggerAxis() * 0.5;
+            return controller.getLeftY() - lento;
         } else{
             return controller.getLeftY() * 0.7;
         }
@@ -155,9 +152,10 @@ public class DriverController implements IDDriverController{
     @Override
     public double getRightX(){
         if(TurboMode().getAsBoolean()){
-            return controller.getRightX() * 1.0;
+            return controller.getRightX() + controller.getRightTriggerAxis();
         } else if(slowMode().getAsBoolean()){
-            return controller.getRightX() * 0.2;
+            double lento = controller.getLeftTriggerAxis() * 0.5;
+            return controller.getRightX() - lento;
         } else{
             return controller.getRightX() * 0.7;
         }
@@ -166,9 +164,10 @@ public class DriverController implements IDDriverController{
     @Override
     public double getRightY(){
         if(TurboMode().getAsBoolean()){
-            return controller.getRightY() * 1.0;
+            return controller.getRightY() + controller.getRightTriggerAxis();
         } else if(slowMode().getAsBoolean()){
-            return controller.getRightY() * 0.2;
+            double lento = controller.getLeftTriggerAxis() * 0.5;
+            return controller.getRightY() - lento;
         } else{
             return controller.getRightY() * 0.7;
         }

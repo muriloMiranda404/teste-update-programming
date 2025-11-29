@@ -11,9 +11,9 @@ import frc.FRC9485.controllers.MechanismKeyBoard;
 import frc.FRC9485.utils.RegisterNamedCommands;
 import frc.FRC9485.utils.JoystickChooser.JoystickChooser;
 import frc.robot.commands.level.intake.SetIntakeSpeed;
-import frc.robot.commands.swerveUtils.AlingToTarget;
 import frc.robot.commands.swerveUtils.ResetPigeon;
 import frc.robot.commands.swerveUtils.TeleopSwerveDrive;
+import frc.robot.commands.swerveUtils.alinhamento.AlingToTarget;
 import frc.robot.subsystems.Mechanism.SuperStructure;
 import frc.robot.subsystems.Mechanism.SuperStructure.StatesToScore;
 import frc.robot.subsystems.Mechanism.intake.IntakeSubsystem;
@@ -78,8 +78,6 @@ public class RobotContainer {
 
   private void configureDriveBindings() {
     
-    driverController.alingRobotOnReef().whileTrue(new AlingToTarget());
-
     driverController.resetPigeon().onTrue(new ResetPigeon()); 
 
     driverController.emergencyInvert().onTrue(new InstantCommand(() ->{

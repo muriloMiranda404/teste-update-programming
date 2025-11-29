@@ -1,11 +1,11 @@
-package frc.robot.commands.swerveUtils;
+package frc.robot.commands.swerveUtils.alinhamento;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.FRC9485.constants.AlingConstants;
 import frc.FRC9485.vision.LimelightHelpers;
-import frc.robot.GeralConstants.vision;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 
 public class AlingToTarget extends Command{
@@ -37,9 +37,9 @@ public class AlingToTarget extends Command{
         yController.setSetpoint(0);
         rotationController.setSetpoint(0);
 
-        xController.setTolerance(vision.X_TOLERANCE);
-        yController.setTolerance(vision.Y_TOLERANCE);
-        rotationController.setTolerance(vision.ROTATION_TOLERANCE);
+        xController.setTolerance(AlingConstants.X_TOLERANCE);
+        yController.setTolerance(AlingConstants.Y_TOLERANCE);
+        rotationController.setTolerance(AlingConstants.ROTATION_TOLERANCE);
 
         if(LimelightHelpers.getTV("")){
             this.tagid = LimelightHelpers.getFiducialID("");
@@ -65,8 +65,8 @@ public class AlingToTarget extends Command{
 
     @Override
     public boolean isFinished() {
-    return !LimelightHelpers.getTV("") || dontSeeTag.hasElapsed(vision.DONT_SEE_TAG) ||
-            maxAling.hasElapsed(vision.MAX_ALINGMENT_TIME) || xController.atSetpoint() && yController.atSetpoint() 
+    return !LimelightHelpers.getTV("") || dontSeeTag.hasElapsed(AlingConstants.DONT_SEE_TAG) ||
+            maxAling.hasElapsed(AlingConstants.MAX_ALINGMENT_TIME) || xController.atSetpoint() && yController.atSetpoint() 
             && rotationController.atSetpoint();
     }
 
@@ -75,10 +75,10 @@ public class AlingToTarget extends Command{
         if(!LimelightHelpers.getTV("")){
             System.out.println("Tag não foi identificada");
             swerveSubsystem.drive(new Translation2d(0, 0), 0, true);
-        } else if(dontSeeTag.hasElapsed(vision.DONT_SEE_TAG)){
+        } else if(dontSeeTag.hasElapsed(AlingConstants.DONT_SEE_TAG)){
             System.out.println("Tempo maximo sem ver a tag foi atingido");
             swerveSubsystem.drive(new Translation2d(0, 0), 0, true);
-        } else if(maxAling.hasElapsed(vision.MAX_ALINGMENT_TIME)){
+        } else if(maxAling.hasElapsed(AlingConstants.MAX_ALINGMENT_TIME)){
             swerveSubsystem.drive(new Translation2d(0, 0), 0, true);
             System.out.println("tempo maximo ultrapassado");
         } else {

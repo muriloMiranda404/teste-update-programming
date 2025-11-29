@@ -1,20 +1,16 @@
 package frc.robot.subsystems.swerve;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
-
-import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
-import org.ironmaple.simulation.drivesims.configs.DriveTrainSimulationConfig;
-
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPLTVController;
-import com.pathplanner.lib.path.PathPlannerPath;
-import com.pathplanner.lib.trajectory.PathPlannerTrajectory;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
@@ -32,7 +28,6 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -40,30 +35,39 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.FRC9485.utils.logger.CustomBooleanLog;
 import frc.FRC9485.vision.LimelightHelpers;
 import frc.robot.GeralConstants.Components;
-import frc.robot.subsystems.swerve.SwerveConstants.swerveUtils;
 import frc.robot.subsystems.vision.LimelightConfig;
 import swervelib.SwerveDrive;
 import swervelib.SwerveModule;
 import swervelib.parser.SwerveParser;
 import swervelib.telemetry.SwerveDriveTelemetry;
-import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 import edu.wpi.first.math.trajectory.Trajectory;
 
 public class SwerveSubsystem extends SubsystemBase implements SwerveIO{
 
-  private Pigeon2 pigeon;
-  private PIDController xPID;
-  private PIDController yPID;
-  private ProfiledPIDController profilePid;
-  private HolonomicDriveController driveController;
+  private Pigeon2 pigeon = new Pigeon2(Components.PIGEON);
+
+  private PIDController xPID = new PIDController(0.01, 0, 0);
+  private PIDController yPID = new PIDController(0.01, 0, 0);
+
+  private ProfiledPIDController profilePid = new ProfiledPIDController(0.01, 0, 0.1, 
+                                                                      new TrapezoidProfile.Constraints(Math.PI, Math.PI));
+
+  private HolonomicDriveController driveController = new HolonomicDriveController(yPID, xPID, profilePid);
   private LimelightConfig limelightConfig;
   
   private SwerveDrive swerveDrive;
+
+  private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(new Translation2d[]{
+    new Translation2d(0.356, 0.356),
+    new Translation2d(-0.356, 0.356),
+    new Translation2d(-0.356, 0.356),
+    new Translation2d(-0.356, -0.356)
+  });
+
   private SwerveDrivePoseEstimator swerveDrivePoseEstimator;
   private SwerveModuleState[] state;
   private SwerveModule[] modules;
   private SwerveDriveOdometry odometry;
-  private SwerveDriveKinematics kinematics;
   private SwerveModulePosition[] position;
 
   private double direcaoX;
@@ -73,62 +77,49 @@ public class SwerveSubsystem extends SubsystemBase implements SwerveIO{
   private double lastMovingTime;
   private boolean isMoving;
   private IdleMode currentIdleMode;
-  private CustomBooleanLog swerveIsMoving;
+  private CustomBooleanLog swerveIsMoving = new CustomBooleanLog("swerve/ isMoving");
 
-  private CANcoder[] modulesEncoder;
-  private swerveInputs inputs;
+  private CANcoder[] modulesEncoder = new CANcoder[]{
+    new CANcoder(10),
+    new CANcoder(11),
+    new CANcoder(12),
+    new CANcoder(13)
+  };
+
+  private swerveInputs inputs = new swerveInputs();
 
   private Field2d field2d;
 
   public static SwerveSubsystem mInstance = null;
 
+  List<CANcoder> encoder = new ArrayList<>();
+
   public record SwerveState(double XInput, double YInput, double rotation, boolean isMoving) {}
-  private SwerveState swerveState;
+  private SwerveState swerveState = new SwerveState(direcaoX, direcaoY, rotacao, isMoving);
 
   private SwerveSubsystem(File directory){
 
     try {
-      this.pigeon = new Pigeon2(Components.PIGEON);
-    } catch (Exception e) {
-      e.printStackTrace();
-      DriverStation.reportError("Falha ao inicializar Pigeon2: " + e.getMessage(), false);
-      this.pigeon = null;
-    }
-
-    try {
       this.swerveDrive = new SwerveParser(directory).createSwerveDrive(SwerveConstants.MAX_SPEED);
 
-      if (this.swerveDrive != null && this.pigeon != null) {
-        this.swerveDrivePoseEstimator = new SwerveDrivePoseEstimator(
-            this.swerveDrive.kinematics,
-            this.pigeon.getRotation2d(),
-            this.swerveDrive.getModulePositions(),
-            new Pose2d());
+      this.swerveDrivePoseEstimator = new SwerveDrivePoseEstimator(kinematics, 
+                                                                   getHeading(),
+                                                                  swerveDrive.getModulePositions(),
+                                                                  new Pose2d());
 
-      } else {
-        DriverStation.reportWarning("swerveDrive ou pigeon não inicializado — poseEstimator não criado", false);
-        this.swerveDrivePoseEstimator = null;
-      }
     } catch (Exception e) {
       e.printStackTrace();
       DriverStation.reportError("Erro criando SwerveDrive: " + e.getMessage(), false);
       this.swerveDrive = null;
       this.swerveDrivePoseEstimator = null;
     }
-    
-    xPID = new PIDController(1.0, 0, 0);
-    yPID = new PIDController(1.0, 0.0, 0.1);
-    profilePid = new ProfiledPIDController(1.0, 0.0, 0.1,
-        new TrapezoidProfile.Constraints(Math.PI, Math.PI));
 
-    driveController = new HolonomicDriveController(xPID, yPID, profilePid);
+    for(int i = 10; i < 14; i++){
+      encoder.add(new CANcoder(i));
+    }
 
     this.setupPathPlanner();
     this.configureSwerveUtils();
-
-    this.swerveIsMoving = new CustomBooleanLog("swerve/ isMoving");
-
-    this.swerveState = new SwerveState(direcaoX, direcaoY, rotacao, isMoving);
         
     this.kinematics = new SwerveDriveKinematics(new Translation2d[]{
       new Translation2d(0.0365, 0.356), //Fl
@@ -141,14 +132,6 @@ public class SwerveSubsystem extends SubsystemBase implements SwerveIO{
     
     this.odometry = new SwerveDriveOdometry(kinematics, pigeon.getRotation2d(), swerveDrive.getModulePositions());
 
-    this.modulesEncoder = new CANcoder[]{
-      new CANcoder(10),
-      new CANcoder(11),
-      new CANcoder(12),
-      new CANcoder(13)
-    };
-
-    this.inputs = new swerveInputs();
   }
 
   public static SwerveSubsystem getInstance(){
@@ -242,6 +225,10 @@ public class SwerveSubsystem extends SubsystemBase implements SwerveIO{
     this.isMoving = isMoving;
 
     return isMoving;
+  }
+
+  public Pigeon2 getPigeon(){
+    return this.pigeon;
   }
 
   @Override
@@ -503,7 +490,7 @@ public Rotation2d getHeading(){
   public void resetOdometry(Pose2d pose){
       try {
           pigeon.setYaw(pose.getRotation().getDegrees());
-          odometry.resetPosition(pose.getRotation(), swerveDrive.getModulePositions(), pose);
+          swerveDrivePoseEstimator.resetPosition(pose.getRotation(), swerveDrive.getModulePositions(), pose);
       } catch (Exception e){
           DriverStation.reportWarning("Falha ao resetar odometria: " + e.getMessage(), false);
       }
@@ -567,7 +554,7 @@ public Rotation2d getHeading(){
   @Override
   public void resetOdometryAuto(Pose2d pose2d) {
     pigeon.setYaw(pose2d.getRotation().getDegrees());
-    odometry.resetPosition(pose2d.getRotation(), swerveDrive.getModulePositions(), pose2d);
+    swerveDrivePoseEstimator.resetPosition(pose2d.getRotation(), swerveDrive.getModulePositions(), pose2d);
   }
 
   @Override
