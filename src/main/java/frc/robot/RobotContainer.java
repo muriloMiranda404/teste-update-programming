@@ -14,6 +14,8 @@ import frc.robot.commands.level.intake.SetIntakeSpeed;
 import frc.robot.commands.swerveUtils.ResetPigeon;
 import frc.robot.commands.swerveUtils.TeleopSwerveDrive;
 import frc.robot.commands.swerveUtils.alinhamento.AlingToTarget;
+import frc.robot.commands.swerveUtils.alinhamento.LeftAlingment;
+import frc.robot.commands.swerveUtils.alinhamento.RightAlingment;
 import frc.robot.subsystems.Mechanism.SuperStructure;
 import frc.robot.subsystems.Mechanism.SuperStructure.StatesToScore;
 import frc.robot.subsystems.Mechanism.intake.IntakeSubsystem;
@@ -83,6 +85,10 @@ public class RobotContainer {
     driverController.emergencyInvert().onTrue(new InstantCommand(() ->{
         driverController.Invert();
     }));
+
+    driverController.rightBumper().whileTrue(new RightAlingment());
+
+    driverController.leftBumper().whileTrue(new LeftAlingment());
   }
 
   private void configureKeyBoardMechanismBindings(){

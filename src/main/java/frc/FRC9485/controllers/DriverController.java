@@ -175,7 +175,7 @@ public class DriverController implements IDDriverController{
 
     @Override
     public Trigger slowMode() {
-        return controller.leftTrigger(0.8);
+        return controller.leftTrigger();
     }
 
     @Override
