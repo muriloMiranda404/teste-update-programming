@@ -13,7 +13,6 @@ import frc.FRC9485.utils.JoystickChooser.JoystickChooser;
 import frc.robot.commands.level.intake.SetIntakeSpeed;
 import frc.robot.commands.swerveUtils.ResetPigeon;
 import frc.robot.commands.swerveUtils.TeleopSwerveDrive;
-import frc.robot.commands.swerveUtils.alinhamento.AlingToTarget;
 import frc.robot.commands.swerveUtils.alinhamento.LeftAlingment;
 import frc.robot.commands.swerveUtils.alinhamento.RightAlingment;
 import frc.robot.subsystems.Mechanism.SuperStructure;
